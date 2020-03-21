@@ -1,1 +1,4 @@
-<h1>Works!</h1>
+<div id="root">
+
+</div>
+<script src="{{ asset('js/app.js') }}"></script>

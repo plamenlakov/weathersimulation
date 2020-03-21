@@ -65580,7 +65580,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
  */
 
 
-__webpack_require__(/*! ./components/Example */ "./resources/js/components/Example.js");
+__webpack_require__(/*! ./components/App */ "./resources/js/components/App.js");
 
 /***/ }),
 
@@ -65629,10 +65629,10 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
-/***/ "./resources/js/components/Example.js":
-/*!********************************************!*\
-  !*** ./resources/js/components/Example.js ***!
-  \********************************************/
+/***/ "./resources/js/components/App.js":
+/*!****************************************!*\
+  !*** ./resources/js/components/App.js ***!
+  \****************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -65642,30 +65642,158 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Map__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Map */ "./resources/js/components/Map.js");
+/* harmony import */ var _graphs_AllGraphs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./graphs/AllGraphs */ "./resources/js/components/graphs/AllGraphs.js");
+/* harmony import */ var _Input__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Input */ "./resources/js/components/Input.js");
+/* harmony import */ var _Presets__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Presets */ "./resources/js/components/Presets.js");
 
 
 
-function Example() {
+
+
+
+
+function App() {
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "container"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "row justify-content-center"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "col-md-8"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "card"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "card-header"
-  }, "Example Component"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "card-body"
-  }, "I'm an example component!")))));
+    className: ""
+  }, "Bruh", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Input__WEBPACK_IMPORTED_MODULE_4__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Map__WEBPACK_IMPORTED_MODULE_2__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_graphs_AllGraphs__WEBPACK_IMPORTED_MODULE_3__["default"], null));
 }
 
-/* harmony default export */ __webpack_exports__["default"] = (Example);
+/* harmony default export */ __webpack_exports__["default"] = (App);
 
-if (document.getElementById('example')) {
-  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Example, null), document.getElementById('example'));
+if (document.getElementById('root')) {
+  react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(App, null), document.getElementById('root'));
 }
+
+/***/ }),
+
+/***/ "./resources/js/components/Input.js":
+/*!******************************************!*\
+  !*** ./resources/js/components/Input.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function Input() {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null);
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Input);
+
+/***/ }),
+
+/***/ "./resources/js/components/Map.js":
+/*!****************************************!*\
+  !*** ./resources/js/components/Map.js ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function Map() {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null);
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Map);
+
+/***/ }),
+
+/***/ "./resources/js/components/Presets.js":
+/*!********************************************!*\
+  !*** ./resources/js/components/Presets.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function Presets() {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null);
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Presets);
+
+/***/ }),
+
+/***/ "./resources/js/components/graphs/AllGraphs.js":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/graphs/AllGraphs.js ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Piechart__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Piechart */ "./resources/js/components/graphs/Piechart.js");
+/* harmony import */ var _PPMLineGraph__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./PPMLineGraph */ "./resources/js/components/graphs/PPMLineGraph.js");
+
+
+
+
+function AllGraphs() {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PPMLineGraph__WEBPACK_IMPORTED_MODULE_2__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Piechart__WEBPACK_IMPORTED_MODULE_1__["default"], null));
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (AllGraphs);
+
+/***/ }),
+
+/***/ "./resources/js/components/graphs/PPMLineGraph.js":
+/*!********************************************************!*\
+  !*** ./resources/js/components/graphs/PPMLineGraph.js ***!
+  \********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function PPMLineGraph() {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null);
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (PPMLineGraph);
+
+/***/ }),
+
+/***/ "./resources/js/components/graphs/Piechart.js":
+/*!****************************************************!*\
+  !*** ./resources/js/components/graphs/Piechart.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function Piechart() {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null);
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Piechart);
 
 /***/ }),
 
@@ -65687,8 +65815,8 @@ if (document.getElementById('example')) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/plamen/Desktop/procp/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/plamen/Desktop/procp/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! E:\Projects\ProCP\procp\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! E:\Projects\ProCP\procp\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

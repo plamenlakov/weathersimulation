@@ -72,7 +72,7 @@
     <body>
         <div class="container">
             <div class="row">
-                <div id="example"></div>
+                <div id="root"></div>
             </div>
         </div>
         <script src="{{ asset('js/app.js') }}"></script>
