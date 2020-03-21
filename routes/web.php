@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/simulation', function () {
-    return view('SimulationPage');
+    return view('simulation');
 });
 
 
