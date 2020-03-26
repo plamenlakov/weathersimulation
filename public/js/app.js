@@ -107763,82 +107763,46 @@ __webpack_require__.r(__webpack_exports__);
 
 function Piechart() {
   document.addEventListener('DOMContentLoaded', function (e) {
-    var countryData = [{
-      name: 'Germany',
-      carEmissions: 50,
-      population: 1000,
-      ppmPerCapita: 12,
-      allPolution: 1000,
-      color: 'yellow'
-    }, {
-      name: 'France',
-      carEmissions: 40,
-      population: 800,
-      ppmPerCapita: 12,
-      allPolution: 1500,
-      color: 'blue'
-    }, {
-      name: 'Italy',
-      carEmissions: 30,
-      population: 650,
-      ppmPerCapita: 12,
-      allPolution: 120,
-      color: 'cyan'
-    }, {
-      name: 'Netherlands',
-      carEmissions: 20,
-      population: 35,
-      ppmPerCapita: 12,
-      allPolution: 30,
-      color: 'orange'
-    }, {
-      name: 'UK',
-      carEmissions: 60,
-      population: 900,
-      ppmPerCapita: 12,
-      allPolution: 140,
-      color: 'red'
-    }, {
-      name: 'Spain',
-      carEmissions: 40,
-      population: 600,
-      ppmPerCapita: 12,
-      allPolution: 100,
-      color: 'gray'
-    }];
+    var EU_COUNTRIES = ['Austria', 'Belgium', 'Bulgaria', 'Croatia', 'Cyprus', 'CZECHOSLOVAKIA', 'Denmark', 'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Hungary', 'Ireland', 'Italy', 'Latvia', 'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'Slovenia', 'Spain', 'Sweden', 'United Kingdom'];
     var width = 250,
         height = 250,
         svg = d3__WEBPACK_IMPORTED_MODULE_2__["select"]("svg").attr('width', width).attr('height', height).attr('r', radius),
         radius = Math.min(width, height) / 2,
         g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-    var color = d3__WEBPACK_IMPORTED_MODULE_2__["scaleOrdinal"](['#4daf4a', '#377eb8', '#ff7f00', '#984ea3', '#e41a1c', '#a99a1c']); // Generate the pie
+    var color = d3__WEBPACK_IMPORTED_MODULE_2__["scaleOrdinal"](['#4daf4a', '#377eb8', '#ff7f00', '#984ea3', '#e41a1c', '#a99a1c', '#afeafe', '#333333', '#999999', '#00FF00']); // Generate the pie
 
     var pie = d3__WEBPACK_IMPORTED_MODULE_2__["pie"](); // Generate the arcs
 
     var arc = d3__WEBPACK_IMPORTED_MODULE_2__["arc"]().innerRadius(radius / 2).outerRadius(radius);
-    var othersTotal;
+    var final_data = [];
+    d3__WEBPACK_IMPORTED_MODULE_2__["csv"]("https://pkgstore.datahub.io/core/co2-fossil-by-nation/fossil-fuel-co2-emissions-by-nation_csv/data/0f04181960a0a896ebaf6d8afb0b71a6/fossil-fuel-co2-emissions-by-nation_csv.csv").then(function (data) {
+      var smallImpact = 0;
+      data.forEach(function (row) {
+        var isEUCountry = EU_COUNTRIES.some(function (eu) {
+          return eu.toUpperCase() == row.Country;
+        });
 
-    function Check() {
-      countryData.forEach(function (country) {
-        if (country.allPolution < 1000) {
-          othersTotal += country.allPolution;
+        if (row.Year == "2014" && isEUCountry) {
+          row.Total = +row.Total;
+          row.Country = row.Country;
+          final_data.push(row.Country, row.Total);
+          final_data.sort();
         }
       });
-    }
+      console.log(final_data);
+      var arcs = g.selectAll("arc").data(pie(final_data)).enter().append("g").attr("class", "arc"); //Draw arc paths
 
-    Check(); //Generate groups
-
-    var arcs = g.selectAll("arc").data(pie(countryData.map(function (d) {
-      return d.allPolution;
-    }))).enter().append("g").attr("class", "arc"); //Draw arc paths
-
-    arcs.append("path").attr("fill", function (d, i) {
-      return color(i);
-    }).attr("d", arc).append('arcs:title').text();
+      arcs.append("path").attr("fill", function (d, i) {
+        return color(i);
+      }).attr("d", arc).append('arcs:title').text(function (d, i) {
+        console.log(final_data.slice(final_data.length / 2)[i]);
+        return "Country: ".concat(d.data.Country, " \nEmissions: ").concat(final_data.slice(0, final_data.length / 2)[i]);
+      });
+    });
   });
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "PieChart"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     id: "piechart"
-  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("svg", null, " "));
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("svg", null));
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Piechart);
