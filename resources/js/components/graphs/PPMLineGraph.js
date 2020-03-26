@@ -1,11 +1,21 @@
 import React from 'react';
 
-function PPMLineGraph() {
-    return(
-        <div>
+class PPMLineGraph extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
 
-        </div>
-    );
+        }
+
+    }
+
+    render() {
+        return(
+            <div>
+
+            </div>
+        );
+    }
 }
 
 export default PPMLineGraph;
