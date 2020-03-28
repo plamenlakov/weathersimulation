@@ -95031,13 +95031,7 @@ var Map = /*#__PURE__*/function (_React$Component) {
       var countries = d3__WEBPACK_IMPORTED_MODULE_1__["json"]('http://localhost:8080/custom.geo.json').then(function (data) {
         console.log(data);
         svg.selectAll("path").data(data.features).enter().append("path").attr("d", path);
-      }); // Promise.all(countries).then(values =>{
-      //     svg.selectAll("path")
-      //         .data(values.features)
-      //         .enter()
-      //         .append("path")
-      //         .attr("d", path);
-      // })
+      });
     }
   }, {
     key: "render",
@@ -95110,48 +95104,89 @@ function AllGraphs() {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+/* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 
+ // class PPMLineGraph extends React.Component{
+//     constructor(props) {
+//         super(props);
+//         this.state = {
+//         }
+//     }
+//     render() {
+//         return(
+//             <div>
+//             </div>
+//         );
+//     }
+// }
 
-var PPMLineGraph = /*#__PURE__*/function (_React$Component) {
-  _inherits(PPMLineGraph, _React$Component);
+function PPMLineGraph() {
+  document.addEventListener('DOMContentLoaded', function (e) {
+    var EU_COUNTRIES = ['Austria', 'Belgium', 'Bulgaria', 'Croatia', 'Cyprus', 'CZECHOSLOVAKIA', 'Denmark', 'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Hungary', 'Ireland', 'Italy', 'Latvia', 'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'Slovenia', 'Spain', 'Sweden', 'United Kingdom'];
+    var final_data = [];
+    var margin = {
+      top: 20,
+      right: 20,
+      bottom: 20,
+      left: 60
+    },
+        width = 350 - margin.left - margin.right,
+        height = 250 - margin.top - margin.bottom;
+    d3__WEBPACK_IMPORTED_MODULE_1__["csv"]("https://pkgstore.datahub.io/core/co2-fossil-by-nation/fossil-fuel-co2-emissions-by-nation_csv/data/0f04181960a0a896ebaf6d8afb0b71a6/fossil-fuel-co2-emissions-by-nation_csv.csv").then(function (data) {
+      //Filter rows only for UK
+      data.forEach(function (row) {
+        var isEUCountry = EU_COUNTRIES.some(function (eu) {
+          return eu.toUpperCase() == row.Country;
+        });
 
-  function PPMLineGraph(props) {
-    var _this;
+        if (row.Year >= "1980" && row.Country == "UNITED KINGDOM") {
+          row.Total = +row.Total;
+          row.Country = row.Country;
+          final_data.push([row.Total, row.Country, row.Year]);
+        }
+      }); //Sort data on year (starting from the smallest)
 
-    _classCallCheck(this, PPMLineGraph);
+      final_data.sort(function (a, b) {
+        return a[2] - b[2];
+      });
+      console.log(final_data);
+      var PPMs = final_data.map(function (value, i) {
+        return value[0];
+      });
+      var Years = final_data.map(function (value, i) {
+        return value[2];
+      });
+      var svg = d3__WEBPACK_IMPORTED_MODULE_1__["select"]("#line_graph").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      var smallestYear = +Math.min.apply(Math, _toConsumableArray(Years));
+      var lastYear = +Math.max.apply(Math, _toConsumableArray(Years));
+      var xAxis = d3__WEBPACK_IMPORTED_MODULE_1__["scaleLinear"]().domain([smallestYear, lastYear]) //Number range on the X axis
+      .range([margin.left, width - margin.right]);
+      var highestPPM = Math.max.apply(Math, _toConsumableArray(PPMs));
+      var yAxis = d3__WEBPACK_IMPORTED_MODULE_1__["scaleLinear"]().domain([0, highestPPM]).range([height - margin.bottom, margin.top]); //drawing the X axis
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(PPMLineGraph).call(this, props));
-    _this.state = {};
-    return _this;
-  }
+      svg.append("g").attr("transform", "translate(" + -margin.left + "," + (height - margin.bottom) + ")").call(d3__WEBPACK_IMPORTED_MODULE_1__["axisBottom"](xAxis).tickFormat(d3__WEBPACK_IMPORTED_MODULE_1__["format"](1000))); //draw the Y axis
 
-  _createClass(PPMLineGraph, [{
-    key: "render",
-    value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null);
-    }
-  }]);
+      svg.append("g").call(d3__WEBPACK_IMPORTED_MODULE_1__["axisLeft"](yAxis).tickFormat(d3__WEBPACK_IMPORTED_MODULE_1__["format"](1000))); //Add X label
 
-  return PPMLineGraph;
-}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+      svg.append("text").attr("text-anchor", "end").attr("x", 0 + 15).attr("y", height + 10).text("Year").style("font-size", "12px"); //Add Y label
+
+      svg.append("text").attr("text-anchor", "end").attr("transform", "rotate(-90)").attr("y", -margin.left + 10).attr("x", -height + margin.top + margin.bottom + 30).text("PPM value").style("font-size", "12px"); //draw a line
+
+      svg.append("path").datum(data).attr("fill", "none").attr("stroke", "steelblue").attr("stroke-width", 1.5).attr("d", line);
+    });
+  });
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Line graph"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    id: "line_graph"
+  }));
+}
 
 /* harmony default export */ __webpack_exports__["default"] = (PPMLineGraph);
 
@@ -95196,8 +95231,8 @@ function Piechart() {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! E:\Projects\ProCP\procp\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! E:\Projects\ProCP\procp\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\Bobby\Desktop\procp\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\Bobby\Desktop\procp\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
