@@ -107776,7 +107776,15 @@ function Piechart() {
     var arc = d3__WEBPACK_IMPORTED_MODULE_2__["arc"]().innerRadius(radius / 2).outerRadius(radius);
     var final_data = [];
     d3__WEBPACK_IMPORTED_MODULE_2__["csv"]("https://pkgstore.datahub.io/core/co2-fossil-by-nation/fossil-fuel-co2-emissions-by-nation_csv/data/0f04181960a0a896ebaf6d8afb0b71a6/fossil-fuel-co2-emissions-by-nation_csv.csv").then(function (data) {
-      var smallImpact = 0;
+      var smallImpact = 0; // for(let i = 0; i < data.length; i++){
+      //     let isEUCountry = EU_COUNTRIES.some(eu => eu.toUpperCase() == data[i].Country);
+      //     if (data[i].Year == "2014" && isEUCountry) {
+      //         data[i].Total = +data[i].Total;
+      //         data[i].Country = data[i].Country;
+      //         final_data[i] = [data[i].Total, data[i].Country];
+      //     }
+      // }
+
       data.forEach(function (row) {
         var isEUCountry = EU_COUNTRIES.some(function (eu) {
           return eu.toUpperCase() == row.Country;
@@ -107785,22 +107793,26 @@ function Piechart() {
         if (row.Year == "2014" && isEUCountry) {
           row.Total = +row.Total;
           row.Country = row.Country;
-          final_data.push(row.Country, row.Total);
-          final_data.sort();
+          final_data.push([row.Total, row.Country]);
         }
       });
-      console.log(final_data);
-      var arcs = g.selectAll("arc").data(pie(final_data)).enter().append("g").attr("class", "arc"); //Draw arc paths
+      final_data.sort(function (a, b) {
+        return b[0] - a[0];
+      });
+      console.log(final_data); //console.log(final_data.map(function(value, i){return value[0];}));
+
+      var arcs = g.selectAll("arc").data(pie(final_data.map(function (value, i) {
+        return value[0];
+      }))).enter().append("g").attr("class", "arc"); //Draw arc paths
 
       arcs.append("path").attr("fill", function (d, i) {
         return color(i);
       }).attr("d", arc).append('arcs:title').text(function (d, i) {
-        console.log(final_data.slice(final_data.length / 2)[i]);
-        return "Country: ".concat(d.data.Country, " \nEmissions: ").concat(final_data.slice(0, final_data.length / 2)[i]);
+        return "".concat(final_data[d.index][1], "\n").concat(final_data[d.index][0]);
       });
     });
   });
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "PieChart"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "PieChart"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     id: "piechart"
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("svg", null));
 }
