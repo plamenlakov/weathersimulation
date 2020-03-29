@@ -7,8 +7,7 @@ import Presets from "./Presets";
 
 function App() {
     return (
-        <div className="">
-            Bruh
+        <div>
             <Input/>
             <Map/>
             <AllGraphs/>
