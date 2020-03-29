@@ -95135,11 +95135,11 @@ function PPMLineGraph() {
     var margin = {
       top: 20,
       right: 20,
-      bottom: 20,
-      left: 60
+      bottom: 30,
+      left: 100
     },
-        width = 350 - margin.left - margin.right,
-        height = 250 - margin.top - margin.bottom;
+        width = 600 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
     d3__WEBPACK_IMPORTED_MODULE_1__["csv"]("https://pkgstore.datahub.io/core/co2-fossil-by-nation/fossil-fuel-co2-emissions-by-nation_csv/data/0f04181960a0a896ebaf6d8afb0b71a6/fossil-fuel-co2-emissions-by-nation_csv.csv").then(function (data) {
       //Filter rows only for UK
       data.forEach(function (row) {
@@ -95159,28 +95159,38 @@ function PPMLineGraph() {
       });
       console.log(final_data);
       var PPMs = final_data.map(function (value, i) {
-        return value[0];
+        return +value[0];
       });
       var Years = final_data.map(function (value, i) {
-        return value[2];
+        return +value[2];
       });
       var svg = d3__WEBPACK_IMPORTED_MODULE_1__["select"]("#line_graph").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-      var smallestYear = +Math.min.apply(Math, _toConsumableArray(Years));
-      var lastYear = +Math.max.apply(Math, _toConsumableArray(Years));
+      var smallestYear = Math.min.apply(Math, _toConsumableArray(Years));
+      var lastYear = Math.max.apply(Math, _toConsumableArray(Years));
       var xAxis = d3__WEBPACK_IMPORTED_MODULE_1__["scaleLinear"]().domain([smallestYear, lastYear]) //Number range on the X axis
       .range([margin.left, width - margin.right]);
       var highestPPM = Math.max.apply(Math, _toConsumableArray(PPMs));
-      var yAxis = d3__WEBPACK_IMPORTED_MODULE_1__["scaleLinear"]().domain([0, highestPPM]).range([height - margin.bottom, margin.top]); //drawing the X axis
+      var yAxis = d3__WEBPACK_IMPORTED_MODULE_1__["scaleLinear"]().domain([0, highestPPM + 20000]).range([height - margin.bottom, margin.top]); //drawing the X axis
 
-      svg.append("g").attr("transform", "translate(" + -margin.left + "," + (height - margin.bottom) + ")").call(d3__WEBPACK_IMPORTED_MODULE_1__["axisBottom"](xAxis).tickFormat(d3__WEBPACK_IMPORTED_MODULE_1__["format"](1000))); //draw the Y axis
+      svg.append("g").attr("transform", "translate(" + -margin.left + "," + (height - margin.bottom) + ")").call(d3__WEBPACK_IMPORTED_MODULE_1__["axisBottom"](xAxis).tickFormat(d3__WEBPACK_IMPORTED_MODULE_1__["format"](1000))).style("font-size", "20px"); //draw the Y axis
 
-      svg.append("g").call(d3__WEBPACK_IMPORTED_MODULE_1__["axisLeft"](yAxis).tickFormat(d3__WEBPACK_IMPORTED_MODULE_1__["format"](1000))); //Add X label
+      svg.append("g").call(d3__WEBPACK_IMPORTED_MODULE_1__["axisLeft"](yAxis).tickFormat(d3__WEBPACK_IMPORTED_MODULE_1__["format"](1000))).style("font-size", "18px"); //Add X label
 
-      svg.append("text").attr("text-anchor", "end").attr("x", 0 + 15).attr("y", height + 10).text("Year").style("font-size", "12px"); //Add Y label
+      svg.append("text").attr("text-anchor", "end").attr("x", 0 + 15).attr("y", height + 10).text("Year").style("font-size", "20px"); //Add Y label
 
-      svg.append("text").attr("text-anchor", "end").attr("transform", "rotate(-90)").attr("y", -margin.left + 10).attr("x", -height + margin.top + margin.bottom + 30).text("PPM value").style("font-size", "12px"); //draw a line
+      svg.append("text").attr("text-anchor", "end").attr("transform", "rotate(-90)").attr("y", -margin.left + 30).attr("x", -height + margin.top + margin.bottom + 60).text("PPM value").style("font-size", "20px"); //draw a line
 
-      svg.append("path").datum(data).attr("fill", "none").attr("stroke", "steelblue").attr("stroke-width", 1.5).attr("d", line);
+      console.log(PPMs);
+      svg.append("path").datum(data).attr("fill", "none").attr("stroke", "steelblue").attr("stroke-width", 1.5).attr("transform", "translate(" + -margin.left + "," + 0 + ")") //remove margin from left
+      .attr("d", d3__WEBPACK_IMPORTED_MODULE_1__["line"]().x(function (d, i) {
+        if (Years[i] != undefined) {
+          return xAxis(Years[i]);
+        }
+      }).y(function (d, i) {
+        if (PPMs[i] != undefined) {
+          return yAxis(PPMs[i]);
+        }
+      }));
     });
   });
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Line graph"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
