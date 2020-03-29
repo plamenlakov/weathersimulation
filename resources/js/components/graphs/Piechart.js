@@ -33,11 +33,13 @@ function Piechart() {
             'Spain',
             'Sweden',
             'United Kingdom',]
+            
+            var margin = { top: 20, right: 20, bottom: 20, left: 20 },
+            width = 600 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom,
+            radius = Math.min(width, height) / 2;
 
-            var width = 250,
-                height = 250,
-                svg = d3.select("svg").attr('width', width).attr('height', height).attr('r', radius),
-                radius = Math.min(width, height) / 2,
+            var svg = d3.select("svg").attr('width', width).attr('height', height).attr('r', radius),
                 g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
             var color = d3.scaleOrdinal(['#4daf4a', '#377eb8', '#ff7f00', '#984ea3', '#e41a1c', '#a99a1c', '#afeafe', '#333333', '#999999', '#00FF00']);
