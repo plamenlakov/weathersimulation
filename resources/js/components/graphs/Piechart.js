@@ -39,7 +39,7 @@ function Piechart() {
             height = 500 - margin.top - margin.bottom,
             radius = Math.min(width, height) / 2;
 
-            var svg = d3.select("svg").attr('width', width).attr('height', height).attr('r', radius),
+            var svg = d3.select("#piechart").append("svg").attr('width', width).attr('height', height).attr('r', radius),
                 g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
             var color = d3.scaleOrdinal(['#4daf4a', '#377eb8', '#ff7f00', '#984ea3', '#e41a1c', '#a99a1c', '#afeafe', '#333333', '#999999', '#00FF00']);
@@ -98,7 +98,7 @@ function Piechart() {
         <div>
             <h3>PieChart</h3>
             <div id="piechart"></div>
-            <svg></svg>
+            
         </div>
     );
 }
