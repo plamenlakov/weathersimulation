@@ -60,13 +60,40 @@ class Map extends React.Component {
                         d3.select(this).attr("fill", "darkgrey");
                     })
                     .on("click", function (d) {
-                        d3.csv(dataCsv, function (dataCsv) {
+                        d3.csv(dataCsv).then(function (data) {
                             document.getElementById("countryName").innerHTML = `<b>${d.properties.name_long}</b>`;
-                            if (dataCsv.country == d.properties.name_long)
-                                document.getElementById("population").innerHTML = `<h5>Population: ${dataCsv.population}</h5>`;
-                            if (dataCsv.country == d.properties.name_long)
-                                document.getElementById("forest").innerHTML = `<h5>Forest: ${dataCsv.forest} %</h5>`;
-                            document.getElementById("modalButton").click();
+                            var countryNames = data.map(d => d['country']);
+                            var iCountry = 0;
+                            var clickedCountryName = countryNames.find(c => c == d.properties.name_long);
+                            var countryPopulation = NaN;
+                            var countryForest = NaN;
+
+                            for(let i = 0; i < data.length; i++){
+                                if(data[i].country == clickedCountryName){
+                                    countryPopulation = data[i].population;
+                                    countryForest = data[i].forest;
+                                }
+                            }
+
+                            if (clickedCountryName == null) {
+                                document.getElementById("modal-body").innerHTML = `Not used!`;
+                                document.getElementById("modalButton").click();
+                            } else {
+                                document.getElementById("modal-body").innerHTML = `<h5>Population: ${countryPopulation}</h5>
+                                                                                    <h5>Forest: ${countryForest} %</h5>`;
+                                document.getElementById("modalButton").click();
+                            }
+
+                            // if (dataCsv.country == d.properties.name_long) {
+                            //     console.log(dataCsv.country)
+                            //     document.getElementById("modal-body").innerHTML = `<h5>Population: ${dataCsv.population}</h5>
+                            //                                                         <h5>Forest: ${dataCsv.forest} %</h5>`;
+                            //     document.getElementById("modalButton").click();
+                            // } 
+                            // else {
+                            //     console.log(dataCsv.sovereignt);
+                            // }
+
                         })
                     })
                     .on("mouseout", function (d) {
