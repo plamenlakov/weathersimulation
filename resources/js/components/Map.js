@@ -23,8 +23,8 @@ class Map extends React.Component {
                     .translate([width / 2, height / 2]) // center the image
                     .scale([width / 1.5]);
             const path = d3.geoPath().projection(projection);
-            const populationCsv = "http://localhost:8000/population2020.csv";
-            const forestCsv = "http://localhost:8000/forestation.csv";
+            //const populationCsv = "http://localhost:8000/population2020.csv";
+            const dataCsv = "http://localhost:8000/data.csv";
 
 
             const svg = d3.select("#Map").append("svg")
@@ -45,19 +45,20 @@ class Map extends React.Component {
                         .attr("stroke-width", "0.5")
                         .on("mouseover", function (d) {
                             d3.select(this).attr("fill", "darkgrey")
-                            d3.csv(populationCsv, function (populationData) {
-                                if (populationData.GEO == d.properties.name_long)
-                                    console.log("Country: " + populationData.GEO + "\nPopulation: " + populationData.Value);
+                            d3.csv(dataCsv, function (dataCsv) {
+                                if (dataCsv.country == d.properties.name_long)
+                                    console.log("Population: " + dataCsv.population + "\nForest % " + dataCsv.forest);
                             })
-                            d3.csv(forestCsv, function (forestData) {
-                                if (forestData.Country == d.properties.name_long)
-                                    console.log("Forest % " + forestData.Value);
-                            });
                         })
                         .on("click", function (d) {
-                            document.getElementById("countryName").innerHTML = `<b>${d.properties.name_long}</b>`;
-                            document.getElementById("modal-body").innerHTML = `<h5 class="alert alert-danger">proba</h5>`
-                            document.getElementById("modalButton").click();
+                            d3.csv(dataCsv, function (dataCsv) {
+                                document.getElementById("countryName").innerHTML = `<b>${d.properties.name_long}</b>`;
+                                if (dataCsv.country == d.properties.name_long)
+                                document.getElementById("population").innerHTML = `<h5>Population: ${dataCsv.population}</h5>`;
+                                if (dataCsv.country == d.properties.name_long)
+                                document.getElementById("forest").innerHTML = `<h5>Forest: ${dataCsv.forest} %</h5>`;
+                                document.getElementById("modalButton").click();
+                            })
                         })
                         .on("mouseout", function (d) {
                             d3.select(this).attr("fill", "#cccccc")
