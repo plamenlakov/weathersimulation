@@ -8,12 +8,12 @@ import Col from 'react-bootstrap/Col';
 function AllGraphs() {
     return(
         <div>
-            <Row>
-                <Col md="6" className="text-center">
-                    <PPMLineGraph/>
+            <Row className="m-3 justify-content-center">
+                <Col md="6" className="text-center">                 
+                    <Piechart/>
                 </Col>
                 <Col md="6" className="text-center">
-                    <Piechart/>
+                    <PPMLineGraph/>
                 </Col>
             </Row>
             

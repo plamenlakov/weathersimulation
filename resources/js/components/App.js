@@ -12,7 +12,7 @@ function App() {
     return (
         <div>
             <Row className="m-1">
-                <Col md="4" className="border border-dark">
+                <Col md="4" className="border border-dark bg-dark">
                     <Input/>
                 </Col>  
                 <Col md="8" className="border border-dark">    
