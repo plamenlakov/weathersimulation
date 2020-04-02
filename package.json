@@ -28,6 +28,7 @@
         "d3": "^5.15.1",
         "react-bootstrap": "^1.0.0",
         "topojson": "^3.0.2",
-        "topology": "^0.2.1"
+        "topology": "^0.2.1",
+        "react-google-charts": "^3.0.15"
     }
 }
