@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="m-3">
-        <h1>Simulation</h1>
+
         <div id="root"></div>
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary d-none" id="modalButton" data-toggle="modal" data-target="#exampleModal">
