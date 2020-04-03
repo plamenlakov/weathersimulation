@@ -82,38 +82,36 @@ function PPMLineGraph() {
                 }
 
             });
-
-        setTimeout(function () { }, 200)
-
+            setTimeout(function () { }, 200)
 
     });
+
+    var options = {
+        legend: { position: 'bottom' },
+        backgroundColor: '#fff0ff',
+        title: 'PPM emission per year',
+
+        hAxis: {
+            title: 'Year',
+            format: '####'
+        },
+        vAxis: {
+            title: 'CO2 emissions in cubic tonnes',
+            format: 'short'
+        },
+
+    }
 
     return (
         <div>
             <Chart
                 width={'100%'}
                 height={'500px'}
-                chartType="LineChart"
+                chartType="AreaChart"
                 loader={<h4>Loading graph<Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /></h4>}
                 data={thisData}
-                options={{
-                    legend: { position: 'bottom' },
-                    backgroundColor:'#fff0ff',                  
-                    title: 'PPM emission per year',  
-                              
-                    hAxis: {
-                        title: 'Year',
-                        format: '####'
-                    },
-                    vAxis: {
-                        title: 'CO2 emissions in cubic tonnes',
-                        format: 'short'
-                    },
-
-                    
-                }
-            }
-            rootProps={{ 'data-testid': '4' }}
+                options={options}
+                rootProps={{ 'data-testid': '4' }}
             />
         </div >
     )
