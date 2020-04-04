@@ -64,6 +64,10 @@ class Country {
     get forestsGrowth(){
         return this._forestsGrowth;
     }
+    getForestArea(){
+        var result = (this.forests / 100) * this.area;
+        return result;
+    }
     //Calculate how much the forest has changed for this country and returns forest area in km2
     forestAreaChange(inputPopulation, inputDeforestation){
         var forestsKm2;

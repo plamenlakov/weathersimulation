@@ -91,6 +91,13 @@ class Map extends React.Component {
                                 d3.select(this).attr("fill", "#cccccc")
                             })
                     })
+                    
+                    var buttonSimulation = document.getElementById('buttonStartSim');
+                    var inputPopulation = document.getElementById('populationInput').innerText;
+                    var inputDeforestation = document.getElementById('deforestationInput').innerText;
+
+                    buttonSimulation.addEventListener("click", sim.makeSimulation(Number(inputPopulation), Number(inputDeforestation)));
+                    
 
             });
     }

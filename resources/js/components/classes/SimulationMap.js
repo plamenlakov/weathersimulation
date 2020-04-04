@@ -22,6 +22,14 @@ class Simulation {
         return readCsv;
     }
 
+    makeSimulation(inputPopulation, inputDeforestation){
+        console.log(this.countries[0]);
+        this.countries.forEach(c => {
+            c.forestAreaChange(inputPopulation, inputDeforestation);
+        });
+        console.log(this.countries[0]);
+    }
+
 
 }
 
