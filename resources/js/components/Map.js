@@ -25,9 +25,6 @@ class Map extends React.Component {
                         .translate([width / 2, height / 2]) // center the image
                         .scale([width / 1.5]);
                 const path = d3.geoPath().projection(projection);
-                //const populationCsv = "http://localhost:8000/population2020.csv";
-                const dataCsv = "http://localhost:8000/data.csv";
-
                 const svg = d3.select("#Map").append("svg")
                     .attr("width", '100%')
                     .attr("height", '100%')
