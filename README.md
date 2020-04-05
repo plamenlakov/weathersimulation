@@ -34,7 +34,7 @@ In order to start the project you will need to have these three commands running
 ```
 php artisan serve
 http-server &
-npm run dev
+npm run watch
 ```
 
 ## Starting a simulation
