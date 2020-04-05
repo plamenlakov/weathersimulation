@@ -54,7 +54,7 @@ function Piechart() {
 
                 final_data.sort(function(a, b){return b[0] - a[0]});
 
-                console.log(final_data);
+                // console.log(final_data);
 
             });
     });

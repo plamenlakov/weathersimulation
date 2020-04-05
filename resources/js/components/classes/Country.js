@@ -1,5 +1,5 @@
 class Country {
-    constructor(name, area, ppm, population, populationGrowth, forests, forestsGrowth){
+    constructor(name, area, ppm, population, populationGrowth, forests, forestsGrowth) {
         this.name = name;
         this.area = area;
         this.ppm = ppm;
@@ -10,103 +10,118 @@ class Country {
     }
 
     //NAME
-    set name(v){
+    set name(v) {
         this._name = v;
     }
-    get name(){
+
+    get name() {
         return this._name;
     }
 
     //AREA
-    set area(v){
+    set area(v) {
         this._size = v;
     }
-    get area(){
+
+    get area() {
         return this._size;
     }
 
     //PPM
-    set ppm(v){
+    set ppm(v) {
         this._ppm = v;
     }
-    get ppm(){
+
+    get ppm() {
         return this._ppm;
     }
 
     //POPULATION
-    set population(v){
+    set population(v) {
         this._population = v;
     }
-    get population(){
+
+    get population() {
         return this._population;
     }
 
     //POPULATION GROWTH
-    set populationGrowth(v){
+    set populationGrowth(v) {
         this._populationGrowth = v;
     }
-    get populationGrowth(){
+
+    get populationGrowth() {
         return this._populationGrowth;
     }
 
     //FORESTRY
-    set forests(v){
+    set forests(v) {
         this._forests = v;
     }
-    get forests(){
+
+    get forests() {
         return this._forests;
     }
 
     //FORESTRY GROWTH
-    set forestsGrowth(v){
+    set forestsGrowth(v) {
         this._forestsGrowth = v;
     }
-    get forestsGrowth(){
+
+    get forestsGrowth() {
         return this._forestsGrowth;
     }
-    getForestArea(){
+
+    getForestArea() {
         var result = (this.forests / 100) * this.area;
-        return result;
+        return Math.round(result);
     }
+
     //Calculate how much the forest has changed for this country and returns forest area in km2
-    forestAreaChange(inputPopulation, inputDeforestation){
+    forestAreaChange(inputPopulation, inputDeforestation) {
         var forestsKm2;
-        var deforestationByPopulation_pct = (this.populationGrowth + inputPopulation)* 2.7
-        if (deforestationByPopulation_pct >= 0){
-            forestsKm2 = this.getForestArea() + this.getForestArea()*((this.forestsGrowth -
-                deforestationByPopulation_pct - inputDeforestation)/100);
-            this.forests = (forestsKm2 / this.area) / 100;
+        var deforestationByPopulation_pct = (this.populationGrowth + inputPopulation) * 2.7
+        if (deforestationByPopulation_pct >= 0) {
+            forestsKm2 = Math.round(this.getForestArea() + this.getForestArea() * ((this.forestsGrowth -
+                deforestationByPopulation_pct - inputDeforestation) / 100));
+            this.forests = Math.round((forestsKm2 / this.area) * 100);
 
-        }
-        else{
-            forestsKm2 = this.getForestArea() + this.getForestArea()*((this.forestsGrowth - inputDeforestation)/100)
-            this.forests = (forestsKm2 / this.area) / 100;
+        } else {
+            forestsKm2 = Math.round(this.getForestArea() + this.getForestArea() * ((this.forestsGrowth - inputDeforestation) / 100));
+            this.forests = Math.round((forestsKm2 / this.area) * 100);
 
         }
 
     }
+
     //Calculate how much CO2 emissions were cleaned by this country
-    cleanedCO2(){
-        var cleanedCO2Tonnes = ((this.getForestArea() * 65000)* 22) / 1000;
-        return cleanedCO2Tonnes;
+    cleanedCO2() {
+        var cleanedCO2Tonnes = ((this.getForestArea() * 65000) * 22) / 1000;
+        return Math.round(cleanedCO2Tonnes);
     }
 
     //Calculate the population per Country
-    populationChange(inputPopulation){
-        var populationChanged = this.population + this.population*((this.populationGrowth + inputPopulation)/100);
-        this.population = populationChanged;
+    populationChange(inputPopulation) {
+        var populationChanged = this.population + this.population * ((this.populationGrowth + inputPopulation) / 100);
+        this.population = Math.round(populationChanged);
     }
 
     //Calculate the produced CO2 emissions by the population per country
-    CO2Production(){
+    CO2Production() {
         var producedCO2 = this.population * 26.25;
-        return producedCO2;
+        return Math.round(producedCO2);
     }
 
     //Calculate the difference between the produced and the cleaned CO2 and see how the overall ppm changes
-    PPMChange(){
-        var ppmChange = (this.CO2Production() - this.cleanedCO2())/7500000000;
-        this.ppm = this.ppm + ppmChange;
+    PPMChange() {
+        var ppmChange = (this.CO2Production() - this.cleanedCO2()) / 7500000000;
+        this.ppm = Math.round((this.ppm + ppmChange + Number.EPSILON) * 10000) / 10000
+    }
+
+    updateCurrentData(inputPopulation, inputDeforestation) {
+        this.forestAreaChange(inputPopulation, inputDeforestation);
+        this.populationChange(inputPopulation);
+        this.PPMChange();
     }
 }
 
