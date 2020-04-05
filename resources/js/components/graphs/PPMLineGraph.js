@@ -1,5 +1,6 @@
 import React from 'react';
 import {Chart} from "react-google-charts";
+import Spinner from 'react-bootstrap/Spinner';
 
 class PPMLineGraph extends React.Component {
     constructor(props) {
@@ -33,7 +34,7 @@ class PPMLineGraph extends React.Component {
                     width={'100%'}
                     height={'500px'}
                     chartType="AreaChart"
-                    //loader={<h4>Loading graph<Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /></h4>}
+                    loader={<h3 className="text-center justify-content-center align-self-center">Loading graph<Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /></h3>}
                     data={this.props.data}
                     options={this.options()}
                     rootProps={{'data-testid': '4'}}

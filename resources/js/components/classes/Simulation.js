@@ -20,7 +20,7 @@ class Simulation {
         var readCsv = d3.csv(path, function (data) {
             var country = new Country(data.name, Number(data.area), Number(data.ppm), Number(data.population), Number(data.population_growth), Number(data.forests_percentage), Number(data.forests_growth));
             self.countries.push(country);
-        })
+        })  
         return readCsv;
     }
 

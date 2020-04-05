@@ -13,18 +13,19 @@ class MapData {
 
     changedCountries(year, inputPopulation, inputDeforestation) {
         let result = [];
-        for (let index = 2021; index <= year; index++) {
+
+        console.log("before loop " + this.countries[1].population);
+        for (let index = 2020; index <= year; index++) {
             if (index === year) {
                 this.countries.forEach(c => {
-                    result.push(c)
+                    result.push(c);
+                    
                 })
             }
-            setTimeout(function() {
-                this.updateCountry(inputPopulation, inputDeforestation)
-            }, 200);
+            this.updateCountry(inputPopulation, inputDeforestation);
+
 
         }
-
         return result;
 
     }

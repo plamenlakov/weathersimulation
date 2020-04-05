@@ -13,11 +13,28 @@ class PPMData {
 
     evaluatePPM(year, inputPopulation, inputDeforestation) {
         var result = [["Year", "PPM"],];
+        console.log(year);
         for (let index = 2020; index <= year; index++) {
             var year_result = [];
             year_result.push(index);
             year_result.push(this.sumPPM());
             result.push(year_result);
+            this.updateCountries(inputPopulation, inputDeforestation);
+        }
+        return result;
+    }
+
+    evaluatePPMPie(year, inputPopulation, inputDeforestation){
+        var result = [["Country", "PPM in " + year],];
+        for (let index = 2020; index <= year; index++) {
+            if(index === year){
+                this.countries.forEach(c => {
+                    if(c.ppm > 0){
+                        result.push([c.name, c.ppm]);
+                    }
+                    
+                })
+            }
             this.updateCountries(inputPopulation, inputDeforestation);
         }
         return result;

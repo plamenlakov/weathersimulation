@@ -74,22 +74,34 @@ class Country {
 
     getForestArea() {
         var result = (this.forests / 100) * this.area;
-        return Math.round(result);
+        return result;
     }
 
     //Calculate how much the forest has changed for this country and returns forest area in km2
     forestAreaChange(inputPopulation, inputDeforestation) {
         var forestsKm2;
-        var deforestationByPopulation_pct = (this.populationGrowth + inputPopulation) * 2.7
+        var deforestationByPopulation_pct = (this.populationGrowth + inputPopulation) * 2.7;
         if (deforestationByPopulation_pct >= 0) {
-            forestsKm2 = Math.round(this.getForestArea() + this.getForestArea() * ((this.forestsGrowth -
-                deforestationByPopulation_pct - inputDeforestation) / 100));
-            this.forests = Math.round((forestsKm2 / this.area) * 100);
-
+            forestsKm2 = this.getForestArea() + this.getForestArea() * ((this.forestsGrowth -
+                deforestationByPopulation_pct - inputDeforestation) / 100);
+            this.forests = Math.round(((forestsKm2 / this.area) * 100) * 1000) / 1000;
+            //this.getForestArea();
+            if(this.forests < 0){
+                this.forests = 0;
+            }
+            if(this.forests > 100){
+                this.forests = 100;
+            }
         } else {
-            forestsKm2 = Math.round(this.getForestArea() + this.getForestArea() * ((this.forestsGrowth - inputDeforestation) / 100));
-            this.forests = Math.round((forestsKm2 / this.area) * 100);
-
+            forestsKm2 = this.getForestArea() + this.getForestArea() * ((this.forestsGrowth - inputDeforestation) / 100);
+            this.forests = Math.round(((forestsKm2 / this.area) * 100) * 1000)/ 1000;
+            if(this.forests < 0){
+                this.forests = 0;
+            }
+            if(this.forests > 100){
+                this.forests = 100;
+            }
+            //this.getForestArea();
         }
 
     }
@@ -97,25 +109,26 @@ class Country {
     //Calculate how much CO2 emissions were cleaned by this country
     cleanedCO2() {
         var cleanedCO2Tonnes = ((this.getForestArea() * 65000) * 22) / 1000;
-        return Math.round(cleanedCO2Tonnes);
+        return cleanedCO2Tonnes;
     }
 
     //Calculate the population per Country
     populationChange(inputPopulation) {
-        var populationChanged = this.population + this.population * ((this.populationGrowth + inputPopulation) / 100);
+        var populationChanged = this.population + (this.population * ((this.populationGrowth + inputPopulation) / 100));
         this.population = Math.round(populationChanged);
     }
 
     //Calculate the produced CO2 emissions by the population per country
     CO2Production() {
         var producedCO2 = this.population * 26.25;
-        return Math.round(producedCO2);
+        return producedCO2;
     }
 
     //Calculate the difference between the produced and the cleaned CO2 and see how the overall ppm changes
     PPMChange() {
         var ppmChange = (this.CO2Production() - this.cleanedCO2()) / 7500000000;
-        this.ppm = Math.round((this.ppm + ppmChange + Number.EPSILON) * 10000) / 10000
+        this.ppm = Math.round((this.ppm + ppmChange) * 10000) / 10000;
+        
     }
 
     updateCurrentData(inputPopulation, inputDeforestation) {

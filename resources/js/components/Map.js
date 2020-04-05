@@ -58,7 +58,6 @@ class Map extends React.Component {
                     .on("click", function (d) {
                         document.getElementById("countryName").innerHTML = `<b>${d.properties.name_long}</b>`;
                         var countryNames = self.props.data.map(d => d['name']);
-                        var iCountry = 0;
                         var clickedCountryName = countryNames.find(c => c == d.properties.name_long);
                         var countryPopulation = NaN;
                         var countryForest = NaN;
@@ -105,7 +104,7 @@ class Map extends React.Component {
         }
         return (
             <div>
-                <div id="Map"></div>
+                <div id="Map"  className="border border-primary rounded img-thumbnail" style={{backgroundColor: "#7fcdff"}}></div>
             </div>
         );
     }
