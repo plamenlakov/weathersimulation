@@ -13,7 +13,7 @@ class PPMData {
 
     evaluatePPM(year, inputPopulation, inputDeforestation) {
         var result = [["Year", "PPM"],];
-        console.log(year);
+        //console.log(year);
         for (let index = 2020; index <= year; index++) {
             var year_result = [];
             year_result.push(index);
@@ -23,6 +23,45 @@ class PPMData {
         }
         return result;
     }
+
+    //Test
+    BarChartInitialData(){
+        var result = [];
+        var countryData = [];
+        this.countries.forEach(c => {
+            countryData.push({"country": c.name, "PPM": c.ppm});
+                       
+        });
+        result.push({2020: countryData});
+        return result;
+    }
+
+    BarChartAnimation(year, inputPopulation, inputDeforestation){
+        var result = [];
+        for (let currYear = 2020; currYear <= year; currYear++) {
+            var countryData = [];
+            this.countries.forEach(c => {
+                countryData.push({"country": c.name, "PPM": c.ppm});            
+            });
+            
+            result.push({[currYear]: countryData});
+
+            //console.log("this")
+            //console.log(result[currYear])
+            this.updateCountries(inputPopulation, inputDeforestation);
+        }
+        return result;
+    }
+
+    evaluatePPM2(year, inputPopulation, inputDeforestation) {
+        var result = [];
+        for (let index = 2020; index <= year; index++) {
+            result.push({"Year": index, "sumPPM": this.sumPPM()});
+            this.updateCountries(inputPopulation, inputDeforestation);
+        }
+        return result;
+    }
+    //END test
 
     evaluatePPMPie(year, inputPopulation, inputDeforestation){
         var result = [["Country", "PPM in " + year],];
@@ -39,6 +78,8 @@ class PPMData {
         }
         return result;
     }
+
+    
 
     sumPPM() {
         var result = 0;

@@ -14,19 +14,21 @@ import Button from "react-bootstrap/Button";
 import MapData from "../classes/MapData";
 import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
-
+import BarChart from './BarChart';
 class AllGraphs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             populationIncrease: 0.0,
             deforestation: 0.0,
-            yearToStop: 2021,
-            ppmData: [["Year", "PPM"], [2020, 0], [2021, 0], [2022, 0], [2023, 0], [2023, 0], [2024, 0], [2025, 0]],
+            yearToStop: 2020,
+            ppmData: [{"Year": 2020, "sumPPM": 0}, {"Year": 2021, "sumPPM": 0}, {"Year": 2022, "sumPPM": 0}],
             mapData: [],
             ppmPieData: [["Country", "PPM"], ["Start a simulation to see results", 100]],
             isFetching: true,
-            warning: ""
+            warning: "",
+            //barData: [{"country": "Germany", "PPM": 0.0292}, {"country": "France", "PPM": 0.0212}]
+            barData: [{2020 : [{"country": "Germany", "PPM": 0.0292}]}]
         }
         this.startSimulation = this.startSimulation.bind(this);
     }
@@ -34,10 +36,13 @@ class AllGraphs extends React.Component {
     componentWillMount() {
         var sim = new Simulation();
         var self = this;
-       
+        
         sim.loadCountries('http://localhost:8000/Csv/countries.csv')
             .then(function () {
                 //assign initial values
+                //self.updateBarData(sim.countries);
+                let initalBarChart = new PPMData(sim.countries);
+                self.updateBarData(initalBarChart.BarChartInitialData());
                 self.updateMapData(sim.countries);
             });
     }
@@ -53,7 +58,24 @@ class AllGraphs extends React.Component {
 
                 var dataMap = mapcalculation.changedCountries(self.state.yearToStop, self.state.populationIncrease, self.state.deforestation);
 
+                //self.updateBarData(dataMap);
                 self.updateMapData(dataMap);
+            });
+    }
+
+    startSimulationBarChart(){
+        var sim = new Simulation();
+        var self = this;
+
+        sim.loadCountries('http://localhost:8000/Csv/countries.csv')
+            .then(function () {
+
+                var ppmBarCalculation = new PPMData(sim.countries);
+
+                var dataBarChart = ppmBarCalculation.BarChartAnimation(self.state.yearToStop, self.state.populationIncrease, self.state.deforestation);
+
+                //self.updateBarData(dataMap);
+                self.updateBarData(dataBarChart);
             });
     }
 
@@ -81,7 +103,7 @@ class AllGraphs extends React.Component {
 
                 var ppmcalculation = new PPMData(sim.countries);
 
-                var dataPPM = ppmcalculation.evaluatePPM(self.state.yearToStop, self.state.populationIncrease, self.state.deforestation);
+                var dataPPM = ppmcalculation.evaluatePPM2(self.state.yearToStop, self.state.populationIncrease, self.state.deforestation);
 
                 self.updatePpmData(dataPPM);
             });
@@ -91,6 +113,7 @@ class AllGraphs extends React.Component {
         this.startSimulationLineGraph();
         this.startSimulationMap();
         this.startSimulationPieChart();
+        this.startSimulationBarChart();
     }
 
     //Update populationIncrease input
@@ -127,6 +150,12 @@ class AllGraphs extends React.Component {
     updatePpmData(data) {
         this.setState({
             ppmData: data
+        })
+    }
+
+    updateBarData(data) {
+        this.setState({
+            barData: data
         })
     }
     //update Piechart data
@@ -191,6 +220,12 @@ class AllGraphs extends React.Component {
             <Alert variant='primary' className='m-3'>
                 <Alert.Heading className='m-2'>Charts</Alert.Heading>
                 <Row className="m-1 justify-content-center">
+                    <Col md="12" className="mt-3">
+                        {this.state.isFetching ? <h1>Loading</h1> : <BarChart data={this.state.barData}/>}
+                    </Col>
+                    
+                </Row>
+                <Row className="m-1 justify-content-center">
                     <Col md="6" className="text-center mt-3">
                         <Piechart data={this.state.ppmPieData}/>
                     </Col>
@@ -198,7 +233,9 @@ class AllGraphs extends React.Component {
                         <PPMLineGraph data={this.state.ppmData} />
                     </Col>
                 </Row>
+                
             </Alert>
+                        
         </div>
         )
     }

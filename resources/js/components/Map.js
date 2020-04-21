@@ -39,12 +39,12 @@ class Map extends React.Component {
                 .selectAll('path') // To prevent stroke width from scaling
                 .attr('transform', d3.event.transform);
         }
-
-        d3.json('http://localhost:8000/custom.geo.json')
+        
+        d3.json('http://localhost:8000/Europe.geo.json')
             .then(topology => {
-                // console.log(topology);
+                //onsole.log(topology);
                 svg.selectAll(".country")
-                    .data(topojson.feature(topology, topology.objects.custom).features)
+                    .data(topology.features)
                     .enter()
                     .append("path")
                     .attr("class", ".country")
@@ -53,12 +53,21 @@ class Map extends React.Component {
                     .attr("stroke", "#333333")
                     .attr("stroke-width", "0.5")
                     .on("mouseover", function (d) {
-                        d3.select(this).attr("fill", "darkgrey");
+                        var countryNames = self.props.data.map(d => d['name']);
+                        var hoveredCountryName = countryNames.find(c => c == d.properties.name);
+                        for (let i = 0; i < self.props.data.length; i++) {
+                            if (self.props.data[i].name == hoveredCountryName) {
+                                d3.select(this)
+                                .attr("fill", "darkgrey")
+                                .style("cursor", "pointer");
+                            }
+                           
+                        }
                     })
                     .on("click", function (d) {
-                        document.getElementById("countryName").innerHTML = `<b>${d.properties.name_long}</b>`;
+                        document.getElementById("countryName").innerHTML = `<b>${d.properties.name}</b>`;
                         var countryNames = self.props.data.map(d => d['name']);
-                        var clickedCountryName = countryNames.find(c => c == d.properties.name_long);
+                        var clickedCountryName = countryNames.find(c => c == d.properties.name);
                         var countryPopulation = NaN;
                         var countryForest = NaN;
                         var countryArea = NaN;
@@ -87,7 +96,14 @@ class Map extends React.Component {
                         d3.select(this).attr("fill", "#cccccc")
 
                     })
+
+
+                    
+                    
             })
+
+            
+
 
     }
 
