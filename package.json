@@ -25,10 +25,12 @@
         "sass-loader": "^8.0.0"
     },
     "dependencies": {
+        "@amcharts/amcharts4": "^4.9.19",
         "d3": "^5.15.1",
         "react-bootstrap": "^1.0.0",
+        "react-google-charts": "^3.0.15",
+        "three": "^0.116.0",
         "topojson": "^3.0.2",
-        "topology": "^0.2.1",
-        "react-google-charts": "^3.0.15"
+        "topology": "^0.2.1"
     }
 }

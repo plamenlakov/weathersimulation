@@ -7,11 +7,11 @@ import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
 import Map from "../Map";
 import Simulation from '../classes/Simulation';
-import PPMData from '../classes/PPMData';
+//import PPMData from '../classes/PPMData';
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
-import MapData from "../classes/MapData";
+//import MapData from "../classes/MapData";
 import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
 import BarChart from './BarChart';
@@ -20,9 +20,9 @@ class AllGraphs extends React.Component {
         super(props);
         this.state = {
             populationIncrease: 0.0,
-            deforestation: 0.0,
+            deforestationIncrease: 0.0,
             yearToStop: 2020,
-            ppmData: [{"Year": 2020, "sumPPM": 0}, {"Year": 2021, "sumPPM": 0}, {"Year": 2022, "sumPPM": 0}],
+            lineGraphData: [{"Year": 2020, "sumPPM": 0}, {"Year": 2021, "sumPPM": 0}, {"Year": 2022, "sumPPM": 0}],
             mapData: [],
             ppmPieData: [["Country", "PPM"], ["Start a simulation to see results", 100]],
             isFetching: true,
@@ -33,87 +33,36 @@ class AllGraphs extends React.Component {
         this.startSimulation = this.startSimulation.bind(this);
     }
 
+    set simulation(v) {
+        this._simulation = v;
+    }
+
+    get simulation() {
+        return this._simulation;
+    }
+
     componentWillMount() {
-        var sim = new Simulation();
         var self = this;
+        this.simulation = new Simulation();
         
-        sim.loadCountries('http://localhost:8000/Csv/countries.csv')
-            .then(function () {
-                //assign initial values
-                //self.updateBarData(sim.countries);
-                let initalBarChart = new PPMData(sim.countries);
-                self.updateBarData(initalBarChart.BarChartInitialData());
-                self.updateMapData(sim.countries);
-            });
-    }
+        this.simulation.loadCountries('/Csv/countries.csv')
+            .then(function(){
+                self.updateMapData(self.simulation.initialCountries);
 
-    startSimulationMap(){
-        var sim = new Simulation();
-        var self = this;
-
-        sim.loadCountries('http://localhost:8000/Csv/countries.csv')
-            .then(function () {
-
-                var mapcalculation = new MapData(sim.countries);
-
-                var dataMap = mapcalculation.changedCountries(self.state.yearToStop, self.state.populationIncrease, self.state.deforestation);
-
-                //self.updateBarData(dataMap);
-                self.updateMapData(dataMap);
-            });
-    }
-
-    startSimulationBarChart(){
-        var sim = new Simulation();
-        var self = this;
-
-        sim.loadCountries('http://localhost:8000/Csv/countries.csv')
-            .then(function () {
-
-                var ppmBarCalculation = new PPMData(sim.countries);
-
-                var dataBarChart = ppmBarCalculation.BarChartAnimation(self.state.yearToStop, self.state.populationIncrease, self.state.deforestation);
-
-                //self.updateBarData(dataMap);
-                self.updateBarData(dataBarChart);
-            });
-    }
-
-    startSimulationPieChart() {
-        var sim = new Simulation();
-        var self = this;
-
-        sim.loadCountries('http://localhost:8000/Csv/countries.csv')
-            .then(function () {
-
-                var ppmPieCalculation = new PPMData(sim.countries);
-
-                var dataPPMPie = ppmPieCalculation.evaluatePPMPie(self.state.yearToStop, self.state.populationIncrease, self.state.deforestation);
-
-                self.updatePpmPieData(dataPPMPie);
-            });
-    }
-
-    startSimulationLineGraph() {
-        var sim = new Simulation();
-        var self = this;
-
-        sim.loadCountries('http://localhost:8000/Csv/countries.csv')
-            .then(function () {
-
-                var ppmcalculation = new PPMData(sim.countries);
-
-                var dataPPM = ppmcalculation.evaluatePPM2(self.state.yearToStop, self.state.populationIncrease, self.state.deforestation);
-
-                self.updatePpmData(dataPPM);
-            });
+                var barChartInitialData = self.simulation.getPPMByYearByCountry(self.state.yearToStop, self.state.populationIncrease, self.state.deforestationIncrease);
+                self.updateBarData(barChartInitialData);
+            })
+        
     }
 
     startSimulation(){
-        this.startSimulationLineGraph();
-        this.startSimulationMap();
-        this.startSimulationPieChart();
-        this.startSimulationBarChart();
+        var lineGraphData = this.simulation.getTotalPPMByYear(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease);
+        var barChartData = this.simulation.getPPMByYearByCountry(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease);
+        var mapData = this.simulation.getPPMMap(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease);
+       
+        this.updateLineGraphData(lineGraphData);
+        this.updateBarData(barChartData);
+        this.updateMapData(mapData);
     }
 
     //Update populationIncrease input
@@ -128,7 +77,7 @@ class AllGraphs extends React.Component {
     //Update deforestation input
     updateDeforestationInput(evt) {
         this.setState({
-            deforestation: +evt.target.value
+            deforestationIncrease: +evt.target.value
         })
     }
 
@@ -146,10 +95,10 @@ class AllGraphs extends React.Component {
         }
     }
 
-    //Update PpmData state
-    updatePpmData(data) {
+    //Update LineChart state
+    updateLineGraphData(data) {
         this.setState({
-            ppmData: data
+            lineGraphData: data
         })
     }
 
@@ -179,13 +128,13 @@ class AllGraphs extends React.Component {
         return (<div className="App">
             <Row className="m-3 text-center">
                 <Col md="3" className="border border-primary rounded p-3 mt-3">
-                    <InputGroup className="mb-3" value={this.state.deforestation} onChange={evt =>
+                    <InputGroup className="mb-3" value={this.state.deforestationIncrease} onChange={evt =>
                         this.updateDeforestationInput(evt)}>
                         <InputGroup.Prepend>
                             <InputGroup.Text id="deforestationInput">Deforestation %</InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl
-                            placeholder={this.state.deforestation} 
+                            placeholder={this.state.deforestationIncrease} 
                             aria-label="Default"
                             aria-describedby="inputGroup-sizing-default"
                         /></InputGroup>
@@ -230,7 +179,7 @@ class AllGraphs extends React.Component {
                         <Piechart data={this.state.ppmPieData}/>
                     </Col>
                     <Col md="6" className="text-center mt-3">
-                        <PPMLineGraph data={this.state.ppmData} />
+                        <PPMLineGraph data={this.state.lineGraphData} />
                     </Col>
                 </Row>
                 

@@ -9,6 +9,8 @@ class Country {
         this.forestsGrowth = forestsGrowth;
     }
 
+    
+
     //NAME
     set name(v) {
         this._name = v;
@@ -75,6 +77,11 @@ class Country {
     getForestArea() {
         var result = (this.forests / 100) * this.area;
         return result;
+    }
+
+    cloneObject() {
+        const { name, area, ppm, population, populationGrowth, forests, forestsGrowth } = this;
+        return new Country(name, area, ppm, population, populationGrowth, forests, forestsGrowth);
     }
 
     //Calculate how much the forest has changed for this country and returns forest area in km2

@@ -22,7 +22,9 @@ class BarChart extends React.Component {
         if (prevProps.data != this.props.data) {
 
             let self = this;
-            console.log("bar");
+            // this.setState({
+            //     chartData: this.getData(this.props.data.length - 1)
+            // }, () => { this.chart.data = this.state.chartData })
             let i = 0;
             function Animate() {
                 setTimeout(function () {
@@ -46,9 +48,9 @@ class BarChart extends React.Component {
     getData(year) {
 
         let chartdata = [];
-        var countryNames = [];
+        let countryNames = [];
         let countryPPMs = [];
-        // console.log(this.props.data)
+        
 
         this.state.currentYear = Object.keys(this.props.data[year]);
         let yearData = this.props.data[year];
@@ -62,7 +64,7 @@ class BarChart extends React.Component {
         for (let i = 0; i < countryNames.length || i < countryPPMs.length; i++) {
             chartdata.push({ "country": countryNames[i], "PPM": countryPPMs[i] });
         }
-
+        
         return chartdata;
 
     }
