@@ -11,38 +11,13 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 class Map extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+      data: null
+    }
+    
   }
 
-  // componentDidMount() {
-
-
   componentDidMount() {
-
-    const projection = d3.geoMercator()
-      .center([13, 52]) //longitude, latitude
-      .translate([1500 * SIZE_AMPLIFIER / 2, 1500 * SIZE_AMPLIFIER / 2]) // center the image
-      .scale([1500 * SIZE_AMPLIFIER / 1.5]);
-    const path = d3.geoPath().projection(projection);
-    const svg = d3.select("#Map").append("svg")
-      .attr("width", '100%')
-      .attr("height", '100%')
-      .attr("viewBox", "0 0 " + 1500 * SIZE_AMPLIFIER + " " + 1500 * SIZE_AMPLIFIER)
-      .attr("preserveAspectRatio", "xMinYMin");
-
-    const zoom = d3.zoom()
-      .scaleExtent([1, 8])
-      .on('zoom', zoomed);
-
-    const g = svg.append('svg');
-
-    svg.call(zoom);
-
-    function zoomed() {
-      svg
-        .selectAll('path') // To prevent stroke width from scaling
-        .attr('transform', d3.event.transform);
-    }
 
     const SIZE_AMPLIFIER = 20;
     var container = document.getElementById("main_map");
@@ -179,6 +154,8 @@ class Map extends React.Component {
 
       scene.add(mesh);
 
+      var self = this;
+      
       const width1 = 1500 * SIZE_AMPLIFIER,
         height1 = 1500 * SIZE_AMPLIFIER,
         projection = d3.geoMercator()
@@ -190,8 +167,7 @@ class Map extends React.Component {
         .attr("width", '100%')
         .attr("height", '100%')
         .attr("viewBox", "0 0 " + width1 + " " + height1)
-        .attr("preserveAspectRatio", "xMinYMin")
-    
+        .attr("preserveAspectRatio", "xMinYMin");
 
       const zoom = d3.zoom()
         .scaleExtent([1, 8])
@@ -207,14 +183,14 @@ class Map extends React.Component {
           .attr('transform', d3.event.transform);
       }
 
-
-
       d3.json('/Europe.geo.json')
-        .then(function (data) {
+        .then(topology => {
 
+          var points = [];
+          
           //console.log(topology);
           svg.selectAll(".country")
-            .data(data.features)
+            .data(topology.features)
             .enter()
             .append("path")
             .attr("class", ".country")
@@ -223,16 +199,16 @@ class Map extends React.Component {
             .attr("stroke", "#000000")
             .attr("stroke-width", "3")
             .on("mouseover", function (d) {
-              var countryNames = self.props.data.map(d => d['name']);
-              var hoveredCountryName = countryNames.find(c => c == d.properties.name);
-              for (let i = 0; i < self.props.data.length; i++) {
-                if (self.props.data[i].name == hoveredCountryName) {
-                  d3.select(this)
-                    .attr("fill", "darkgrey")
-                    .style("cursor", "pointer");
-                }
+              //var countryNames = self.props.data.map(d => d['name']);
+              //var hoveredCountryName = countryNames.find(c => c == d.properties.name);
+              // for (let i = 0; i < self.props.data.length; i++) {
+              //   if (self.props.data[i].name == hoveredCountryName) {
+              //     d3.select(this)
+              //       .attr("fill", "darkgrey")
+              //       .style("cursor", "pointer");
+              //   }
     
-              }
+              // }
             })
             .on("click", function (d) {
                document.getElementById("countryName").innerHTML = `<b>${d.properties.name}</b>`;
@@ -265,7 +241,7 @@ class Map extends React.Component {
             .on("mouseout", function (d) {
               d3.select(this).attr("fill", "#cccccc")
     
-            })
+            });
 
           var svgMarkup = svg.node().outerHTML;
           var loader = new SVGLoader();
