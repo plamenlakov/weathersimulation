@@ -11,7 +11,10 @@ class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: null
+      terrainData: null,
+      countries: null,
+      bordersData: null,
+      dataLoaded: false
     }
 
   }
@@ -146,11 +149,11 @@ class Map extends React.Component {
       const width1 = WIDTH; //2500 * SIZE_AMPLIFIER,
       const projection = d3.geoTransverseMercator().rotate([-10, 0, 0]) //center meridian
 
-          .center([10, 52]) //longitude, latitude
-          .scale(width1 * 1.5 - 505); //scale
+        .center([10, 52]) //longitude, latitude
+        .scale(width1 * 1.5 - 505); //scale
       const path = d3.geoPath().projection(projection);
       const svg = d3.select("#Map").append("svg")
-      
+
       d3.json('/Europe1.geo.json')
         .then(topology => {
 
@@ -165,13 +168,13 @@ class Map extends React.Component {
           var loader = new SVGLoader();
           var svgData = loader.parse(svgMarkup);
 
-         
+
           svgData.paths.forEach((path, i) => {
             var shapes = path.toShapes(true);
 
 
             shapes.forEach((shape, j) => {
-             
+
               var geomSVG = new THREE.ExtrudeBufferGeometry(shape, {
                 depth: 10,
                 bevelEnabled: false
@@ -184,16 +187,16 @@ class Map extends React.Component {
                 opacity: 0,
               });
 
-              var meshSVG = new THREE.Mesh(geomSVG, materialSVG);              
-              meshSVG.callback = function(){console.log("clicked" + j)}
+              var meshSVG = new THREE.Mesh(geomSVG, materialSVG);
+              //meshSVG.callback = function(){console.log("clicked" + j)}
               svgGroup.add(meshSVG);
-              
+
 
               //create borders
               var borderMaterial = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 3 })
               var borderGeometry = new THREE.EdgesGeometry(geomSVG, 15);
               var bordermesh = new THREE.LineSegments(borderGeometry, borderMaterial);
-         
+
               svgGroup.add(bordermesh);
 
             })
@@ -225,16 +228,16 @@ class Map extends React.Component {
     var raycaster = new THREE.Raycaster();
     var mouse = new THREE.Vector2();
 
-    function onClickCountry(event){
+    function onClickCountry(event) {
       event.preventDefault();
-      
-      mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-      mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+
+      mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+      mouse.y = - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
       raycaster.setFromCamera(mouse, camera);
-      
+
       var intersects = raycaster.intersectObject(svgGroup.children);
 
-      if(intersects.length > 0){
+      if (intersects.length > 0) {
         intersects[0].object.callback();
       }
     }
@@ -244,13 +247,85 @@ class Map extends React.Component {
 
   }
 
+  getCountryData() {
+    this.setState({
+      countries: this.props.data
+    })
+
+  }
+
+  getTerrainData(fileBin, fileJSON) {
+    var xhr = new XMLHttpRequest();
+    var self = this;
+
+    xhr.responseType = 'arraybuffer';
+    xhr.open('GET', fileBin, true);
+    xhr.onload = function (evt) {
+      if (xhr.response) {
+        var terrainData = new Uint16Array(xhr.response);
+
+        d3.json(fileJSON)
+          .then(topology => {
+            self.setState(function (props) {
+              countries: props.data;
+              bordersData: topology.features;
+              terrainData: terrainData;
+              dataLoaded: true;
+            })
+
+          })
+        //init();
+      }
+
+    };
+    xhr.send(null);
+
+  }
+
+  getBordersData(file) {
+
+  }
+
+  componentWillMount() {
+    this.getTerrainData('stats.bin', 'Europe1.geo.json');
+  }
 
   render() {
+    if (this.state.dataLoaded === false) {
+      console.log("not loaded yet");
+      return;
+
+    }
+    else {
+      console.log(this.state.terrainData);
+      console.log(this.state.countries);
+      console.log(this.state.bordersData);
+    }
+
+    // svgData.paths.forEach((path, i) => {
+    //   var shapes = path.toShapes(true);
+
+
+    //   shapes.forEach((shape, j) => {
+
+    //     var geomSVG = new THREE.ExtrudeBufferGeometry(shape, {
+    //       depth: 10,
+    //       bevelEnabled: false
+    //     })
+
+    //     //needed for click event!
+    //     var materialSVG = new THREE.MeshLambertMaterial({
+    //       color: 0xFFFFFF,
+    //       transparent: true,
+    //       opacity: 0,
+    //     });
+
+    //     var meshSVG = new THREE.Mesh(geomSVG, materialSVG);
 
     return (
 
       <div>
-        <div id="Map" style={{ backgroundColor: "#7fcdff", display: "none" }}></div>
+        <div id="Map" style={{ display: "none" }}></div>
         <div className="" id="main_map" style={{ width: 100 + "%", height: 100 + "%" }}></div>
       </div>
     );
