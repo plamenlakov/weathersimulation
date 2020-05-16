@@ -1,5 +1,8 @@
 class Country {
-    constructor(name, area, ppm, population, populationGrowth, forests, forestsGrowth) {
+    constructor(name, area, ppm, population, populationGrowth, forests, forestsGrowth,
+                electricity_pct, electricityGrowth, transport_pct, transportGrowth, building_pct,
+                buildingGrowth, manufacturing_pct, manufacturingGrowth, industry_pct, industryGrowth,
+                agriculture_pct, agricultureGrowth) {
         this.name = name;
         this.area = area;
         this.ppm = ppm;
@@ -7,6 +10,18 @@ class Country {
         this.populationGrowth = populationGrowth;
         this.forests = forests;
         this.forestsGrowth = forestsGrowth;
+        this.electricity = (electricity_pct/100) * this.CO2Production();
+        this.electricityGrowth = electricityGrowth;
+        this.transportation = (transport_pct/100) * this.CO2Production();
+        this.transportationGrowth = transportGrowth;
+        this.building_value = (building_pct/100) * this.CO2Production();
+        this.buildingGrowth = buildingGrowth;
+        this.manufacturing = (manufacturing_pct/100) * this.CO2Production();
+        this.manufacturingGrowth = manufacturingGrowth;
+        this.industry = (industry_pct/100) * this.CO2Production();
+        this.industryGrowth = industryGrowth;
+        this.agriculture = (agriculture_pct/100) * this.CO2Production();
+        this.agricultureGrowth = agricultureGrowth;
     }
 
     
@@ -72,6 +87,114 @@ class Country {
 
     get forestsGrowth() {
         return this._forestsGrowth;
+    }
+
+    //ELECTRICITY
+    set electricity(v) {
+        this._electricity = v;
+    }
+
+    get electricity() {
+        return this._electricity;
+    }
+
+    //ELECTRICITY_GROWTH
+    set electricityGrowth(v) {
+        this._electricityGrowth = v;
+    }
+
+    get electricityGrowth() {
+        return this._electricityGrowth;
+    }
+
+    //TRANSPORTATION
+    set transportation(v) {
+        this._transportation = v;
+    }
+
+    get transportation() {
+        return this._transportation;
+    }
+
+    //TRANSPORTATION_GROWTH
+    set transportationGrowth(v) {
+        this._transportationGrowth = v;
+    }
+
+    get transportationGrowth() {
+        return this._transportationGrowth;
+    }
+
+    //BUILDING
+    set building_value(v) {
+        this._building = v;
+    }
+
+    get building_value() {
+        return this._building;
+    }
+
+    //BUILDING_GROWTH
+    set buildingGrowth(v) {
+        this._buildingGrowth = v;
+    }
+
+    get buildingGrowth() {
+        return this._buildingGrowth;
+    }
+
+    //MANUFACTURING
+    set manufacturing(v) {
+        this._manufactoring = v;
+    }
+
+    get manufacturing() {
+        return this._manufactoring;
+    }
+
+    //MANUFACTURING_GROWTH
+    set manufacturingGrowth(v) {
+        this._manufactoringGrowth = v;
+    }
+
+    get manufacturingGrowth() {
+        return this._manufactoringGrowth;
+    }
+
+    //INDUSTRY
+    set industry(v) {
+        this._industry = v;
+    }
+
+    get industry() {
+        return this._industry;
+    }
+
+    //INDUSTRY_GROWTH
+    set industryGrowth(v) {
+        this._industryGrowth = v;
+    }
+
+    get industryGrowth() {
+        return this._industryGrowth;
+    }
+
+    //AGRICULTURE
+    set agriculture(v) {
+        this._agriculture = v;
+    }
+
+    get agriculture() {
+        return this._agriculture;
+    }
+
+    //AGRICULTURE_GROWTH
+    set agricultureGrowth(v) {
+        this._agricultureGrowth = v;
+    }
+
+    get agricultureGrowth() {
+        return this._agricultureGrowth;
     }
 
     getForestArea() {
