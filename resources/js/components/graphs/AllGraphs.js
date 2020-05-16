@@ -15,6 +15,7 @@ import Button from "react-bootstrap/Button";
 import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
 import BarChart from './BarChart';
+
 class AllGraphs extends React.Component {
     constructor(props) {
         super(props);
@@ -138,6 +139,7 @@ class AllGraphs extends React.Component {
                             aria-label="Default"
                             aria-describedby="inputGroup-sizing-default"
                         /></InputGroup>
+                        
                     <InputGroup className="mb-3" value={this.state.populationIncrease} onChange={evt =>
                         this.updatePopulationInput(evt)}>
                         <InputGroup.Prepend>
