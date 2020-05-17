@@ -283,7 +283,7 @@ class AllGraphs extends React.Component {
                 </Row>
                 <Row className="m-1 justify-content-center">
                     <Col md="6" className="text-center mt-3">
-                        <Piechart data={this.state.ppmPieData}/>
+                        {/* <Piechart data={this.state.ppmPieData}/> */}
                     </Col>
                     <Col md="6" className="text-center mt-3">
                         <PPMLineGraph data={this.state.lineGraphData} />

@@ -8,6 +8,7 @@ import Spinner from 'react-bootstrap/Spinner';
 
 class Piechart extends React.Component {
     constructor(props) {
+        console.log("loaded")
         super(props);
         this.state = {}
     }

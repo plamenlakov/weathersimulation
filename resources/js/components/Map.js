@@ -11,7 +11,8 @@ import Slider from '@material-ui/core/Slider';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Typography from '@material-ui/core/Typography';
-
+import Button from 'react-bootstrap/Button';
+import PieChart from './graphs/Piechart';
 
 class Map extends React.Component {
   constructor(props) {
@@ -274,6 +275,28 @@ class Map extends React.Component {
     this.loadData('stats.bin', 'Europe1.geo.json');
   }
 
+  modalContent() {
+    document.getElementById("countryName").innerHTML = `<b>${firstCountry.name}</b>`;
+
+  }
+
+  callModal() {
+    var firstCountry = this.state.countries[0];
+
+    document.getElementById("modal-body").innerHTML =
+      `      <div>
+      <h5>Population: ${firstCountry.population}</h5>
+      <h5>Electricity: ${firstCountry.electricity} CO2</h5>
+      <h5>Area: ${firstCountry.area} km2</h5>
+      <h5>PPM: ${firstCountry.ppm}</h5>
+      ${<PieChart data={this.state.countries}></PieChart>}
+    </div>`
+
+
+    document.getElementById("modalButton").click();
+
+  }
+
   render() {
 
     if (this.state.dataLoaded) {
@@ -291,7 +314,7 @@ class Map extends React.Component {
           {this.state.bordersLoaded ?
             <div>
               <Row className="m-1 text-left">
-                <Col md="2">
+                <Col md="3">
                   <Form.Check
                     type="switch"
                     id="borders_switch"
@@ -300,7 +323,7 @@ class Map extends React.Component {
                     onChange={this.showBordersHandler.bind(this)}
                   />
                 </Col>
-                <Col md="2">
+                <Col md="1">
 
                 </Col>
                 <Col md="8">
@@ -312,6 +335,7 @@ class Map extends React.Component {
                   />
                 </Col>
               </Row>
+              <Button variant="info" onClick={this.callModal.bind(this)}>Info</Button>
             </div> :
             <h3 className="text-center justify-content-center align-self-center">Loading map<br />
               <Spinner animation="grow"></Spinner>
