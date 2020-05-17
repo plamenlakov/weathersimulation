@@ -16,13 +16,19 @@ class Simulation {
         this.initialCountries = [];
         var self = this;
         var readCSV = d3.csv(path, function (data) {
-            var country = new Country(data.name, Number(data.area), Number(data.ppm), Number(data.population), Number(data.population_growth), Number(data.forests_percentage), Number(data.forests_growth));
+            var country = new Country(data.name, Number(data.area), Number(data.ppm), Number(data.population),
+                Number(data.population_change), Number(data.forestry_percentage), Number(data.forestry_change),
+                Number(data.electricity_value), Number(data.electricity_change), Number(data.transportation_value), Number(data.transportation_change),
+                Number(data.building_value), Number(data.building_change), Number(data.manufacturing_value), Number(data.manufacturing_change),
+                Number(data.industry_value), Number(data.industry_change), Number(data.agriculture_value), Number(data.agriculture_change));
             self.initialCountries.push(country);
         });
+        console.log(this.initialCountries)
         return readCSV;
     }
 
-    getPPMByYearByCountry(year, in1, in2) {
+    getPPMByYearByCountry(year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                          inputIndustry, inputAgriculture) {
         let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
         
         var result = [];
@@ -33,14 +39,15 @@ class Simulation {
             })
             result.push({ [index]: yearData })
             if (index !== year) {
-                this.updateCountries(copyArray, in1, in2)
+                this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                    inputIndustry, inputAgriculture)
             }
         }
-        
         return result;
     }
     
-    getPPMMap(year, inputPopulation, inputDeforestation) {
+    getPPMMap(year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+              inputIndustry, inputAgriculture) {
         let result = [];
         let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
 
@@ -51,7 +58,8 @@ class Simulation {
                     result.push(c);                   
                 })
             }else{
-                this.updateCountries(copyArray, inputPopulation, inputDeforestation);
+                this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                    inputIndustry, inputAgriculture);
             }
 
 
@@ -61,7 +69,8 @@ class Simulation {
     }
 
 
-    getTotalPPMByYear(year, in1, in2){
+    getTotalPPMByYear(year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                      inputIndustry, inputAgriculture){
         var result = [];
         let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
 
@@ -69,7 +78,8 @@ class Simulation {
 
             result.push({"Year": index, "sumPPM": this.sumPPM(copyArray)})
             if(index !== year){
-                this.updateCountries(copyArray, in1, in2);
+                this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                    inputIndustry, inputAgriculture);
 
             }
         }
@@ -85,9 +95,11 @@ class Simulation {
         return result;
     }
 
-    updateCountries(copyArray, in1, in2) {
+    updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                    inputIndustry, inputAgriculture) {
         copyArray.forEach(c => {
-            c.updateCurrentData(in1, in2);
+            c.updateCurrentData(inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                inputIndustry, inputAgriculture);
         })
     }
 

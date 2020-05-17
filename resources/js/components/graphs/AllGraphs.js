@@ -21,6 +21,12 @@ class AllGraphs extends React.Component {
         this.state = {
             populationIncrease: 0.0,
             deforestationIncrease: 0.0,
+            electricityIncrease: 0.0,
+            transportationIncrease: 0.0,
+            buildingIncrease: 0.0,
+            manufacturingIncrease: 0.0,
+            industryIncrease: 0.0,
+            agricultureIncrease: 0.0,
             yearToStop: 2020,
             lineGraphData: [{"Year": 2020, "sumPPM": 0}, {"Year": 2021, "sumPPM": 0}, {"Year": 2022, "sumPPM": 0}],
             mapData: [],
@@ -49,16 +55,24 @@ class AllGraphs extends React.Component {
             .then(function(){
                 self.updateMapData(self.simulation.initialCountries);
 
-                var barChartInitialData = self.simulation.getPPMByYearByCountry(self.state.yearToStop, self.state.populationIncrease, self.state.deforestationIncrease);
-                self.updateBarData(barChartInitialData);
+                // var barChartInitialData = self.simulation.getPPMByYearByCountry(self.state.yearToStop, self.state.populationIncrease, self.state.deforestationIncrease, self.state.electricityIncrease,
+                //                                                                 self.state.transportationIncrease, self.state.buildingIncrease, self.state.manufacturingIncrease, self.state.industryIncrease,
+                //                                                                 self.state.agricultureIncrease);
+                //self.updateBarData(barChartInitialData);
             })
         
     }
 
     startSimulation(){
-        var lineGraphData = this.simulation.getTotalPPMByYear(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease);
-        var barChartData = this.simulation.getPPMByYearByCountry(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease);
-        var mapData = this.simulation.getPPMMap(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease);
+        var lineGraphData = this.simulation.getTotalPPMByYear(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
+                                                                this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
+                                                                this.state.agricultureIncrease);
+        var barChartData = this.simulation.getPPMByYearByCountry(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
+                                                                this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
+                                                                this.state.agricultureIncrease);
+        var mapData = this.simulation.getPPMMap(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
+                                                this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
+                                                this.state.agricultureIncrease);
        
         this.updateLineGraphData(lineGraphData);
         this.updateBarData(barChartData);
@@ -80,6 +94,37 @@ class AllGraphs extends React.Component {
             deforestationIncrease: +evt.target.value
         })
     }
+    updateElectricityInput(evt) {
+        this.setState({
+            electricityIncrease: +evt.target.value
+        })
+    }
+    updateTransportationInput(evt) {
+        this.setState({
+            transportationIncrease: +evt.target.value
+        })
+    }
+    updateBuildingInput(evt) {
+        this.setState({
+            buildingIncrease: +evt.target.value
+        })
+    }
+    updateManufacturingInput(evt) {
+        this.setState({
+            manufacturingIncrease: +evt.target.value
+        })
+    }
+    updateIndustryInput(evt) {
+        this.setState({
+            industryIncrease: +evt.target.value
+        })
+    }
+    updateAgricultureInput(evt) {
+        this.setState({
+            agricultureIncrease: +evt.target.value
+        })
+    }
+
 
     //Update year input
     updateYearInput(evt) {
@@ -145,6 +190,66 @@ class AllGraphs extends React.Component {
                         </InputGroup.Prepend>
                         <FormControl
                             placeholder={this.state.populationIncrease}
+                            aria-label="Default"
+                            aria-describedby="inputGroup-sizing-default"
+                        /></InputGroup>
+                    <InputGroup className="mb-3" value={this.state.electricityIncrease} onChange={evt =>
+                        this.updateElectricityInput(evt)}>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text id="electricityInput">Electricity growth %</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                            placeholder={this.state.electricityIncrease}
+                            aria-label="Default"
+                            aria-describedby="inputGroup-sizing-default"
+                        /></InputGroup>
+                    <InputGroup className="mb-3" value={this.state.transportationIncrease} onChange={evt =>
+                        this.updateTransportationInput(evt)}>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text id="transportationInput">Transportation growth %</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                            placeholder={this.state.transportationIncrease}
+                            aria-label="Default"
+                            aria-describedby="inputGroup-sizing-default"
+                        /></InputGroup>
+                    <InputGroup className="mb-3" value={this.state.buildingIncrease} onChange={evt =>
+                        this.updateBuildingInput(evt)}>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text id="buildingInput">Building growth %</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                            placeholder={this.state.buildingIncrease}
+                            aria-label="Default"
+                            aria-describedby="inputGroup-sizing-default"
+                        /></InputGroup>
+                    <InputGroup className="mb-3" value={this.state.manufacturingIncrease} onChange={evt =>
+                        this.updateManufacturingInput(evt)}>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text id="manufacturingInput">Manufacturing growth %</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                            placeholder={this.state.manufacturingIncrease}
+                            aria-label="Default"
+                            aria-describedby="inputGroup-sizing-default"
+                        /></InputGroup>
+                    <InputGroup className="mb-3" value={this.state.industryIncrease} onChange={evt =>
+                        this.updateIndustryInput(evt)}>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text id="industryInput">Industry growth %</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                            placeholder={this.state.industryIncrease}
+                            aria-label="Default"
+                            aria-describedby="inputGroup-sizing-default"
+                        /></InputGroup>
+                    <InputGroup className="mb-3" value={this.state.agricultureIncrease} onChange={evt =>
+                        this.updateAgricultureInput(evt)}>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text id="agricultureInput">Agriculture growth %</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                            placeholder={this.state.agricultureIncrease}
                             aria-label="Default"
                             aria-describedby="inputGroup-sizing-default"
                         /></InputGroup>
