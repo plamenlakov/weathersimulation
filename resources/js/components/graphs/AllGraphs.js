@@ -55,10 +55,10 @@ class AllGraphs extends React.Component {
             .then(function(){
                 self.updateMapData(self.simulation.initialCountries);
 
-                // var barChartInitialData = self.simulation.getPPMByYearByCountry(self.state.yearToStop, self.state.populationIncrease, self.state.deforestationIncrease, self.state.electricityIncrease,
-                //                                                                 self.state.transportationIncrease, self.state.buildingIncrease, self.state.manufacturingIncrease, self.state.industryIncrease,
-                //                                                                 self.state.agricultureIncrease);
-                //self.updateBarData(barChartInitialData);
+                var barChartInitialData = self.simulation.getPPMByYearByCountry(self.state.yearToStop, self.state.populationIncrease, self.state.deforestationIncrease, self.state.electricityIncrease,
+                                                                                self.state.transportationIncrease, self.state.buildingIncrease, self.state.manufacturingIncrease, self.state.industryIncrease,
+                                                                                self.state.agricultureIncrease);
+                self.updateBarData(barChartInitialData);
             })
         
     }

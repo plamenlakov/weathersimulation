@@ -73,9 +73,10 @@ class Simulation {
                       inputIndustry, inputAgriculture){
         var result = [];
         let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
+        let sumTemperature = 0;
 
         for(let index = 2020; index <= year; index++){
-
+            sumTemperature += this.getTemperatureIncrease(copyArray);
             result.push({"Year": index, "sumPPM": this.sumPPM(copyArray)})
             if(index !== year){
                 this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
@@ -83,15 +84,27 @@ class Simulation {
 
             }
         }
-
+        console.log(sumTemperature)
         return result;
+    }
+
+    getTemperatureIncrease(copyArray){
+        var temperatureIncrease = 0;
+
+        copyArray.forEach(c => {
+            temperatureIncrease += c.ppm;
+        });
+        
+        return temperatureIncrease * 0.01;
     }
 
     sumPPM(copyArray) {
         var result = 0;
+
         copyArray.forEach(c => {
             result += c.ppm;
         });
+
         return result;
     }
 
