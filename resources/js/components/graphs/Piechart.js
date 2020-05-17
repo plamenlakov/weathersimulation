@@ -49,7 +49,7 @@ class Piechart extends React.Component {
             <div>
                 <Chart
                     width={'100%'}
-                    height={'500px'}
+                    height={'100%'}
                     chartType="PieChart"
                     loader={<h4>Loading graph<Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /></h4>}
                     data={this.formatedData()}
