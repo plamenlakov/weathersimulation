@@ -13,6 +13,7 @@ import Col from 'react-bootstrap/Col';
 import Typography from '@material-ui/core/Typography';
 import Button from 'react-bootstrap/Button';
 import PieChart from './graphs/Piechart';
+import Modal from './ModalCountry'
 
 class Map extends React.Component {
   constructor(props) {
@@ -276,26 +277,25 @@ class Map extends React.Component {
   }
 
   modalContent() {
+    var firstCountry = this.state.countries[0];
     document.getElementById("countryName").innerHTML = `<b>${firstCountry.name}</b>`;
+    var modalBody =
+      `<h5>Population: ${firstCountry.population}</h5>
+        <h5>Electricity: ${firstCountry.electricity} CO2</h5>
+        <h5>Area: ${firstCountry.area} km2</h5>
+        <h5>PPM: ${firstCountry.ppm}</h5>
+        <PieChart data={this.state.countries} />`
 
+    return modalBody;
   }
 
   callModal() {
-    var firstCountry = this.state.countries[0];
 
-    document.getElementById("modal-body").innerHTML =
-      `      <div>
-      <h5>Population: ${firstCountry.population}</h5>
-      <h5>Electricity: ${firstCountry.electricity} CO2</h5>
-      <h5>Area: ${firstCountry.area} km2</h5>
-      <h5>PPM: ${firstCountry.ppm}</h5>
-      ${<PieChart data={this.state.countries}></PieChart>}
-    </div>`
-
-
+    document.getElementById("modal-body").append(this.modalContent());
     document.getElementById("modalButton").click();
 
   }
+
 
   render() {
 
@@ -335,7 +335,8 @@ class Map extends React.Component {
                   />
                 </Col>
               </Row>
-              <Button variant="info" onClick={this.callModal.bind(this)}>Info</Button>
+              <Modal countries={this.state.countries}/>
+
             </div> :
             <h3 className="text-center justify-content-center align-self-center">Loading map<br />
               <Spinner animation="grow"></Spinner>

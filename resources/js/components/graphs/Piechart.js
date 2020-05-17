@@ -8,7 +8,6 @@ import Spinner from 'react-bootstrap/Spinner';
 
 class Piechart extends React.Component {
     constructor(props) {
-        console.log("loaded")
         super(props);
         this.state = {}
     }
@@ -16,7 +15,7 @@ class Piechart extends React.Component {
     options() {
         return (
             {
-                title: `${this.props.data[0]}`,
+                title: `${this.props.countries[0].name}`,
                 backgroundColor: '#fff0ff',
                 pieHole: 0.4,
                 //sliceVisibilityThreshold: 0.02,
@@ -31,6 +30,19 @@ class Piechart extends React.Component {
         )
     }
 
+    formatedData(){
+        var pieData = [];
+
+        var firstCountry = this.props.countries[0];
+        pieData.push(["SectorName", "Sector"]);
+        pieData.push(["Electricity", firstCountry.electricity])
+        pieData.push(["Transportation", firstCountry.transportation])
+        pieData.push(["Industry", firstCountry.industry]);
+        
+        return pieData;
+    }
+
+
 
     render() {
         return (
@@ -40,7 +52,7 @@ class Piechart extends React.Component {
                     height={'500px'}
                     chartType="PieChart"
                     loader={<h4>Loading graph<Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /></h4>}
-                    data={this.props.data}
+                    data={this.formatedData()}
                     options={this.options()}
                     rootProps={{ 'data-testid': '3' }} />
             </div>
