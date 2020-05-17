@@ -22,23 +22,23 @@ class BarChart extends React.Component {
         if (prevProps.data != this.props.data) {
 
             let self = this;
-            // this.setState({
-            //     chartData: this.getData(this.props.data.length - 1)
-            // }, () => { this.chart.data = this.state.chartData })
-            let i = 0;
-            function Animate() {
-                setTimeout(function () {
-                    self.setState({
-                        chartData: self.getData(i)
-                    }, () => { self.chart.clearCache(); self.chart.data = self.state.chartData; });
+            this.setState({
+                chartData: this.getData(this.props.data.length - 1)
+            }, () => { this.chart.data = this.state.chartData })
+            // let i = 0;
+            // function Animate() {
+            //     setTimeout(function () {
+            //         self.setState({
+            //             chartData: self.getData(i)
+            //         }, () => { self.chart.clearCache(); self.chart.data = self.state.chartData; });
                     
-                    i++;
-                    if (i < self.props.data.length) {
-                        Animate();
-                    }
-                }, 2000)
-            }
-            Animate();
+            //         i++;
+            //         if (i < self.props.data.length) {
+            //             Animate();
+            //         }
+            //     }, 2000)
+            // }
+            // Animate();
 
         }
 

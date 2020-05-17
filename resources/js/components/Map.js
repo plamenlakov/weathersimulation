@@ -30,7 +30,8 @@ class Map extends React.Component {
 
       dataLoaded: false,
       bordersLoaded: false,
-      showBorders: true
+      showBorders: true,
+      mapLoaded: false
     }
 
   }
@@ -133,129 +134,131 @@ class Map extends React.Component {
     svg.remove();
 
     this.state.bordersLoaded = true;
-
+    this.state.mapLoaded = true;
   }
 
 
   createTerrain(dataBin, dataJSON, container) {
 
-    var self = this;
-    const SIZE_AMPLIFIER = 20;
-    const WIDTH = 2500 * SIZE_AMPLIFIER;
-    var renderer, camera;
+    if (!this.state.mapLoaded) {
+      var self = this;
+      const SIZE_AMPLIFIER = 20;
+      const WIDTH = 2500 * SIZE_AMPLIFIER;
+      var renderer, camera;
 
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000000);
-    camera.position.set(9191, 15000, 21000);
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000000);
+      camera.position.set(9191, 15000, 21000);
 
-    var containerWidth = container.getBoundingClientRect().right - container.getBoundingClientRect().left;
+      var containerWidth = container.getBoundingClientRect().right - container.getBoundingClientRect().left;
 
-    // initialize directional light (sun)
-    var sun = new THREE.DirectionalLight(0xFFFFFF, 1.0);
-    sun.position.set(300, 400, 300);
-    sun.distance = 1000;
-    this.state.scene.add(sun);
+      // initialize directional light (sun)
+      var sun = new THREE.DirectionalLight(0xFFFFFF, 1.0);
+      sun.position.set(300, 400, 300);
+      sun.distance = 1000;
+      this.state.scene.add(sun);
 
-    var frame = new THREE.SpotLightHelper(sun);
-    this.state.scene.add(frame);
+      var frame = new THREE.SpotLightHelper(sun);
+      this.state.scene.add(frame);
 
-    // initialize renderer
-    renderer = new THREE.WebGLRenderer();
-    renderer.setClearColor(0x006994);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(containerWidth, containerWidth / 2 + 150);
-    container.append(renderer.domElement);
+      // initialize renderer
+      renderer = new THREE.WebGLRenderer();
+      renderer.setClearColor(0x006994);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(containerWidth, containerWidth / 2 + 150);
+      container.append(renderer.domElement);
 
-    //initialize controls
-    var controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 1;
-    controls.rotateSpeed = .8;
-    //controls.maxPolarAngle = Math.PI / 2 - .3;
+      //initialize controls
+      var controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 1;
+      controls.rotateSpeed = .8;
+      //controls.maxPolarAngle = Math.PI / 2 - .3;
 
-    //initialize plane ***** 999, 999 because file size is 1000x1000
-    var terrainGeometry = new THREE.PlaneBufferGeometry(WIDTH - 3200, WIDTH + 2100, 999, 999);
-    terrainGeometry.castShadow = true;
-    terrainGeometry.receiveShadow = true;
+      //initialize plane ***** 999, 999 because file size is 1000x1000
+      var terrainGeometry = new THREE.PlaneBufferGeometry(WIDTH - 3200, WIDTH + 2100, 999, 999);
+      terrainGeometry.castShadow = true;
+      terrainGeometry.receiveShadow = true;
 
-    var heightsArray = terrainGeometry.attributes.position.array;
+      var heightsArray = terrainGeometry.attributes.position.array;
 
-    // apply height map to vertices of terrainGeometry
-    for (let i = 0, j = 2; i < dataBin.length; i += 1, j += 3) {
-      if (dataBin[i] == 0) {
-        heightsArray[j] = dataBin[i]
-      } else {
-        heightsArray[j] = dataBin[i] / 65535 * 480 + 10
+      // apply height map to vertices of terrainGeometry
+      for (let i = 0, j = 2; i < dataBin.length; i += 1, j += 3) {
+        if (dataBin[i] == 0) {
+          heightsArray[j] = dataBin[i]
+        } else {
+          heightsArray[j] = dataBin[i] / 65535 * 480 + 10
+        }
       }
+
+      var colorsArray = new Float32Array(heightsArray.length);
+
+      var adjustHeight = 10 + this.state.waterLevel// 0.1 ~ 50cm water level, starts from 1.7
+
+      function addColors(counterJ, colorR, colorG, colorB) {
+        colorsArray[counterJ] = new THREE.Color(colorR).r;
+        colorsArray[counterJ + 1] = new THREE.Color(colorG).g;
+        colorsArray[counterJ + 2] = new THREE.Color(colorB).b;
+      }
+
+      for (let i = 2, j = 0; i < heightsArray.length; i += 3, j += 3) {
+
+        if (heightsArray[i] >= 0 && heightsArray[i] < 350 / adjustHeight) {
+          addColors(j, 0x000000, 0x006900, 0x000094);
+        }
+        else if (heightsArray[i] >= 350 / adjustHeight && heightsArray[i] < 900 / adjustHeight) {
+          addColors(j, 0x6e0000, 0x00dc00, 0x00006e);
+        }
+        else if (heightsArray[i] >= 900 / adjustHeight && heightsArray[i] < 1300 / adjustHeight) {
+          addColors(j, 0xf00000, 0x00fa00, 0x0000a0);
+        }
+        else if (heightsArray[i] >= 1300 / adjustHeight && heightsArray[i] < 1900 / adjustHeight) {
+          addColors(j, 0xe00000, 0x0bd00, 0x000077);
+        }
+        else if (heightsArray[i] >= 1900 / adjustHeight && heightsArray[i] < 2500 / adjustHeight) {
+          addColors(j, 0xdd0000, 0x009800, 0x000056);
+        }
+        else if (heightsArray[i] >= 2500 / adjustHeight && heightsArray[i] < 3300 / adjustHeight) {
+          addColors(j, 0xa00000, 0x005200, 0x00002d);
+        }
+        else {
+          addColors(j, 0xd20000, 0x00d200, 0x0000d2);
+        }
+
+      }
+
+      terrainGeometry.setAttribute('position', new THREE.BufferAttribute(heightsArray, 3));
+      terrainGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3))
+
+      var terrainMaterial = new THREE.MeshLambertMaterial({
+        vertexColors: THREE.VertexColors, side: THREE.DoubleSide
+      })
+
+      var terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
+      terrainMesh.rotation.x = - Math.PI / 2;
+      terrainMesh.matrixAutoUpdate = false;
+      terrainMesh.updateMatrix();
+
+      terrainGeometry.computeFaceNormals();
+      terrainGeometry.computeVertexNormals();
+
+      this.state.scene.add(terrainMesh);
+
+      this.createBorders(dataJSON);
+
+      function animate() {
+        requestAnimationFrame(animate)
+        renderer.render(self.state.scene, camera);
+      }
+
+      animate();
+
+      function onWindowResize() {
+        let containerWidth = container.getBoundingClientRect().right - container.getBoundingClientRect().left;
+        renderer.setSize(containerWidth, containerWidth / 2 + 100);
+      }
+
+      window.addEventListener('resize', onWindowResize, false);
     }
-
-    var colorsArray = new Float32Array(heightsArray.length);
-
-    var adjustHeight = 10 + this.state.waterLevel// 0.1 ~ 50cm water level, starts from 1.7
-
-    function addColors(counterJ, colorR, colorG, colorB) {
-      colorsArray[counterJ] = new THREE.Color(colorR).r;
-      colorsArray[counterJ + 1] = new THREE.Color(colorG).g;
-      colorsArray[counterJ + 2] = new THREE.Color(colorB).b;
-    }
-
-    for (let i = 2, j = 0; i < heightsArray.length; i += 3, j += 3) {
-
-      if (heightsArray[i] >= 0 && heightsArray[i] < 350 / adjustHeight) {
-        addColors(j, 0x000000, 0x006900, 0x000094);
-      }
-      else if (heightsArray[i] >= 350 / adjustHeight && heightsArray[i] < 900 / adjustHeight) {
-        addColors(j, 0x6e0000, 0x00dc00, 0x00006e);
-      }
-      else if (heightsArray[i] >= 900 / adjustHeight && heightsArray[i] < 1300 / adjustHeight) {
-        addColors(j, 0xf00000, 0x00fa00, 0x0000a0);
-      }
-      else if (heightsArray[i] >= 1300 / adjustHeight && heightsArray[i] < 1900 / adjustHeight) {
-        addColors(j, 0xe00000, 0x0bd00, 0x000077);
-      }
-      else if (heightsArray[i] >= 1900 / adjustHeight && heightsArray[i] < 2500 / adjustHeight) {
-        addColors(j, 0xdd0000, 0x009800, 0x000056);
-      }
-      else if (heightsArray[i] >= 2500 / adjustHeight && heightsArray[i] < 3300 / adjustHeight) {
-        addColors(j, 0xa00000, 0x005200, 0x00002d);
-      }
-      else {
-        addColors(j, 0xd20000, 0x00d200, 0x0000d2);
-      }
-
-    }
-
-    terrainGeometry.setAttribute('position', new THREE.BufferAttribute(heightsArray, 3));
-    terrainGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3))
-
-    var terrainMaterial = new THREE.MeshLambertMaterial({
-      vertexColors: THREE.VertexColors, side: THREE.DoubleSide
-    })
-
-    var terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
-    terrainMesh.rotation.x = - Math.PI / 2;
-    terrainMesh.matrixAutoUpdate = false;
-    terrainMesh.updateMatrix();
-
-    terrainGeometry.computeFaceNormals();
-    terrainGeometry.computeVertexNormals();
-
-    this.state.scene.add(terrainMesh);
-
-    this.createBorders(dataJSON);
-
-    function animate() {
-      requestAnimationFrame(animate)
-      renderer.render(self.state.scene, camera);
-    }
-
-    animate();
-
-    function onWindowResize() {
-      let containerWidth = container.getBoundingClientRect().right - container.getBoundingClientRect().left;
-      renderer.setSize(containerWidth, containerWidth / 2 + 100);
-    }
-
-    window.addEventListener('resize', onWindowResize, false);
 
   }
 
@@ -309,7 +312,6 @@ class Map extends React.Component {
                   />
                 </Col>
               </Row>
-
             </div> :
             <h3 className="text-center justify-content-center align-self-center">Loading map<br />
               <Spinner animation="grow"></Spinner>

@@ -24,6 +24,7 @@ class Country {
         this.industryGrowth = industryGrowth;
         this.agricultureGrowth = agricultureGrowth;
 
+        
     }
 
 
@@ -298,6 +299,12 @@ class Country {
     PPMChange() {
         var ppmChange = (this.getProductionCO2() - this.cleanedCO2()) / (7500000000 * 2);
         this.ppm = Math.round((this.ppm + ppmChange) * 10000) / 10000;
+        if(this.ppm < 0){
+            this.ppm = 0;
+        }
+        console.log(this.name)
+        console.log(this.CO2ProductionPopulation());
+        console.log(this.getProductionCO2())
 
     }
 
