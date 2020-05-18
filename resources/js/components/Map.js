@@ -276,27 +276,6 @@ class Map extends React.Component {
     this.loadData('stats.bin', 'Europe1.geo.json');
   }
 
-  modalContent() {
-    var firstCountry = this.state.countries[0];
-    document.getElementById("countryName").innerHTML = `<b>${firstCountry.name}</b>`;
-    var modalBody =
-      `<h5>Population: ${firstCountry.population}</h5>
-        <h5>Electricity: ${firstCountry.electricity} CO2</h5>
-        <h5>Area: ${firstCountry.area} km2</h5>
-        <h5>PPM: ${firstCountry.ppm}</h5>
-        <PieChart data={this.state.countries} />`
-
-    return modalBody;
-  }
-
-  callModal() {
-
-    document.getElementById("modal-body").append(this.modalContent());
-    document.getElementById("modalButton").click();
-
-  }
-
-
   render() {
 
     if (this.state.dataLoaded) {

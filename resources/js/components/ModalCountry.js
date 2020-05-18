@@ -8,6 +8,10 @@ import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Jumbotron from 'react-bootstrap/Jumbotron';
+import Container from "react-bootstrap/Container";
+
 
 class ModalCountry extends React.Component {
     constructor(props) {
@@ -24,14 +28,38 @@ class ModalCountry extends React.Component {
 
         var modalBody =
             <>
-                <br></br>
-                <h5>Population: {firstCountry.population}</h5>
-                <h5>Electricity: {firstCountry.electricity} CO2</h5>
-                <h5>Area: {firstCountry.area} km2</h5>
-                <h5>PPM: {firstCountry.ppm}</h5>
+                <Tab.Container id="list-group-tabs" defaultActiveKey="#info">
+                    <ListGroup horizontal>
+                        <ListGroup.Item action href="#info">
+                            General information
+                                </ListGroup.Item>
+                        <ListGroup.Item action href="#piechart">
+                            Sectors piechart
+                                </ListGroup.Item>
+                        <ListGroup.Item action href="#inputs">
+                            Change country values
+                        </ListGroup.Item>
+                    </ListGroup>
+                    <Tab.Content className="m-3">
+                        <Tab.Pane eventKey="#info">
+                            <br></br>
+                            <h5>Population: {firstCountry.population}</h5>
+                            <h5>Electricity: {firstCountry.electricity} CO2</h5>
+                            <h5>Area: {firstCountry.area} km2</h5>
+                            <h5>PPM: {firstCountry.ppm}</h5>
+                        </Tab.Pane>
+                        <Tab.Pane eventKey="#piechart">
+                            <Piechart className="m-1" countries={this.props.countries} />
+                        </Tab.Pane>
+                        <Tab.Pane eventKey="#inputs">
+
+                        </Tab.Pane>
+                    </Tab.Content>
+                </Tab.Container>
+
             </>
 
-
+       
         return modalBody;
     }
 
@@ -40,44 +68,19 @@ class ModalCountry extends React.Component {
 
         const handleClose = () => this.setState({ show: false });
         const handleShow = () => this.setState({ show: true });
-
+ 
         return (
             <>
                 <Button variant="primary" onClick={handleShow}>
                     Launch demo modal
                 </Button>
 
-                <Modal show={this.state.show} onHide={handleClose} animation={true}>
+                <Modal size="lg" show={this.state.show} onHide={handleClose} animation={true}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Modal heading</Modal.Title>
+                        <Modal.Title>{this.props.countries[0].name}</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
-                        <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1">
-                            <ListGroup horizontal>
-                                <ListGroup.Item action href="#link1">
-                                    General Information
-                                </ListGroup.Item>
-                                <ListGroup.Item action href="#link2">
-                                    Sectors Emissions
-                                </ListGroup.Item>
-                                <ListGroup.Item action href="#link3">
-                                    Input
-                                </ListGroup.Item>
-                            </ListGroup>
-                            <Tab.Content>
-                                <Tab.Pane eventKey="#link1">
-                                    {this.modalBody()}
-                                </Tab.Pane>
-                                <Tab.Pane eventKey="#link2">
-                                    <div >
-                                        <Piechart countries={this.props.countries} />
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey="#link3">
-
-                                </Tab.Pane>
-                            </Tab.Content>
-                        </Tab.Container>
+                    <Modal.Body >
+                        {this.modalBody()}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>
