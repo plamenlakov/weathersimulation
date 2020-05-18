@@ -42,7 +42,6 @@ class Map extends React.Component {
 
     var xhr = new XMLHttpRequest();
     var self = this;
-
     var scene = new THREE.Scene();
     var svgGroup = new THREE.Group();
 
@@ -70,7 +69,7 @@ class Map extends React.Component {
     xhr.send(null);
 
   }
-
+  
   createBorders(dataJSON) {
 
     var SIZE_AMPLIFIER = 20;
@@ -112,7 +111,6 @@ class Map extends React.Component {
         });
 
         var meshSVG = new THREE.Mesh(geomSVG, materialSVG);
-        //meshSVG.callback = function(){console.log("clicked" + j)}
         this.state.borders.add(meshSVG);
 
         //create borders
@@ -254,6 +252,7 @@ class Map extends React.Component {
 
       animate();
 
+      
       function onWindowResize() {
         let containerWidth = container.getBoundingClientRect().right - container.getBoundingClientRect().left;
         renderer.setSize(containerWidth, containerWidth / 2 + 100);
@@ -314,7 +313,7 @@ class Map extends React.Component {
                   />
                 </Col>
               </Row>
-              <Modal countries={this.state.countries}/>
+              <Modal countries={this.state.countries} />
 
             </div> :
             <h3 className="text-center justify-content-center align-self-center">Loading map<br />

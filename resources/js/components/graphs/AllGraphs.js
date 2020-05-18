@@ -179,28 +179,28 @@ class AllGraphs extends React.Component {
             <Row className="m-3 text-center">
                 <Col md="3" className="border border-primary rounded p-3">
 
-                    <TextField className="m-2" placeholder={this.state.deforestationIncrease} label="Deforestation %" variant="outlined" onChange={evt =>
+                    <TextField className="m-2" placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
                         this.updateDeforestationInput(evt)} fullWidth/>
 
-                    <TextField className="m-2" placeholder={this.state.populationIncrease} label="Population increase %" variant="outlined" onChange={evt =>
+                    <TextField className="m-2" placeholder={this.state.populationIncrease.toString()} label="Population increase %" variant="outlined" onChange={evt =>
                         this.updatePopulationInput(evt)} fullWidth/>
 
-                    <TextField className="m-2" placeholder={this.state.electricityIncrease} label="Electricity increase %" variant="outlined" onChange={evt =>
+                    <TextField className="m-2" placeholder={this.state.electricityIncrease.toString()} label="Electricity increase %" variant="outlined" onChange={evt =>
                         this.updateElectricityInput(evt)} fullWidth/>
 
-                    <TextField className="m-2" placeholder={this.state.transportationIncrease} label="Transportation increase %" variant="outlined" onChange={evt =>
+                    <TextField className="m-2" placeholder={this.state.transportationIncrease.toString()} label="Transportation increase %" variant="outlined" onChange={evt =>
                         this.updateTransportationInput(evt)} fullWidth/>
 
-                    <TextField className="m-2" placeholder={this.state.buildingIncrease} label="Building increase %" variant="outlined" onChange={evt =>
+                    <TextField className="m-2" placeholder={this.state.buildingIncrease.toString()} label="Building increase %" variant="outlined" onChange={evt =>
                         this.updateBuildingInput(evt)} fullWidth/>
 
-                    <TextField className="m-2" placeholder={this.state.manufacturingIncrease} label="Manufacturing increase %" variant="outlined" onChange={evt =>
+                    <TextField className="m-2" placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
                         this.updateManufacturingInput(evt)} fullWidth/>
 
-                    <TextField className="m-2" placeholder={this.state.agricultureIncrease} label="Agriculture increase %" variant="outlined" onChange={evt =>
+                    <TextField className="m-2" placeholder={this.state.agricultureIncrease.toString()} label="Agriculture increase %" variant="outlined" onChange={evt =>
                         this.updateAgricultureInput(evt)} fullWidth/>
 
-                    <TextField className="m-2 mb-3" placeholder={this.state.yearToStop} label="Year to stop simulation" variant="outlined" onChange={evt =>
+                    <TextField className="m-2 mb-3" placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
                         this.updateYearInput(evt)} fullWidth helperText={this.state.warning} error={this.state.inputError}/>
 
                     <Button variant="primary" id="buttonStartSim"
