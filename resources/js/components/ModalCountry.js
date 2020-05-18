@@ -24,7 +24,7 @@ class ModalCountry extends React.Component {
     }
 
     modalBody() {
-        var firstCountry = this.props.countries[0];
+        //var firstCountry = this.props.countries[0];
 
         var modalBody =
             <>
@@ -43,13 +43,13 @@ class ModalCountry extends React.Component {
                     <Tab.Content className="m-3">
                         <Tab.Pane eventKey="#info">
                             <br></br>
-                            <h5>Population: {firstCountry.population}</h5>
-                            <h5>Electricity: {firstCountry.electricity} CO2</h5>
-                            <h5>Area: {firstCountry.area} km2</h5>
-                            <h5>PPM: {firstCountry.ppm}</h5>
+                            <h5>Population: {this.props.country.population}</h5>
+                            <h5>Electricity: {this.props.country.electricity} CO2</h5>
+                            <h5>Area: {this.props.country.area} km2</h5>
+                            <h5>PPM: {this.props.country.ppm}</h5>
                         </Tab.Pane>
                         <Tab.Pane eventKey="#piechart">
-                            <Piechart className="m-1" countries={this.props.countries} />
+                            <Piechart className="m-1" country={this.props.country} />
                         </Tab.Pane>
                         <Tab.Pane eventKey="#inputs">
 
@@ -77,7 +77,7 @@ class ModalCountry extends React.Component {
 
                 <Modal size="lg" show={this.state.show} onHide={handleClose} animation={true}>
                     <Modal.Header closeButton>
-                        <Modal.Title>{this.props.countries[0].name}</Modal.Title>
+                        <Modal.Title>{this.props.country.name}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body >
                         {this.modalBody()}

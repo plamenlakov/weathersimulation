@@ -1,19 +1,17 @@
 import React from 'react';
 import * as d3 from 'd3';
-import Simulation from "./classes/Simulation";
 import * as THREE from "three";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
-import FormControl from 'react-bootstrap/FormControl';
 import Slider from '@material-ui/core/Slider';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Typography from '@material-ui/core/Typography';
-import Button from 'react-bootstrap/Button';
-import PieChart from './graphs/Piechart';
-import Modal from './ModalCountry'
+import Modal from './ModalCountry';
+import { Interaction } from 'three.interaction';
+import { mesh } from 'topojson';
+
 
 class Map extends React.Component {
   constructor(props) {
@@ -29,6 +27,8 @@ class Map extends React.Component {
       renderer: null,
       camera: null,
       borders: null,
+      countryFills: null,
+      chosenCountry: null,
 
       dataLoaded: false,
       bordersLoaded: false,
@@ -69,11 +69,12 @@ class Map extends React.Component {
     xhr.send(null);
 
   }
-  
+
   createBorders(dataJSON) {
 
     var SIZE_AMPLIFIER = 20;
     var WIDTH = 2500 * SIZE_AMPLIFIER;
+    var self = this;
 
     var projection = d3.geoTransverseMercator().rotate([-10, 0, 0]) //center meridian
       .center([10, 52])                                             //longitude, latitude
@@ -95,11 +96,11 @@ class Map extends React.Component {
 
     svgData.paths.forEach((path, i) => {
       var shapes = path.toShapes(true);
-
+    
       shapes.forEach((shape, j) => {
 
         var geomSVG = new THREE.ExtrudeBufferGeometry(shape, {
-          depth: 10,
+          depth: 50,
           bevelEnabled: false
         })
 
@@ -107,32 +108,54 @@ class Map extends React.Component {
         var materialSVG = new THREE.MeshLambertMaterial({
           color: 0xFFFFFF,
           transparent: true,
-          opacity: 0,
+          opacity: 0.8,
         });
 
         var meshSVG = new THREE.Mesh(geomSVG, materialSVG);
         this.state.borders.add(meshSVG);
-
+        
         //create borders
         var borderMaterial = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 3 })
         var borderGeometry = new THREE.EdgesGeometry(geomSVG, 15);
         var bordermesh = new THREE.LineSegments(borderGeometry, borderMaterial);
 
         this.state.borders.add(bordermesh);
-
+        
       })
 
     })
-
+    
     this.state.borders.rotateX(Math.PI / 2)
     this.state.borders.position.z = -300;
     this.state.borders.position.x = 16300;
 
     this.state.borders.position.y = 0;
+    
+    var countryMeshes = [];
+    for(let m in this.state.borders.children){
+      if(this.state.borders.children[m] instanceof THREE.Mesh){
+        countryMeshes.push(this.state.borders.children[m])
+      }
+    }
 
+    for(let c in countryMeshes){
+      countryMeshes[c].callback = function(){
+        console.log(dataJSON[c].properties.name_long)
+        self.state.countries.forEach(country =>{
+          if(country.name == dataJSON[c].properties.name_long){
+            self.setState({
+              chosenCountry: country
+            })
+          }
+        })
+      
+      }
+      //countryMeshes[c].callback();
+    }
+    this.state.countryFills = countryMeshes;
     this.state.scene.add(this.state.borders);
     svg.remove();
-
+   
     this.state.bordersLoaded = true;
     this.state.mapLoaded = true;
   }
@@ -242,7 +265,8 @@ class Map extends React.Component {
       terrainGeometry.computeVertexNormals();
 
       this.state.scene.add(terrainMesh);
-
+      //const interaction = new Interaction(renderer, this.state.scene, camera)
+      
       this.createBorders(dataJSON);
 
       function animate() {
@@ -252,12 +276,32 @@ class Map extends React.Component {
 
       animate();
 
-      
+
+      var raycaster = new THREE.Raycaster();
+      var mouse = new THREE.Vector2();
+   
+
+      function onMeshClick(event) {
+          event.preventDefault();
+   
+          mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+          mouse.y =  - (event.clientY / window.innerHeight) * 2 + 1;
+   
+          raycaster.setFromCamera(mouse, camera);
+   
+          var intersects = raycaster.intersectObjects(self.state.countryFills);
+   
+          if (intersects.length > 0) {
+              intersects[0].object.callback();
+          }
+        }
+   
+
       function onWindowResize() {
         let containerWidth = container.getBoundingClientRect().right - container.getBoundingClientRect().left;
         renderer.setSize(containerWidth, containerWidth / 2 + 100);
       }
-
+      window.addEventListener('click', onMeshClick, false);
       window.addEventListener('resize', onWindowResize, false);
     }
 
@@ -313,7 +357,8 @@ class Map extends React.Component {
                   />
                 </Col>
               </Row>
-              <Modal countries={this.state.countries} />
+              {this.state.chosenCountry == null ? <div></div> : <Modal country={this.state.chosenCountry} />}
+              
 
             </div> :
             <h3 className="text-center justify-content-center align-self-center">Loading map<br />
