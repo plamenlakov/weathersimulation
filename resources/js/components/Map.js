@@ -9,9 +9,9 @@ import Slider from '@material-ui/core/Slider';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Modal from './ModalCountry';
-import { Interaction } from 'three.interaction';
-import { mesh } from 'topojson';
-
+import ListGroup from 'react-bootstrap/ListGroup';
+import Tab from "react-bootstrap/Tab";
+import Tabs from 'react-bootstrap/Tabs';
 
 class Map extends React.Component {
   constructor(props) {
@@ -29,6 +29,7 @@ class Map extends React.Component {
       borders: null,
       countryFills: null,
       chosenCountry: null,
+      mapValue: null,
 
       dataLoaded: false,
       bordersLoaded: false,
@@ -81,7 +82,11 @@ class Map extends React.Component {
       .scale(WIDTH * 1.5 - 505);                                    //scale
 
     var path = d3.geoPath().projection(projection);
-    var svg = d3.select("#Map").append("svg");
+    var svg = d3.select("#Map").append("svg")
+      .attr("width", '100%')
+      .attr("height", '100%')
+      .attr("viewBox", "0 0 " + 1280 + " " + 900)
+      .attr("preserveAspectRatio", "xMinYMin");
 
     svg.selectAll(".country")
       .data(dataJSON)
@@ -90,13 +95,14 @@ class Map extends React.Component {
       .attr("class", ".country")
       .attr("d", path);
 
+
     var svgMarkup = svg.node().outerHTML;
     var loader = new SVGLoader();
     var svgData = loader.parse(svgMarkup);
 
     svgData.paths.forEach((path, i) => {
       var shapes = path.toShapes(true);
-    
+
       shapes.forEach((shape, j) => {
 
         var geomSVG = new THREE.ExtrudeBufferGeometry(shape, {
@@ -105,57 +111,36 @@ class Map extends React.Component {
         })
 
         //needed for click event!
-        var materialSVG = new THREE.MeshLambertMaterial({
-          color: 0xFFFFFF,
-          transparent: true,
-          opacity: 0.8,
-        });
+        // var materialSVG = new THREE.MeshLambertMaterial({
+        //   color: 0xFFFFFF,
+        //   transparent: true,
+        //   opacity: 0,
+        // });
 
-        var meshSVG = new THREE.Mesh(geomSVG, materialSVG);
-        this.state.borders.add(meshSVG);
-        
+        // var meshSVG = new THREE.Mesh(geomSVG, materialSVG);
+        // this.state.borders.add(meshSVG);
+
         //create borders
         var borderMaterial = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 3 })
         var borderGeometry = new THREE.EdgesGeometry(geomSVG, 15);
         var bordermesh = new THREE.LineSegments(borderGeometry, borderMaterial);
 
         this.state.borders.add(bordermesh);
-        
+
       })
 
     })
-    
+
     this.state.borders.rotateX(Math.PI / 2)
     this.state.borders.position.z = -300;
     this.state.borders.position.x = 16300;
 
     this.state.borders.position.y = 0;
-    
-    var countryMeshes = [];
-    for(let m in this.state.borders.children){
-      if(this.state.borders.children[m] instanceof THREE.Mesh){
-        countryMeshes.push(this.state.borders.children[m])
-      }
-    }
 
-    for(let c in countryMeshes){
-      countryMeshes[c].callback = function(){
-        console.log(dataJSON[c].properties.name_long)
-        self.state.countries.forEach(country =>{
-          if(country.name == dataJSON[c].properties.name_long){
-            self.setState({
-              chosenCountry: country
-            })
-          }
-        })
-      
-      }
-      //countryMeshes[c].callback();
-    }
-    this.state.countryFills = countryMeshes;
     this.state.scene.add(this.state.borders);
     svg.remove();
-   
+
+    this.createPoliticalMap(dataJSON);
     this.state.bordersLoaded = true;
     this.state.mapLoaded = true;
   }
@@ -266,7 +251,7 @@ class Map extends React.Component {
 
       this.state.scene.add(terrainMesh);
       //const interaction = new Interaction(renderer, this.state.scene, camera)
-      
+
       this.createBorders(dataJSON);
 
       function animate() {
@@ -276,33 +261,72 @@ class Map extends React.Component {
 
       animate();
 
-
-      var raycaster = new THREE.Raycaster();
-      var mouse = new THREE.Vector2();
-   
-
-      function onMeshClick(event) {
-          event.preventDefault();
-   
-          mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-          mouse.y =  - (event.clientY / window.innerHeight) * 2 + 1;
-   
-          raycaster.setFromCamera(mouse, camera);
-   
-          var intersects = raycaster.intersectObjects(self.state.countryFills);
-   
-          if (intersects.length > 0) {
-              intersects[0].object.callback();
-          }
-        }
-   
-
       function onWindowResize() {
         let containerWidth = container.getBoundingClientRect().right - container.getBoundingClientRect().left;
         renderer.setSize(containerWidth, containerWidth / 2 + 100);
       }
-      window.addEventListener('click', onMeshClick, false);
       window.addEventListener('resize', onWindowResize, false);
+    }
+
+  }
+
+  createPoliticalMap(dataJSON) {
+    var self = this;
+    var width = 1280,
+      height = 900,
+      projection = d3.geoMercator()
+        .center([13, 52]) //longitude, latitude
+        .translate([width / 2, height / 2]) // center the image
+        .scale([width / 1.5]);
+    var path = d3.geoPath().projection(projection);
+    var svg = d3.select("#Map").append("svg")
+      .attr("width", '100%')
+      .attr("height", '100%')
+      .attr("viewBox", "0 0 " + width + " " + height)
+      .attr("preserveAspectRatio", "xMinYMin");
+
+    svg.selectAll(".country")
+      .data(dataJSON)
+      .enter()
+      .append("path")
+      .attr("class", ".country")
+      .attr("d", path)
+      .attr("fill", "#cccccc")
+      .attr("stroke", "#333333")
+      .attr("stroke-width", "0.5")
+      
+      .on("mouseover", function (d) {
+        d3.select(this).attr("fill", "darkgrey").style("cursor", "poiner");
+        
+      })
+      .on("click", function (d) {
+        self.state.countries.forEach(c => {
+          if (c.name == d.properties.name_long) {
+            self.setState({
+              chosenCountry: c
+            })
+          }
+        })
+        document.getElementById("buttonCountryClick").click();
+      })
+
+      .on("mouseout", function (d) {
+        d3.select(this).attr("fill", "#cccccc")
+
+      })
+
+    const zoom = d3.zoom()
+      .scaleExtent([1, 8])
+      .on('zoom', zoomed);
+
+    var g = svg.append('svg');
+
+    svg.call(zoom);
+
+    function zoomed() {
+      svg
+        .selectAll('path') // To prevent stroke width from scaling
+        .attr('transform', d3.event.transform);
     }
 
   }
@@ -331,42 +355,65 @@ class Map extends React.Component {
     return (
 
       <div>
-        <div id="Map" style={{ display: "none" }}></div>
-        <div className="" id="main_map" style={{ width: 100 + "%", height: 100 + "%" }}>
-          {this.state.bordersLoaded ?
-            <div>
-              <Row className="m-1 text-left">
-                <Col md="3">
-                  <Form.Check
-                    type="switch"
-                    id="borders_switch"
-                    label="Show borders"
-                    defaultChecked="true"
-                    onChange={this.showBordersHandler.bind(this)}
-                  />
-                </Col>
-                <Col md="1">
 
-                </Col>
-                <Col md="8">
-                  <Slider
-                    step={1}
-                    min={0}
-                    max={100}
-                    onChange={this.moveBordersHandler.bind(this)}
-                  />
-                </Col>
-              </Row>
-              {this.state.chosenCountry == null ? <div></div> : <Modal country={this.state.chosenCountry} />}
-              
+        <Tab.Container id="list-group-tabs" defaultActiveKey="#terrainMap">
+          <ListGroup horizontal >
+            <ListGroup.Item action href="#terrainMap">
+              Terrain map
+                                </ListGroup.Item>
+            <ListGroup.Item action href="#politicalMap">
+              Political map
+                                </ListGroup.Item>
 
-            </div> :
-            <h3 className="text-center justify-content-center align-self-center">Loading map<br />
-              <Spinner animation="grow"></Spinner>
-              <Spinner animation="grow"></Spinner>
-              <Spinner animation="grow"></Spinner>
-            </h3>}
-        </div>
+          </ListGroup>
+          <Tab.Content >
+            <Tab.Pane eventKey="#terrainMap" className="show">
+
+              <div className="" id="main_map" style={{ width: 100 + "%", height: 100 + "%" }}>
+                {this.state.bordersLoaded ?
+                  <div>
+                    <Row className="m-1 text-left">
+                      <Col md="3">
+                        <Form.Check
+                          type="switch"
+                          id="borders_switch"
+                          label="Show borders"
+                          defaultChecked="true"
+                          onChange={this.showBordersHandler.bind(this)}
+                        />
+                      </Col>
+                      <Col md="1">
+
+                      </Col>
+                      <Col md="8">
+                        <Slider
+                          step={1}
+                          min={0}
+                          max={100}
+                          onChange={this.moveBordersHandler.bind(this)}
+                        />
+                      </Col>
+                    </Row>
+                    {this.state.chosenCountry == null ? <div></div> : <Modal country={this.state.chosenCountry} />}
+
+
+                  </div> :
+                  <h3 className="text-center justify-content-center align-self-center">Loading map<br />
+                    <Spinner animation="grow"></Spinner>
+                    <Spinner animation="grow"></Spinner>
+                    <Spinner animation="grow"></Spinner>
+                  </h3>}
+              </div>
+            </Tab.Pane>
+            <Tab.Pane eventKey="#politicalMap">
+              <div id="Map" className="border border-primary rounded img-thumbnail" style={{ backgroundColor: "#7fcdff" }}></div>
+            </Tab.Pane>
+
+          </Tab.Content>
+        </Tab.Container>
+
+
+
 
       </div>
     );

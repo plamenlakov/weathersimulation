@@ -71,7 +71,7 @@ class ModalCountry extends React.Component {
  
         return (
             <>
-                <Button variant="primary" onClick={handleShow}>
+                <Button variant="primary" onClick={handleShow} id="buttonCountryClick" style={{display: 'none'}}>
                     Launch demo modal
                 </Button>
 

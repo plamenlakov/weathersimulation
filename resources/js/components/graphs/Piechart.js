@@ -15,7 +15,7 @@ class Piechart extends React.Component {
     options() {
         return (
             {
-                title: `${this.props.country.name}`,
+                title: `CO2 in tons`,
                 backgroundColor: '#fff0ff',
                 pieHole: 0.4,
                 //sliceVisibilityThreshold: 0.02,
@@ -38,6 +38,8 @@ class Piechart extends React.Component {
         pieData.push(["Electricity", this.props.country.electricity])
         pieData.push(["Transportation", this.props.country.transportation])
         pieData.push(["Industry", this.props.country.industry]);
+        pieData.push(["Agriculture", this.props.country.agriculture]);
+        pieData.push(["Manufacturing", this.props.country.manufacturing]);
         
         return pieData;
     }
