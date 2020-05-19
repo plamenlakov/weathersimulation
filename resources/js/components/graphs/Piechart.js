@@ -15,12 +15,10 @@ class Piechart extends React.Component {
     options() {
         return (
             {
-                title: `CO2 in tons`,
+                title: `CO₂ in tons per sector`,
                 backgroundColor: '#fff0ff',
-                pieHole: 0.4,
-                //sliceVisibilityThreshold: 0.02,
                 pieSliceText: 'label',
-                legend: { position: 'bottom' },
+                legend: { position: 'right' },
                 animation: {
                     duration: 1200,
                     easing: 'ease',
@@ -33,13 +31,13 @@ class Piechart extends React.Component {
     formatedData(){
         var pieData = [];
 
-        //var firstCountry = this.props.country];
         pieData.push(["SectorName", "Sector"]);
         pieData.push(["Electricity", this.props.country.electricity])
         pieData.push(["Transportation", this.props.country.transportation])
         pieData.push(["Industry", this.props.country.industry]);
         pieData.push(["Agriculture", this.props.country.agriculture]);
         pieData.push(["Manufacturing", this.props.country.manufacturing]);
+        pieData.push(["Building", this.props.country.building_value]);
         
         return pieData;
     }

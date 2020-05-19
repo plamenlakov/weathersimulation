@@ -271,6 +271,7 @@ class Map extends React.Component {
   }
 
   createPoliticalMap(dataJSON) {
+    console.log(dataJSON)
     var self = this;
     var width = 1280,
       height = 900,
@@ -294,25 +295,13 @@ class Map extends React.Component {
       .attr("fill", "#cccccc")
       .attr("stroke", "#333333")
       .attr("stroke-width", "0.5")
-      
-      .on("mouseover", function (d) {
-        d3.select(this).attr("fill", "darkgrey").style("cursor", "poiner");
-        
-      })
-      .on("click", function (d) {
-        self.state.countries.forEach(c => {
-          if (c.name == d.properties.name_long) {
-            self.setState({
-              chosenCountry: c
-            })
-          }
-        })
-        document.getElementById("buttonCountryClick").click();
-      })
 
+      .on("mouseover", function(d){
+        d3.select(this).attr("fill", "darkgrey").style("cursor", "pointer");
+      })
+      .on("click", this.countryOnClick.bind(this))
       .on("mouseout", function (d) {
         d3.select(this).attr("fill", "#cccccc")
-
       })
 
     const zoom = d3.zoom()
@@ -331,6 +320,29 @@ class Map extends React.Component {
 
   }
 
+  countryOnClick(d) {
+
+    var chosenCountry;
+
+    this.state.countries.forEach(c => {
+      if (c.name == d.properties.name_long) {
+        chosenCountry = c;
+      }
+
+    })
+
+    if (chosenCountry) {
+      this.setState({
+        chosenCountry: chosenCountry
+      }, () => {document.getElementById("buttonCountryClick").click();})
+      
+    } else {
+      document.getElementById("countryName").innerHTML = `<b>${d.properties.name_long}`
+      document.getElementById("modal-body").innerHTML = 'Not available in the simulation!';
+      document.getElementById("modalButton").click();
+    }
+  }
+
   showBordersHandler(evt) {
     this.state.borders.visible = evt.target.checked
   }
@@ -341,6 +353,15 @@ class Map extends React.Component {
 
   componentWillMount() {
     this.loadData('stats.bin', 'Europe1.geo.json');
+  }
+
+  componentDidUpdate(prevProps){
+    if(prevProps.data != this.props.data){
+      this.setState({
+        countries: this.props.data
+      })
+    }
+    
   }
 
   render() {

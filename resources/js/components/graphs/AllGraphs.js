@@ -30,6 +30,7 @@ class AllGraphs extends React.Component {
             manufacturingIncrease: 0.0,
             industryIncrease: 0.0,
             agricultureIncrease: 0.0,
+
             yearToStop: 2020,
             lineGraphData: [{ "Year": 2020, "sumPPM": 0 }, { "Year": 2021, "sumPPM": 0 }, { "Year": 2022, "sumPPM": 0 }],
             mapData: [],
@@ -37,7 +38,6 @@ class AllGraphs extends React.Component {
             isFetching: true,
             warning: "",
             inputError: false,
-            //barData: [{"country": "Germany", "PPM": 0.0292}, {"country": "France", "PPM": 0.0212}]
             barData: [{ 2020: [{ "country": "Germany", "PPM": 0.0292 }] }]
         }
         this.startSimulation = this.startSimulation.bind(this);
@@ -118,6 +118,7 @@ class AllGraphs extends React.Component {
             manufacturingIncrease: +evt.target.value
         })
     }
+
     updateIndustryInput(evt) {
         this.setState({
             industryIncrease: +evt.target.value
@@ -136,7 +137,7 @@ class AllGraphs extends React.Component {
             this.setState({
                 yearToStop: +evt.target.value,
                 inputError: false
-            },() => {this.setState({warning: "Current chosen year: " + this.state.yearToStop})})
+            }, () => { this.setState({ warning: "Current chosen year: " + this.state.yearToStop }) })
         } else {
             this.setState({
                 warning: "Please provide an year after 2021.",
@@ -180,28 +181,28 @@ class AllGraphs extends React.Component {
                 <Col md="3" className="border border-primary rounded p-3">
 
                     <TextField className="m-2" placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
-                        this.updateDeforestationInput(evt)} fullWidth/>
-
-                    <TextField className="m-2" placeholder={this.state.populationIncrease.toString()} label="Population increase %" variant="outlined" onChange={evt =>
-                        this.updatePopulationInput(evt)} fullWidth/>
+                        this.updateDeforestationInput(evt)} fullWidth />
 
                     <TextField className="m-2" placeholder={this.state.electricityIncrease.toString()} label="Electricity increase %" variant="outlined" onChange={evt =>
-                        this.updateElectricityInput(evt)} fullWidth/>
+                        this.updateElectricityInput(evt)} fullWidth />
 
                     <TextField className="m-2" placeholder={this.state.transportationIncrease.toString()} label="Transportation increase %" variant="outlined" onChange={evt =>
-                        this.updateTransportationInput(evt)} fullWidth/>
+                        this.updateTransportationInput(evt)} fullWidth />
 
                     <TextField className="m-2" placeholder={this.state.buildingIncrease.toString()} label="Building increase %" variant="outlined" onChange={evt =>
-                        this.updateBuildingInput(evt)} fullWidth/>
+                        this.updateBuildingInput(evt)} fullWidth />
 
                     <TextField className="m-2" placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
-                        this.updateManufacturingInput(evt)} fullWidth/>
+                        this.updateManufacturingInput(evt)} fullWidth />
+                        
+                    <TextField className="m-2" placeholder={this.state.industryIncrease.toString()} label="Industry increase %" variant="outlined" onChange={evt =>
+                        this.updateIndustryInput(evt)} fullWidth />
 
                     <TextField className="m-2" placeholder={this.state.agricultureIncrease.toString()} label="Agriculture increase %" variant="outlined" onChange={evt =>
-                        this.updateAgricultureInput(evt)} fullWidth/>
+                        this.updateAgricultureInput(evt)} fullWidth />
 
                     <TextField className="m-2 mb-3" placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
-                        this.updateYearInput(evt)} fullWidth helperText={this.state.warning} error={this.state.inputError}/>
+                        this.updateYearInput(evt)} fullWidth helperText={this.state.warning} error={this.state.inputError} />
 
                     <Button variant="primary" id="buttonStartSim"
                         onClick={this.startSimulation}>Make a simulation</Button>

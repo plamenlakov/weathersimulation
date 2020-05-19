@@ -302,9 +302,6 @@ class Country {
         if(this.ppm < 0){
             this.ppm = 0;
         }
-        console.log(this.name)
-        console.log(this.CO2ProductionPopulation());
-        console.log(this.getProductionCO2())
 
     }
 
