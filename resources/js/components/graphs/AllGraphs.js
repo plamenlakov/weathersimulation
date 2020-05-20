@@ -57,12 +57,12 @@ class AllGraphs extends React.Component {
 
         this.simulation.loadCountries('/Csv/countries.csv')
             .then(function () {
-                self.updateMapData(self.simulation.initialCountries);
-
+            
                 var barChartInitialData = self.simulation.getPPMByYearByCountry(self.state.yearToStop, self.state.populationIncrease, self.state.deforestationIncrease, self.state.electricityIncrease,
                     self.state.transportationIncrease, self.state.buildingIncrease, self.state.manufacturingIncrease, self.state.industryIncrease,
                     self.state.agricultureIncrease);
                 self.updateBarData(barChartInitialData);
+                self.updateMapData(self.simulation.initialCountries);
             })
 
     }
@@ -172,8 +172,6 @@ class AllGraphs extends React.Component {
             isFetching: false
         })
     }
-
-    //Entry point for launching the simulation
 
     render() {
         return (<div className="App">

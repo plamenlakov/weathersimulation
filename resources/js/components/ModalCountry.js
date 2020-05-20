@@ -19,6 +19,7 @@ class ModalCountry extends React.Component {
         this.state = {
             show: false,
             setShow: false,
+            items: [],
 
             deforestationIncrease: props.country.forestsGrowth,
             electricityIncrease: props.country.electricityGrowth,
@@ -58,10 +59,12 @@ class ModalCountry extends React.Component {
         })
     }
 
+
     updateIndustryInput(evt) {
         this.setState({
             industryIncrease: +evt.target.value
         })
+        
     }
     updateAgricultureInput(evt) {
         this.setState({
@@ -83,7 +86,9 @@ class ModalCountry extends React.Component {
         }
     }
 
+
     modalBody() {
+  
         //var firstCountry = this.props.countries[0];
         console.log(this.state.agricultureIncrease)
         var modalBody =
@@ -102,7 +107,6 @@ class ModalCountry extends React.Component {
                             <Piechart className="m-1" country={this.props.country} />
                         </Tab.Pane>
                         <Tab.Pane eventKey="#inputs">
-
                             <TextField className="m-2" placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
                                 this.updateDeforestationInput(evt)} fullWidth />
                             <Row>

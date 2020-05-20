@@ -332,15 +332,19 @@ class Map extends React.Component {
     })
 
     if (chosenCountry) {
-      this.setState({
-        chosenCountry: chosenCountry
-      }, () => {document.getElementById("buttonCountryClick").click();})
-      
+      this.changeChosenCountry(chosenCountry);
+      document.getElementById("buttonCountryClick").click();
     } else {
       document.getElementById("countryName").innerHTML = `<b>${d.properties.name_long}`
       document.getElementById("modal-body").innerHTML = 'Not available in the simulation!';
       document.getElementById("modalButton").click();
     }
+  }
+
+  changeChosenCountry(chosenCountry){
+    this.setState({
+      chosenCountry: chosenCountry
+    })
   }
 
   showBordersHandler(evt) {
@@ -390,7 +394,7 @@ class Map extends React.Component {
           <Tab.Content >
             <Tab.Pane eventKey="#terrainMap" className="show">
 
-              <div className="" id="main_map" style={{ width: 100 + "%", height: 100 + "%" }}>
+              <div id="main_map" style={{ width: 100 + "%", height: 100 + "%" }}>
                 {this.state.bordersLoaded ?
                   <div>
                     <Row className="m-1 text-left">
@@ -415,7 +419,7 @@ class Map extends React.Component {
                         />
                       </Col>
                     </Row>
-                    {this.state.chosenCountry == null ? <div></div> : <Modal country={this.state.chosenCountry} />}
+                    {this.state.chosenCountry == null ? <div style={{display: 'none'}}></div> : <Modal country={this.state.chosenCountry} handler={this.changeChosenCountry}/>}
 
 
                   </div> :
