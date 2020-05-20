@@ -32,15 +32,13 @@ class AllGraphs extends React.Component {
             agricultureIncrease: 0.0,
             currentData: null,
 
+            moduleData: null,
             yearToStop: 2020,
-            lineGraphData: [{ "Year": 2020, "sumPPM": 0 }, { "Year": 2021, "sumPPM": 0 }, { "Year": 2022, "sumPPM": 0 }],
-            mapData: [],
-            ppmPieData: [["Country", "PPM"], ["Start a simulation to see results", 100]],
             isFetching: true,
             warning: "",
             inputError: false,
             paused: false,
-            barData: null
+            isMapLoaded: false
         }
         this.startSimulation = this.startSimulation.bind(this);
     }
@@ -60,42 +58,54 @@ class AllGraphs extends React.Component {
         this.simulation.loadCountries('/Csv/countries.csv')
             .then(function () {
 
-                var barChartInitialData = self.simulation.getPPMOverall(self.state.yearToStop, self.state.populationIncrease, self.state.deforestationIncrease, self.state.electricityIncrease,
+                var initialData = self.simulation.getPPMOverall(self.state.yearToStop, self.state.populationIncrease, self.state.deforestationIncrease, self.state.electricityIncrease,
                     self.state.transportationIncrease, self.state.buildingIncrease, self.state.manufacturingIncrease, self.state.industryIncrease,
                     self.state.agricultureIncrease);
-                self.updateBarData(barChartInitialData);
-                self.updateMapData(self.simulation.initialCountries);
+
+                self.updateModuleData(initialData)
             })
 
     }
 
     startSimulation() {
-        var lineGraphData = this.simulation.getPPMOverall(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
-            this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
-            this.state.agricultureIncrease);
-        var barChartData = this.simulation.getPPMOverall(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
-            this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
-            this.state.agricultureIncrease);
-        var mapData = this.simulation.getPPMMap(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
+        var newData = this.simulation.getPPMOverall(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
             this.state.agricultureIncrease);
 
-        this.updateLineGraphData(lineGraphData);
-        this.updateBarData(barChartData);
-        this.updateMapData(mapData);
+        this.updateModuleData(newData)
+        document.getElementById("buttonStartSim").style.display = 'none';
+        document.getElementById("buttonsWhenStarted").style.display = 'initial';
+        
+
     }
 
     pauseSimulation() {
-        
+
         this.setState({
             paused: true
         })
     }
 
-    resumeSimulation(){
-       
+    stopSimulation() {
+        var newData = this.simulation.getPPMOverall(2020, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
+            this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
+            this.state.agricultureIncrease);
+
+        this.updateModuleData(newData)
+        document.getElementById("buttonStartSim").style.display = 'initial';
+        document.getElementById("buttonsWhenStarted").style.display = 'none';
+    }
+
+    resumeSimulation() {
+        var newData = this.simulation.resumeFromCurrentState(this.state.currentData, this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
+            this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
+            this.state.agricultureIncrease)
+
+        //this.updateModuleData(newData);
+
         this.setState({
-            paused: false
+            paused: false,
+            moduleData: newData
         })
     }
 
@@ -146,11 +156,11 @@ class AllGraphs extends React.Component {
         })
     }
 
-    updateCountryDataOnRunTime(data){
+    updateCountryDataOnRunTime(data) {
         this.setState({
             currentData: data
-        }, () => {console.log(this.state.currentData)})
-        
+        }, () => console.log(this.state.currentData))
+
     }
 
 
@@ -169,95 +179,92 @@ class AllGraphs extends React.Component {
         }
     }
 
-    //Update LineChart state
-    updateLineGraphData(data) {
+    updateModuleData(data) {
         this.setState({
-            lineGraphData: data
-        })
-    }
-
-    updateBarData(data) {
-        this.setState({
-            barData: data
-        })
-    }
-    //update Piechart data
-    updatePpmPieData(data, lastYear) {
-        this.setState({
-            ppmPieData: data,
-        })
-    }
-
-    //update map data state
-    updateMapData(data) {
-        this.setState({
-            mapData: data,
+            moduleData: data,
             isFetching: false
         })
     }
 
     render() {
-        return (<div className="App">
-            <Row className="m-3 text-center">
-                <Col md="3" className="border border-primary rounded p-3">
+        return (
+            <div className="App">
+                {this.state.isFetching ? <h3 className="text-center justify-content-center align-self-center">Loading...<br /><Spinner animation="grow"></Spinner><Spinner animation="grow"></Spinner><Spinner animation="grow"></Spinner></h3> :
 
-                    <TextField className="m-2" placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
-                        this.updateDeforestationInput(evt)} fullWidth />
+                    <>
+                        <Row className="m-3 text-center">
+                            <Col md="3" className="border border-primary rounded p-3">
 
-                    <TextField className="m-2" placeholder={this.state.electricityIncrease.toString()} label="Electricity increase %" variant="outlined" onChange={evt =>
-                        this.updateElectricityInput(evt)} fullWidth />
+                                <TextField className="m-2" placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
+                                    this.updateDeforestationInput(evt)} fullWidth />
 
-                    <TextField className="m-2" placeholder={this.state.transportationIncrease.toString()} label="Transportation increase %" variant="outlined" onChange={evt =>
-                        this.updateTransportationInput(evt)} fullWidth />
+                                <TextField className="m-2" placeholder={this.state.electricityIncrease.toString()} label="Electricity increase %" variant="outlined" onChange={evt =>
+                                    this.updateElectricityInput(evt)} fullWidth />
 
-                    <TextField className="m-2" placeholder={this.state.buildingIncrease.toString()} label="Building increase %" variant="outlined" onChange={evt =>
-                        this.updateBuildingInput(evt)} fullWidth />
+                                <TextField className="m-2" placeholder={this.state.transportationIncrease.toString()} label="Transportation increase %" variant="outlined" onChange={evt =>
+                                    this.updateTransportationInput(evt)} fullWidth />
 
-                    <TextField className="m-2" placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
-                        this.updateManufacturingInput(evt)} fullWidth />
+                                <TextField className="m-2" placeholder={this.state.buildingIncrease.toString()} label="Building increase %" variant="outlined" onChange={evt =>
+                                    this.updateBuildingInput(evt)} fullWidth />
 
-                    <TextField className="m-2" placeholder={this.state.industryIncrease.toString()} label="Industry increase %" variant="outlined" onChange={evt =>
-                        this.updateIndustryInput(evt)} fullWidth />
+                                <TextField className="m-2" placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
+                                    this.updateManufacturingInput(evt)} fullWidth />
 
-                    <TextField className="m-2" placeholder={this.state.agricultureIncrease.toString()} label="Agriculture increase %" variant="outlined" onChange={evt =>
-                        this.updateAgricultureInput(evt)} fullWidth />
+                                <TextField className="m-2" placeholder={this.state.industryIncrease.toString()} label="Industry increase %" variant="outlined" onChange={evt =>
+                                    this.updateIndustryInput(evt)} fullWidth />
 
-                    <TextField className="m-2 mb-3" placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
-                        this.updateYearInput(evt)} fullWidth helperText={this.state.warning} error={this.state.inputError} />
+                                <TextField className="m-2" placeholder={this.state.agricultureIncrease.toString()} label="Agriculture increase %" variant="outlined" onChange={evt =>
+                                    this.updateAgricultureInput(evt)} fullWidth />
 
-                    <Button variant="primary" id="buttonStartSim"
-                        onClick={this.startSimulation}>Make a simulation</Button>
+                                <TextField className="m-2 mb-3" placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
+                                    this.updateYearInput(evt)} fullWidth helperText={this.state.warning} error={this.state.inputError} />
 
-                    <Button variant="primary" id="buttonPauseSim"
-                        onClick={this.pauseSimulation.bind(this)}>Pause</Button>
+                                <Button variant="primary" id="buttonStartSim"
+                                    onClick={this.startSimulation}>Make a simulation</Button>
 
-                    <Button variant="primary" id="buttonPauseSim"
-                        onClick={this.resumeSimulation.bind(this)}>Resume</Button>
+                                <div id="buttonsWhenStarted" style={{ display: 'none' }}>
+                                    <Button variant="secondary" id="buttonPauseSim" className='m-2' disabled={this.state.paused}
+                                        onClick={this.pauseSimulation.bind(this)} >Pause</Button>
 
-                </Col>
-                <Col md="9">{this.state.isFetching ? <h3 className="text-center justify-content-center align-self-center">Loading map<br /><Spinner animation="grow"></Spinner><Spinner animation="grow"></Spinner><Spinner animation="grow"></Spinner></h3> : <Map data={this.state.mapData} />}</Col>
-            </Row>
+                                    <Button variant="primary" id="buttonResumeSim" className='m-2' disabled={!this.state.paused}
+                                        onClick={this.resumeSimulation.bind(this)}>Resume</Button>
 
-            <Alert variant='primary' className='m-3'>
-                <Alert.Heading className='m-2'>Charts</Alert.Heading>
-                <Row className="m-1 justify-content-center">
-                    <Col md="12" className="mt-3">
-                        {this.state.isFetching ? <h1>Loading</h1> : <BarChart data={this.state.barData} paused={this.state.paused} updateCountryDataOnRunTime = {this.updateCountryDataOnRunTime.bind(this)} />}
-                    </Col>
+                                    <Button variant="danger" id="buttonStopSim" className='m-2'
+                                        onClick={this.stopSimulation.bind(this)}>Stop</Button>
+                                </div>
 
-                </Row>
-                <Row className="m-1 justify-content-center">
-                    <Col md="6" className="text-center mt-3">
-                        {/* <Piechart data={this.state.ppmPieData}/> */}
-                    </Col>
-                    <Col md="6" className="text-center mt-3">
-                        <PPMLineGraph data={this.state.lineGraphData} />
-                    </Col>
-                </Row>
 
-            </Alert>
 
-        </div>
+                            </Col>
+                            <Col md="9"><Map data={this.state.moduleData} /></Col>
+                        </Row>
+
+                        <Alert variant='primary' className='m-3'>
+                            <Alert.Heading className='m-2'>Charts</Alert.Heading>
+                            <Row className="m-1 justify-content-center">
+                                <Col md="12" className="mt-3">
+                                    <BarChart data={this.state.moduleData} paused={this.state.paused} updateCountryDataOnRunTime={this.updateCountryDataOnRunTime.bind(this)} />
+                                </Col>
+
+                            </Row>
+                            <Row className="m-1 justify-content-center">
+                                <Col md="6" className="text-center mt-3">
+
+                                </Col>
+                                <Col md="6" className="text-center mt-3">
+                                    <PPMLineGraph data={this.state.moduleData} />
+                                </Col>
+                            </Row>
+
+                        </Alert>
+
+                    </>
+
+
+                }
+
+
+            </div>
         )
     }
 }

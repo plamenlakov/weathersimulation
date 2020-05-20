@@ -26,11 +26,8 @@ class BarChart extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.data != this.props.data) {
+            //console.log(this.props.data)
             this.state.yearIndex = 0;
-            this.play();
-        }
-
-        if(prevProps.paused != this.props.paused){
             this.play();
         }
 
@@ -46,10 +43,7 @@ class BarChart extends React.Component {
         var interval = setInterval(function () {
             if (self.state.yearIndex < self.props.data.length) {
                 if(self.props.paused){
-                    let dataToSend = [];
-                    for(let i = self.state.yearIndex; i < self.props.data.length; i++){
-                        dataToSend.push(self.props.data[i])
-                    }
+                    let dataToSend = self.props.data[self.state.yearIndex - 1];
                     self.sendDataToParent(dataToSend)
                     clearInterval(interval);
                 }else{
@@ -62,7 +56,7 @@ class BarChart extends React.Component {
             }
 
         }, 2000)
-        this.nextYear();
+        //this.nextYear();
 
     }
 
@@ -76,7 +70,7 @@ class BarChart extends React.Component {
 
         }
 
-        this.state.label.text = 2020 + this.state.yearIndex
+        this.state.label.text = +Object.keys(this.props.data[0]) + this.state.yearIndex
         this.chart.invalidateRawData();
         this.state.yearIndex++;
 
@@ -108,7 +102,6 @@ class BarChart extends React.Component {
 
     createBarChart(container) {
         am4core.useTheme(am4themes_animated);
-        console.log(this.props.data)
         var chart = am4core.create(container, am4charts.XYChart);
         chart.data = this.formatedData(0);
 

@@ -51,11 +51,11 @@ class Map extends React.Component {
     xhr.onload = function (evt) {
       if (xhr.response) {
         var terrainData = new Uint16Array(xhr.response);
-
+        
         d3.json(fileJSON)
           .then(topology => {
             self.setState({
-              countries: self.props.data,
+              countries: self.props.data[self.props.data.length - 1][+Object.keys(self.props.data[0]) + self.props.data.length - 1],
               bordersData: topology.features,
               terrainData: terrainData,
               scene: scene,
@@ -75,7 +75,6 @@ class Map extends React.Component {
 
     var SIZE_AMPLIFIER = 20;
     var WIDTH = 2500 * SIZE_AMPLIFIER;
-    var self = this;
 
     var projection = d3.geoTransverseMercator().rotate([-10, 0, 0]) //center meridian
       .center([10, 52])                                             //longitude, latitude
@@ -271,8 +270,6 @@ class Map extends React.Component {
   }
 
   createPoliticalMap(dataJSON) {
-    console.log(dataJSON)
-    var self = this;
     var width = 1280,
       height = 750,
       projection = d3.geoMercator()
@@ -323,7 +320,6 @@ class Map extends React.Component {
   countryOnClick(d) {
 
     var chosenCountry;
-
     this.state.countries.forEach(c => {
       if (c.name == d.properties.name_long) {
         chosenCountry = c;
@@ -362,7 +358,7 @@ class Map extends React.Component {
   componentDidUpdate(prevProps){
     if(prevProps.data != this.props.data){
       this.setState({
-        countries: this.props.data
+        countries: this.props.data[this.props.data.length - 1][+Object.keys(this.props.data[0]) + this.props.data.length - 1]
       })
     }
     

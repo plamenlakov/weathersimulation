@@ -14,12 +14,15 @@ class PPMLineGraph extends React.Component {
         }
     }
 
+    componentWillUnmount(){
+        if(this.chart){
+            this.chart.dispose();
+        }
+    }
+
     componentDidUpdate(prevProps) {
         if (this.props.data != prevProps.data) {
-            // this.setState({
-            //     chartData: this.props.data
-            // }, () => { this.chart.data = this.state.chartData })
-            this.createChart();
+            this.chart.data = this.formatedData();
         }
     }
 
@@ -31,9 +34,8 @@ class PPMLineGraph extends React.Component {
 
         for(let yearIdentifier in this.props.data){
             yearArray.push(+Object.keys(this.props.data[yearIdentifier]))
-            
             for(let year in this.props.data[yearIdentifier]){
-                totalPPMArray.push(this.sumPPM(this.props.data[yearIdentifier][year]));
+                totalPPMArray.push(this.sumPPM(this.props.data[yearIdentifier][year]))
             }
             
         }
@@ -122,10 +124,11 @@ class PPMLineGraph extends React.Component {
     }
 
     componentDidMount() {
-
+        this.createChart();
     }
 
     render() {
+        
         return (
             <div id="linechartdiv" style={{ height: 500 + 'px' }}></div>
         )
