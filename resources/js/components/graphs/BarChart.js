@@ -30,6 +30,10 @@ class BarChart extends React.Component {
             this.play();
         }
 
+        if(prevProps.paused != this.props.paused){
+            this.play();
+        }
+
     }
 
     play() {
@@ -37,7 +41,12 @@ class BarChart extends React.Component {
 
         var interval = setInterval(function () {
             if (self.state.yearIndex < self.props.data.length) {
-                self.nextYear();
+                if(self.props.paused){
+                    clearInterval(interval);
+                }else{
+                    self.nextYear();
+                }
+                
             }
             else {
                 clearInterval(interval);

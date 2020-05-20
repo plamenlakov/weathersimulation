@@ -38,6 +38,7 @@ class AllGraphs extends React.Component {
             isFetching: true,
             warning: "",
             inputError: false,
+            paused: false,
             barData: [{ 2020: [{ "country": "Germany", "PPM": 0.0292 }] }]
         }
         this.startSimulation = this.startSimulation.bind(this);
@@ -57,7 +58,7 @@ class AllGraphs extends React.Component {
 
         this.simulation.loadCountries('/Csv/countries.csv')
             .then(function () {
-            
+
                 var barChartInitialData = self.simulation.getPPMByYearByCountry(self.state.yearToStop, self.state.populationIncrease, self.state.deforestationIncrease, self.state.electricityIncrease,
                     self.state.transportationIncrease, self.state.buildingIncrease, self.state.manufacturingIncrease, self.state.industryIncrease,
                     self.state.agricultureIncrease);
@@ -81,6 +82,18 @@ class AllGraphs extends React.Component {
         this.updateLineGraphData(lineGraphData);
         this.updateBarData(barChartData);
         this.updateMapData(mapData);
+    }
+
+    pauseSimulation() {
+        this.setState({
+            paused: true
+        })
+    }
+
+    resumeSimulation(){
+        this.setState({
+            paused: false
+        })
     }
 
     //Update populationIncrease input
@@ -192,7 +205,7 @@ class AllGraphs extends React.Component {
 
                     <TextField className="m-2" placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
                         this.updateManufacturingInput(evt)} fullWidth />
-                        
+
                     <TextField className="m-2" placeholder={this.state.industryIncrease.toString()} label="Industry increase %" variant="outlined" onChange={evt =>
                         this.updateIndustryInput(evt)} fullWidth />
 
@@ -205,6 +218,12 @@ class AllGraphs extends React.Component {
                     <Button variant="primary" id="buttonStartSim"
                         onClick={this.startSimulation}>Make a simulation</Button>
 
+                    <Button variant="primary" id="buttonPauseSim"
+                        onClick={this.pauseSimulation.bind(this)}>Pause</Button>
+
+                    <Button variant="primary" id="buttonPauseSim"
+                        onClick={this.resumeSimulation.bind(this)}>Resume</Button>
+
                 </Col>
                 <Col md="9">{this.state.isFetching ? <h3 className="text-center justify-content-center align-self-center">Loading map<br /><Spinner animation="grow"></Spinner><Spinner animation="grow"></Spinner><Spinner animation="grow"></Spinner></h3> : <Map data={this.state.mapData} />}</Col>
             </Row>
@@ -213,7 +232,7 @@ class AllGraphs extends React.Component {
                 <Alert.Heading className='m-2'>Charts</Alert.Heading>
                 <Row className="m-1 justify-content-center">
                     <Col md="12" className="mt-3">
-                        {this.state.isFetching ? <h1>Loading</h1> : <BarChart data={this.state.barData} />}
+                        {this.state.isFetching ? <h1>Loading</h1> : <BarChart data={this.state.barData} paused={this.state.paused} />}
                     </Col>
 
                 </Row>

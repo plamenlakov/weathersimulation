@@ -23,7 +23,7 @@ class Simulation {
                 Number(data.industry_value), Number(data.industry_change), Number(data.agriculture_value), Number(data.agriculture_change));
             self.initialCountries.push(country);
         });
-        console.log(this.initialCountries)
+
         return readCSV;
     }
 

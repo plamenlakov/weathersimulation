@@ -274,7 +274,7 @@ class Map extends React.Component {
     console.log(dataJSON)
     var self = this;
     var width = 1280,
-      height = 900,
+      height = 750,
       projection = d3.geoMercator()
         .center([13, 52]) //longitude, latitude
         .translate([width / 2, height / 2]) // center the image
