@@ -30,6 +30,7 @@ class AllGraphs extends React.Component {
             manufacturingIncrease: 0.0,
             industryIncrease: 0.0,
             agricultureIncrease: 0.0,
+            currentData: null,
 
             yearToStop: 2020,
             lineGraphData: [{ "Year": 2020, "sumPPM": 0 }, { "Year": 2021, "sumPPM": 0 }, { "Year": 2022, "sumPPM": 0 }],
@@ -39,7 +40,7 @@ class AllGraphs extends React.Component {
             warning: "",
             inputError: false,
             paused: false,
-            barData: [{ 2020: [{ "country": "Germany", "PPM": 0.0292 }] }]
+            barData: null
         }
         this.startSimulation = this.startSimulation.bind(this);
     }
@@ -59,7 +60,7 @@ class AllGraphs extends React.Component {
         this.simulation.loadCountries('/Csv/countries.csv')
             .then(function () {
 
-                var barChartInitialData = self.simulation.getPPMByYearByCountry(self.state.yearToStop, self.state.populationIncrease, self.state.deforestationIncrease, self.state.electricityIncrease,
+                var barChartInitialData = self.simulation.getPPMOverall(self.state.yearToStop, self.state.populationIncrease, self.state.deforestationIncrease, self.state.electricityIncrease,
                     self.state.transportationIncrease, self.state.buildingIncrease, self.state.manufacturingIncrease, self.state.industryIncrease,
                     self.state.agricultureIncrease);
                 self.updateBarData(barChartInitialData);
@@ -69,10 +70,10 @@ class AllGraphs extends React.Component {
     }
 
     startSimulation() {
-        var lineGraphData = this.simulation.getTotalPPMByYear(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
+        var lineGraphData = this.simulation.getPPMOverall(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
             this.state.agricultureIncrease);
-        var barChartData = this.simulation.getPPMByYearByCountry(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
+        var barChartData = this.simulation.getPPMOverall(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
             this.state.agricultureIncrease);
         var mapData = this.simulation.getPPMMap(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
@@ -85,12 +86,14 @@ class AllGraphs extends React.Component {
     }
 
     pauseSimulation() {
+        
         this.setState({
             paused: true
         })
     }
 
     resumeSimulation(){
+       
         this.setState({
             paused: false
         })
@@ -141,6 +144,13 @@ class AllGraphs extends React.Component {
         this.setState({
             agricultureIncrease: +evt.target.value
         })
+    }
+
+    updateCountryDataOnRunTime(data){
+        this.setState({
+            currentData: data
+        }, () => {console.log(this.state.currentData)})
+        
     }
 
 
@@ -232,7 +242,7 @@ class AllGraphs extends React.Component {
                 <Alert.Heading className='m-2'>Charts</Alert.Heading>
                 <Row className="m-1 justify-content-center">
                     <Col md="12" className="mt-3">
-                        {this.state.isFetching ? <h1>Loading</h1> : <BarChart data={this.state.barData} paused={this.state.paused} />}
+                        {this.state.isFetching ? <h1>Loading</h1> : <BarChart data={this.state.barData} paused={this.state.paused} updateCountryDataOnRunTime = {this.updateCountryDataOnRunTime.bind(this)} />}
                     </Col>
 
                 </Row>

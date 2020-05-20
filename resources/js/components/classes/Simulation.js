@@ -28,14 +28,14 @@ class Simulation {
     }
 
     getPPMByYearByCountry(year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
-                          inputIndustry, inputAgriculture) {
+        inputIndustry, inputAgriculture) {
         let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
-        
+
         var result = [];
         for (let index = 2020; index <= year; index++) {
             let yearData = [];
             copyArray.forEach(c => {
-                yearData.push({"country": c.name, "PPM": c.ppm});
+                yearData.push({ "country": c.name, "PPM": c.ppm });
             })
             result.push({ [index]: yearData })
             if (index !== year) {
@@ -45,19 +45,37 @@ class Simulation {
         }
         return result;
     }
-    
+
+    resumeFromCurrentState(data, year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+        inputIndustry, inputAgriculture) {
+
+        var result = [];
+        for (let index = currentYear; index <= year; index++) {
+            let yearData = [];
+            copyArray.forEach(c => {
+                yearData.push({ "country": c.name, "PPM": c.ppm });
+            })
+            result.push({ [index]: yearData })
+            if (index !== year) {
+                this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                    inputIndustry, inputAgriculture)
+            }
+        }
+        return result;
+    }
+
     getPPMMap(year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
-              inputIndustry, inputAgriculture) {
+        inputIndustry, inputAgriculture) {
         let result = [];
         let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
 
-        for (let index = 2020; index <= year; index++) {           
-            
+        for (let index = 2020; index <= year; index++) {
+
             if (index === year) {
                 copyArray.forEach(c => {
-                    result.push(c);                   
+                    result.push(c);
                 })
-            }else{
+            } else {
                 this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
                     inputIndustry, inputAgriculture);
             }
@@ -68,17 +86,35 @@ class Simulation {
 
     }
 
+    getPPMOverall(year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+        inputIndustry, inputAgriculture) {
+        let result = [];
+        let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
+
+        for (let index = 2020; index <= year; index++) {
+
+            result.push({ [index]: copyArray.map((obj) => obj.cloneObject()) })
+            if (index !== year) {
+                this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                    inputIndustry, inputAgriculture)
+            }  
+           
+        }
+        return result;
+
+    }
+
 
     getTotalPPMByYear(year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
-                      inputIndustry, inputAgriculture){
+        inputIndustry, inputAgriculture) {
         var result = [];
         let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
         let sumTemperature = 0;
 
-        for(let index = 2020; index <= year; index++){
+        for (let index = 2020; index <= year; index++) {
             sumTemperature += this.getTemperatureIncrease(copyArray);
-            result.push({"Year": index, "sumPPM": this.sumPPM(copyArray)})
-            if(index !== year){
+            result.push({ "Year": index, "sumPPM": this.sumPPM(copyArray) })
+            if (index !== year) {
                 this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
                     inputIndustry, inputAgriculture);
 
@@ -88,13 +124,13 @@ class Simulation {
         return result;
     }
 
-    getTemperatureIncrease(copyArray){
+    getTemperatureIncrease(copyArray) {
         var temperatureIncrease = 0;
 
         copyArray.forEach(c => {
             temperatureIncrease += c.ppm;
         });
-        
+
         return temperatureIncrease * 0.01;
     }
 
@@ -108,8 +144,8 @@ class Simulation {
         return result;
     }
 
-    updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
-                    inputIndustry, inputAgriculture) {
+  async updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+        inputIndustry, inputAgriculture) {
         copyArray.forEach(c => {
             c.updateCurrentData(inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
                 inputIndustry, inputAgriculture);

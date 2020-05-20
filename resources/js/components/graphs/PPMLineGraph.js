@@ -4,6 +4,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import { sum } from 'd3';
 
 class PPMLineGraph extends React.Component {
     constructor(props) {
@@ -15,15 +16,47 @@ class PPMLineGraph extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.data != prevProps.data) {
-            this.setState({
-                chartData: this.props.data
-            }, () => { this.chart.data = this.state.chartData })
+            // this.setState({
+            //     chartData: this.props.data
+            // }, () => { this.chart.data = this.state.chartData })
+            this.createChart();
         }
     }
 
-    componentDidMount() {
+    formatedData(){
+       
+        let chartdata = [];
+        let yearArray = [];
+        let totalPPMArray = [];
 
-        /* Chart code */
+        for(let yearIdentifier in this.props.data){
+            yearArray.push(+Object.keys(this.props.data[yearIdentifier]))
+            
+            for(let year in this.props.data[yearIdentifier]){
+                totalPPMArray.push(this.sumPPM(this.props.data[yearIdentifier][year]));
+            }
+            
+        }
+
+        for(let year in yearArray){
+            chartdata.push({'Year': yearArray[year], 'sumPPM': totalPPMArray[year]})
+        }
+  
+        return chartdata;
+    }
+
+    sumPPM(array) {
+        var result = 0;
+
+        array.forEach(c => {
+            result += c.ppm;
+        });
+
+        return result;
+    }
+
+    createChart(){
+
         // Themes begin
         am4core.useTheme(am4themes_animated);
         // Themes end
@@ -32,45 +65,16 @@ class PPMLineGraph extends React.Component {
         let chart = am4core.create("linechartdiv", am4charts.XYChart);
 
         // Add data
-        let chartdata = this.props.data.map(d => d['Year']);
+        let chartdata = this.formatedData();
         //console.log(chartdata);
         this.setState({
             chartData: chartdata
         }, () => { chart.data = this.state.chartData })
 
-        // function generatechartData() {
-        //     let chartData = [];
-        //     let firstDate = new Date();
-        //     firstDate.setDate(firstDate.getDate() - 150);
-        //     let visits = -40;
-        //     let b = 0.6;
-        //     for (var i = 0; i < 150; i++) {
-        //         // we create date objects here. In your data, you can have date strings
-        //         // and then set format of your dates using chart.dataDateFormat property,
-        //         // however when possible, use date objects, as this will speed up chart rendering.
-        //         let newDate = new Date(firstDate);
-        //         newDate.setDate(newDate.getDate() + i);
-        //         if (i > 80) {
-        //             b = 0.4;
-        //         }
-        //         visits += Math.round((Math.random() < b ? 1 : -1) * Math.random() * 10);
-
-        //         chartData.push({
-        //             date: newDate,
-        //             visits: visits
-        //         });
-        //     }
-        //     return chartData;
-        // }
-
         // Create axes
         let yearAxis = chart.xAxes.push(new am4charts.CategoryAxis());
         yearAxis.dataFields.category = "Year";
         yearAxis.title.text = "Year";
-        //yearAxis.dataFields.category = "Year";
-
-        //yearAxis.startLocation = 0.5;
-        //yearAxis.endLocation = 0.5;
 
         // Create value axis
         let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
@@ -117,39 +121,13 @@ class PPMLineGraph extends React.Component {
         this.chart = chart;
     }
 
-    // options() {
-    //     return (
-    //         {
-    //             legend: {position: 'bottom'},
-    //             backgroundColor: '#fff0ff',
-    //             title: 'PPM emission per year',
+    componentDidMount() {
 
-    //             hAxis: {
-    //                 title: 'Year',
-    //                 format: '####'
-    //             },
-    //             vAxis: {
-    //                 title: 'CO2 emissions in cubic tonnes',
-    //                 format: 'short'
-    //             },
-    //         }
-    //     )
-    // }
+    }
 
     render() {
         return (
             <div id="linechartdiv" style={{ height: 500 + 'px' }}></div>
-            // <div>
-            //     <Chart
-            //         width={'100%'}
-            //         height={'500px'}
-            //         chartType="AreaChart"
-            //         loader={<h3 className="text-center justify-content-center align-self-center">Loading graph<Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /></h3>}
-            //         data={this.props.data}
-            //         options={this.options()}
-            //         rootProps={{'data-testid': '4'}}
-            //     />
-            // </div>
         )
     }
 }

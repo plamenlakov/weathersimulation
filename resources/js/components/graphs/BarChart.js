@@ -36,12 +36,21 @@ class BarChart extends React.Component {
 
     }
 
+    sendDataToParent(data){
+        this.props.updateCountryDataOnRunTime(data)
+    }
+
     play() {
         var self = this;
 
         var interval = setInterval(function () {
             if (self.state.yearIndex < self.props.data.length) {
                 if(self.props.paused){
+                    let dataToSend = [];
+                    for(let i = self.state.yearIndex; i < self.props.data.length; i++){
+                        dataToSend.push(self.props.data[i])
+                    }
+                    self.sendDataToParent(dataToSend)
                     clearInterval(interval);
                 }else{
                     self.nextYear();
@@ -73,7 +82,6 @@ class BarChart extends React.Component {
 
     }
 
-
     formatedData(year) {
 
         let chartdata = [];
@@ -81,10 +89,11 @@ class BarChart extends React.Component {
         let countryPPMs = [];
 
         let yearData = this.props.data[year];
+
         for (var country in yearData) {
             let countryData = yearData[country];
-            countryNames = countryData.map(c => c["country"]);
-            countryPPMs = countryData.map(c => c['PPM']);
+            countryNames = countryData.map(c => c["name"]);
+            countryPPMs = countryData.map(c => c['ppm']);
 
         }
 
@@ -97,9 +106,9 @@ class BarChart extends React.Component {
 
     }
 
-    createBarChart(data, container) {
+    createBarChart(container) {
         am4core.useTheme(am4themes_animated);
-
+        console.log(this.props.data)
         var chart = am4core.create(container, am4charts.XYChart);
         chart.data = this.formatedData(0);
 
@@ -163,77 +172,8 @@ class BarChart extends React.Component {
 
     componentDidMount() {
         var container = document.getElementById("barchartdiv");
-        this.createBarChart(this.props.data, container)
+        this.createBarChart(container)
     }
-
-    // componentDidMount() {
-    //     am4core.useTheme(am4themes_animated);
-
-    //     var chart = am4core.create("chartdiv", am4charts.XYChart);
-    //     chart.data = this.getData(0)
-    //     this.setState({
-    //         chartData: this.getData(0)
-    //     }, () => { chart.data = this.state.chartData })
-    //     // console.log(chart.data)
-    //     // X axis - value one
-    //     let valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
-    //     valueAxis.min = 0;
-    //     //let maxPPMvalue = Math.max(...this.getData().map(d => d['PPM']));
-    //     valueAxis.extraMax = this.state.maxPPMvalue / 4;
-
-    //     // Y axis - category one
-    //     let categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
-    //     categoryAxis.dataFields.category = "country";
-    //     categoryAxis.renderer.minGridDistance = 2;
-    //     categoryAxis.renderer.inversed = true;
-    //     categoryAxis.renderer.grid.template.disabled = true;
-
-    //     //series creation (x,y values)
-    //     let series = chart.series.push(new am4charts.ColumnSeries());
-    //     series.dataFields.valueX = "PPM";
-    //     series.dataFields.categoryY = "country";
-    //     series.tooltipText = "{categoryY.value}"
-    //     series.columns.template.column.cornerRadiusTopRight = 5;
-    //     series.columns.template.column.cornerRadiusBottomRight = 5;
-    //     this.state.series = series;
-    //     // series.interpolationDuration = 2000;
-    //     // series.interpolationEasing = am4core.ease.linear;
-
-    //     // chart label bullets after each bar
-    //     let labelBullet = series.bullets.push(new am4charts.LabelBullet());
-    //     labelBullet.label.verticalCenter = "bottom";
-    //     labelBullet.label.dy = 10;
-    //     labelBullet.label.dx = 35;
-    //     labelBullet.label.text = "{values.valueX.workingValue}";
-
-    //     //chart styling
-    //     chart.zoomOutButton.disabled = true;
-    //     chart.scrollbarX = new am4core.Scrollbar();
-    //     chart.background.fill = "#fff0ff";
-    //     chart.responsive.enabled = true;
-    //     chart.numberFormatter.numberFormat = "#####.###";
-    //     chart.paddingRight = 50;
-    //     chart.title = this.state.currentYear;
-
-    //     var label = chart.plotContainer.createChild(am4core.Label);
-    //     label.x = am4core.percent(97);
-    //     label.y = am4core.percent(95);
-    //     label.horizontalCenter = "right";
-    //     label.verticalCenter = "middle";
-    //     label.dx = -15;
-    //     label.fontSize = 50;
-    //     label.text = this.state.currentYear;
-
-    //     // as by default columns of the same series are of the same color, we add adapter which takes colors from chart.colors color set
-    //     series.columns.template.adapter.add("fill", function (fill, target) {
-    //         return chart.colors.getIndex(target.dataItem.index);
-    //     });
-
-    //     categoryAxis.sortBySeries = series;
-    //     this.state.category = categoryAxis;
-    //     this.state.value = valueAxis;
-    //     this.chart = chart;
-    // }
 
     render() {
 
