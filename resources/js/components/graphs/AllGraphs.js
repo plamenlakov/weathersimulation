@@ -217,6 +217,10 @@ class AllGraphs extends React.Component {
         })
     }
 
+    updateSingleCountry(data) {
+
+    }
+
     render() {
         return (
             <div className="App">

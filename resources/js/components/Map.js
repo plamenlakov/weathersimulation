@@ -326,7 +326,7 @@ class Map extends React.Component {
       }
 
     })
-
+    console.log(chosenCountry);
     if (chosenCountry) {
       this.changeChosenCountry(chosenCountry);
       document.getElementById("buttonCountryClick").click();
@@ -335,6 +335,7 @@ class Map extends React.Component {
       document.getElementById("modal-body").innerHTML = 'Not available in the simulation!';
       document.getElementById("modalButton").click();
     }
+
   }
 
   changeChosenCountry(chosenCountry){
@@ -362,6 +363,22 @@ class Map extends React.Component {
       })
     }
     
+  }
+
+  getValuesChosenCountry(data) {
+    var selectedCountry = this.state.chosenCountry
+    selectedCountry.forestsGrowth = data[0]
+    selectedCountry.electricityGrowth = data[1]
+    selectedCountry.transportationGrowth = data[2]
+    selectedCountry.buildingGrowth = data[3]
+    selectedCountry.agricultureGrowth = data[4]
+    selectedCountry.industryGrowth = data[5]
+    selectedCountry.manufacturingGrowth = data[6]
+
+    this.setState({
+        chosenCountry : selectedCountry
+    })
+    console.log(this.state.chosenCountry)
   }
 
   render() {
@@ -415,7 +432,8 @@ class Map extends React.Component {
                         />
                       </Col>
                     </Row>
-                    {this.state.chosenCountry == null ? <div style={{display: 'none'}}></div> : <Modal country={this.state.chosenCountry} handler={this.changeChosenCountry}/>}
+                    {this.state.chosenCountry == null ? <div style={{display: 'none'}}></div> : <Modal country={this.state.chosenCountry} updateChosenCountry ={this.getValuesChosenCountry.bind(this)}
+                                                                                                       handler={this.changeChosenCountry}/>}
 
 
                   </div> :
