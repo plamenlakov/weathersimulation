@@ -35,40 +35,39 @@ class ModalCountry extends React.Component {
     //Update deforestation input
     updateDeforestationInput(evt) {
         this.setState({
-            deforestationIncrease: +evt.target.value
+            deforestationIncrease: +evt.target.value + this.state.deforestationIncrease
         })
     }
     updateElectricityInput(evt) {
         this.setState({
-            electricityIncrease: +evt.target.value
+            electricityIncrease: +evt.target.value + this.state.electricityIncrease
         })
     }
     updateTransportationInput(evt) {
         this.setState({
-            transportationIncrease: +evt.target.value
+            transportationIncrease: +evt.target.value + this.state.transportationIncrease
         })
     }
     updateBuildingInput(evt) {
         this.setState({
-            buildingIncrease: +evt.target.value
+            buildingIncrease: +evt.target.value + this.state.buildingIncrease
         })
     }
     updateManufacturingInput(evt) {
         this.setState({
-            manufacturingIncrease: +evt.target.value
+            manufacturingIncrease: +evt.target.value + this.state.manufacturingIncrease
         })
     }
 
-
     updateIndustryInput(evt) {
         this.setState({
-            industryIncrease: +evt.target.value
+            industryIncrease: +evt.target.value + this.state.industryIncrease
         })
         
     }
     updateAgricultureInput(evt) {
         this.setState({
-            agricultureIncrease: +evt.target.value
+            agricultureIncrease: +evt.target.value + this.state.agricultureIncrease
         })
     }
 
@@ -84,6 +83,14 @@ class ModalCountry extends React.Component {
                 manufacturingIncrease: this.props.country.manufacturingGrowth
             })
         }
+    }
+
+    updateChosenCountry() {
+        var dataUpdate = [];
+        dataUpdate.push(this.state.deforestationIncrease, this.state.electricityIncrease, this.state.transportationIncrease,
+                        this.state.buildingIncrease, this.state.agricultureIncrease,
+                        this.state.industryIncrease, this.state.manufacturingIncrease);
+        this.props.updateChosenCountry(dataUpdate);
     }
 
 
@@ -169,7 +176,7 @@ class ModalCountry extends React.Component {
                         <Button variant="secondary" onClick={handleClose}>
                             Close
                         </Button>
-                        <Button variant="primary" onClick={handleClose}>
+                        <Button variant="primary" onClick={this.updateChosenCountry.bind(this)}>
                             Save Changes
                         </Button>
                     </Modal.Footer>
