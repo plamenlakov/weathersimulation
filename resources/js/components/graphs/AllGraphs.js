@@ -77,8 +77,8 @@ class AllGraphs extends React.Component {
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
             this.state.agricultureIncrease) : this.simulation.resumeFromCurrentState(this.state.currentData, this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
-            this.state.agricultureIncrease, );
-        console.log(this.state.currentData)
+            this.state.agricultureIncrease);
+        
         this.updateModuleData(newData)
         document.getElementById("buttonStartSim").style.display = 'none';
         document.getElementById("buttonsWhenStarted").style.display = 'initial';
@@ -107,7 +107,9 @@ class AllGraphs extends React.Component {
         if (this.state.paused) {
             this.unpauseSimulation();
         }
-
+        this.setState({
+            currentData: null
+        })
         this.updateModuleData(newData)
         document.getElementById("buttonStartSim").style.display = 'initial';
         document.getElementById("buttonsWhenStarted").style.display = 'none';
@@ -182,6 +184,7 @@ class AllGraphs extends React.Component {
     updateState(state) {
         if (state == 'Finished') {
             this.setState({
+                currentData: null,
                 stateIcon: <FontAwesomeIcon icon={faRedoAlt} />
             })
         } else {

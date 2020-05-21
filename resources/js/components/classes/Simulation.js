@@ -28,7 +28,7 @@ class Simulation {
     }
 
     resumeFromCurrentState(data, year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
-        inputIndustry, inputAgriculture, buildingGrowth) {
+        inputIndustry, inputAgriculture) {
 
         var result = [];
         var yearStopped =  +Object.keys(data)
@@ -36,7 +36,7 @@ class Simulation {
         
         for (let index = yearStopped; index <= year; index++) {
 
-            result.push({ [index]: copyArray.map((obj) => obj.cloneObject({buildingGrowth: buildingGrowth})) })
+            result.push({ [index]: copyArray.map((obj) => obj.cloneObject()) })
             if (index !== year) {
                 this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
                     inputIndustry, inputAgriculture)
