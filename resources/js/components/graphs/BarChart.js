@@ -26,8 +26,8 @@ class BarChart extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.data != this.props.data) {
-            //console.log(this.props.data)
             this.state.yearIndex = 0;
+            this.sendStateToParent('Running...')
             this.play();
         }
 
@@ -37,13 +37,23 @@ class BarChart extends React.Component {
         this.props.updateCountryDataOnRunTime(data)
     }
 
+    sendStateToParent(state){
+        this.props.updateState(state);
+    }
+
     play() {
         var self = this;
 
         var interval = setInterval(function () {
             if (self.state.yearIndex < self.props.data.length) {
                 if(self.props.paused){
-                    let dataToSend = self.props.data[self.state.yearIndex - 1];
+                    let dataToSend;
+                    if(self.state.yearIndex > 0){
+                        dataToSend = self.props.data[self.state.yearIndex - 1];
+                    }else{
+                        dataToSend = self.props.data[self.state.yearIndex];
+                    }
+
                     self.sendDataToParent(dataToSend)
                     clearInterval(interval);
                 }else{
@@ -52,11 +62,12 @@ class BarChart extends React.Component {
                 
             }
             else {
+                self.sendStateToParent('Finished')
+
                 clearInterval(interval);
             }
 
-        }, 2000)
-        //this.nextYear();
+        }, 1300)
 
     }
 
@@ -109,7 +120,7 @@ class BarChart extends React.Component {
         var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
         valueAxis.min = 0;
         valueAxis.rangeChangeEasing = am4core.ease.linear;
-        valueAxis.rangeChangeDuration = 2000;
+        valueAxis.rangeChangeDuration = 1300;
         valueAxis.extraMax = this.state.maxPPMvalue / 4;
 
         // Y axis - category one
@@ -126,7 +137,7 @@ class BarChart extends React.Component {
         series.tooltipText = "{categoryY.value}"
         series.columns.template.column.cornerRadiusTopRight = 5;
         series.columns.template.column.cornerRadiusBottomRight = 5;
-        series.interpolationDuration = 2000;
+        series.interpolationDuration = 1300;
         series.interpolationEasing = am4core.ease.linear;
 
         // chart label bullets after each bar
@@ -141,7 +152,7 @@ class BarChart extends React.Component {
         chart.scrollbarX = new am4core.Scrollbar();
         chart.background.fill = "#fff0ff";
         chart.responsive.enabled = true;
-        chart.numberFormatter.numberFormat = "#####.###";
+        chart.numberFormatter.numberFormat = "###,###.###";
         chart.paddingRight = 50;
 
         var label = chart.plotContainer.createChild(am4core.Label);

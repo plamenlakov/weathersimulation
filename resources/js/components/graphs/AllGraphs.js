@@ -16,6 +16,9 @@ import Spinner from 'react-bootstrap/Spinner';
 import Form from 'react-bootstrap/Form';
 import BarChart from './BarChart';
 import TextField from '@material-ui/core/TextField';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPause, faPlay, faStop, faRedoAlt } from '@fortawesome/free-solid-svg-icons';
+import Badge from '@material-ui/core/Badge';
 
 
 class AllGraphs extends React.Component {
@@ -31,11 +34,13 @@ class AllGraphs extends React.Component {
             industryIncrease: 0.0,
             agricultureIncrease: 0.0,
             currentData: null,
+            stateIcon: null,
+            currentState: null,
 
             moduleData: null,
             yearToStop: 2020,
-            isFetching: true,
             warning: "",
+            isFetching: true,
             inputError: false,
             paused: false,
             isMapLoaded: false
@@ -75,7 +80,7 @@ class AllGraphs extends React.Component {
         this.updateModuleData(newData)
         document.getElementById("buttonStartSim").style.display = 'none';
         document.getElementById("buttonsWhenStarted").style.display = 'initial';
-        
+
 
     }
 
@@ -86,10 +91,20 @@ class AllGraphs extends React.Component {
         })
     }
 
+    unpauseSimulation() {
+        this.setState({
+            paused: false
+        })
+    }
+
     stopSimulation() {
         var newData = this.simulation.getPPMOverall(2020, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
             this.state.agricultureIncrease);
+
+        if (this.state.paused) {
+            this.unpauseSimulation();
+        }
 
         this.updateModuleData(newData)
         document.getElementById("buttonStartSim").style.display = 'initial';
@@ -101,12 +116,9 @@ class AllGraphs extends React.Component {
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
             this.state.agricultureIncrease)
 
-        //this.updateModuleData(newData);
+        this.unpauseSimulation();
+        this.updateModuleData(newData);
 
-        this.setState({
-            paused: false,
-            moduleData: newData
-        })
     }
 
     //Update populationIncrease input
@@ -158,8 +170,26 @@ class AllGraphs extends React.Component {
 
     updateCountryDataOnRunTime(data) {
         this.setState({
-            currentData: data
-        }, () => console.log(this.state.currentData))
+            currentData: data,
+            currentState: 'Paused'
+        })
+
+    }
+
+    updateState(state) {
+        if (state == 'Finished') {
+            this.setState({
+                stateIcon: <FontAwesomeIcon icon={faRedoAlt} />
+            })
+        } else {
+            this.setState({
+                stateIcon: <FontAwesomeIcon icon={faStop} />
+            })
+        }
+        this.setState({
+            currentState: state
+        })
+
 
     }
 
@@ -182,18 +212,19 @@ class AllGraphs extends React.Component {
     updateModuleData(data) {
         this.setState({
             moduleData: data,
-            isFetching: false
+            isFetching: false,
+            
         })
     }
 
     render() {
         return (
             <div className="App">
-                {this.state.isFetching ? <h3 className="text-center justify-content-center align-self-center">Loading...<br /><Spinner animation="grow"></Spinner><Spinner animation="grow"></Spinner><Spinner animation="grow"></Spinner></h3> :
+                {this.state.isFetching ? <h3 className="text-center justify-content-center align-self-center">Loading data...<br /><Spinner animation="grow"></Spinner><Spinner animation="grow"></Spinner><Spinner animation="grow"></Spinner></h3> :
 
                     <>
-                        <Row className="m-3 text-center">
-                            <Col md="3" className="border border-primary rounded p-3">
+                        <Row className="m-2 text-center">
+                            <Col md="3" className="border border-primary rounded p-3 mt-3">
 
                                 <TextField className="m-2" placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
                                     this.updateDeforestationInput(evt)} fullWidth />
@@ -219,31 +250,38 @@ class AllGraphs extends React.Component {
                                 <TextField className="m-2 mb-3" placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
                                     this.updateYearInput(evt)} fullWidth helperText={this.state.warning} error={this.state.inputError} />
 
-                                <Button variant="primary" id="buttonStartSim"
-                                    onClick={this.startSimulation}>Make a simulation</Button>
+                                <Button variant="success" id="buttonStartSim"
+                                    onClick={this.startSimulation}>Create new simulation</Button>
 
                                 <div id="buttonsWhenStarted" style={{ display: 'none' }}>
-                                    <Button variant="secondary" id="buttonPauseSim" className='m-2' disabled={this.state.paused}
-                                        onClick={this.pauseSimulation.bind(this)} >Pause</Button>
+
+                                    <Button variant="primary" id="buttonPauseSim" className='m-2' disabled={this.state.paused}
+                                        onClick={this.pauseSimulation.bind(this)} ><FontAwesomeIcon icon={faPause} /></Button>
 
                                     <Button variant="primary" id="buttonResumeSim" className='m-2' disabled={!this.state.paused}
-                                        onClick={this.resumeSimulation.bind(this)}>Resume</Button>
+                                        onClick={this.resumeSimulation.bind(this)}><FontAwesomeIcon icon={faPlay} /></Button>
 
-                                    <Button variant="danger" id="buttonStopSim" className='m-2'
-                                        onClick={this.stopSimulation.bind(this)}>Stop</Button>
+                                    <Badge color="secondary" badgeContent={this.state.currentState} anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'right',
+                                    }}>
+                                        <Button variant="danger" id="buttonStopSim" className='m-2'
+                                            onClick={this.stopSimulation.bind(this)}>{this.state.stateIcon}</Button>
+                                    </Badge>
+
                                 </div>
 
 
 
                             </Col>
-                            <Col md="9"><Map data={this.state.moduleData} /></Col>
+                            <Col md="9" className='p-3'><Map data={this.state.moduleData} /></Col>
                         </Row>
 
                         <Alert variant='primary' className='m-3'>
                             <Alert.Heading className='m-2'>Charts</Alert.Heading>
                             <Row className="m-1 justify-content-center">
                                 <Col md="12" className="mt-3">
-                                    <BarChart data={this.state.moduleData} paused={this.state.paused} updateCountryDataOnRunTime={this.updateCountryDataOnRunTime.bind(this)} />
+                                    <BarChart data={this.state.moduleData} updateState={this.updateState.bind(this)} paused={this.state.paused} updateCountryDataOnRunTime={this.updateCountryDataOnRunTime.bind(this)} />
                                 </Col>
 
                             </Row>
