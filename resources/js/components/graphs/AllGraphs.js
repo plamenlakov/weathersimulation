@@ -278,7 +278,7 @@ class AllGraphs extends React.Component {
 
 
                             </Col>
-                            <Col md="9" className='p-3'><Map data={this.state.moduleData} /></Col>
+                            <Col md="9" className='p-3'><Map data={this.state.moduleData} currentYearData = {this.state.currentData} updateCurrentData = {this.updateCountryDataOnRunTime.bind(this)} /></Col>
                         </Row>
 
                         <Alert variant='primary' className='m-3'>

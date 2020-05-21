@@ -326,7 +326,6 @@ class Map extends React.Component {
       }
 
     })
-    console.log(chosenCountry);
     if (chosenCountry) {
       this.changeChosenCountry(chosenCountry);
       document.getElementById("buttonCountryClick").click();
@@ -366,19 +365,14 @@ class Map extends React.Component {
   }
 
   getValuesChosenCountry(data) {
-    var selectedCountry = this.state.chosenCountry
-    selectedCountry.forestsGrowth = data[0]
-    selectedCountry.electricityGrowth = data[1]
-    selectedCountry.transportationGrowth = data[2]
-    selectedCountry.buildingGrowth = data[3]
-    selectedCountry.agricultureGrowth = data[4]
-    selectedCountry.industryGrowth = data[5]
-    selectedCountry.manufacturingGrowth = data[6]
-
-    this.setState({
-        chosenCountry : selectedCountry
-    })
-    console.log(this.state.chosenCountry)
+    var yearStopped = +Object.keys(this.props.currentYearData)
+    var countriesReceived = this.props.currentYearData[yearStopped]
+    for(let i = 0; i < countriesReceived.length; i++){
+      if (countriesReceived[i].name == data.name){
+        countriesReceived[i] = data
+      }
+    }
+    this.props.updateCurrentData(this.props.currentYearData)
   }
 
   render() {

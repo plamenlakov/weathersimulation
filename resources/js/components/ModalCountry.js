@@ -35,39 +35,39 @@ class ModalCountry extends React.Component {
     //Update deforestation input
     updateDeforestationInput(evt) {
         this.setState({
-            deforestationIncrease: +evt.target.value + this.state.deforestationIncrease
+            deforestationIncrease: +evt.target.value
         })
     }
     updateElectricityInput(evt) {
         this.setState({
-            electricityIncrease: +evt.target.value + this.state.electricityIncrease
+            electricityIncrease: +evt.target.value
         })
     }
     updateTransportationInput(evt) {
         this.setState({
-            transportationIncrease: +evt.target.value + this.state.transportationIncrease
+            transportationIncrease: +evt.target.value
         })
     }
     updateBuildingInput(evt) {
         this.setState({
-            buildingIncrease: +evt.target.value + this.state.buildingIncrease
+            buildingIncrease: +evt.target.value
         })
     }
     updateManufacturingInput(evt) {
         this.setState({
-            manufacturingIncrease: +evt.target.value + this.state.manufacturingIncrease
+            manufacturingIncrease: +evt.target.value
         })
     }
 
     updateIndustryInput(evt) {
         this.setState({
-            industryIncrease: +evt.target.value + this.state.industryIncrease
+            industryIncrease: +evt.target.value
         })
         
     }
     updateAgricultureInput(evt) {
         this.setState({
-            agricultureIncrease: +evt.target.value + this.state.agricultureIncrease
+            agricultureIncrease: +evt.target.value
         })
     }
 
@@ -86,11 +86,19 @@ class ModalCountry extends React.Component {
     }
 
     updateChosenCountry() {
-        var dataUpdate = [];
-        dataUpdate.push(this.state.deforestationIncrease, this.state.electricityIncrease, this.state.transportationIncrease,
-                        this.state.buildingIncrease, this.state.agricultureIncrease,
-                        this.state.industryIncrease, this.state.manufacturingIncrease);
-        this.props.updateChosenCountry(dataUpdate);
+        // var dataUpdate = [];
+        // dataUpdate.push(this.state.deforestationIncrease, this.state.electricityIncrease, this.state.transportationIncrease,
+        //                 this.state.buildingIncrease, this.state.agricultureIncrease,
+        //                 this.state.industryIncrease, this.state.manufacturingIncrease);
+        // this.props.updateChosenCountry(dataUpdate);
+        this.props.country.deforestationGrowth = this.state.deforestationIncrease
+        this.props.country.electricityGrowth = this.state.electricityIncrease
+        this.props.country.transportationGrowth =this.state.transportationIncrease
+        this.props.country.buildingGrowth = this.state.buildingIncrease
+        this.props.country.agricultureGrowth = this.state.agricultureIncrease
+        this.props.country.industryGrowth = this.state.industryIncrease
+        this.props.country.manufacturingIncrease = this.state.manufacturingIncrease
+        this.props.updateChosenCountry(this.props.country)
     }
 
 
