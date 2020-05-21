@@ -73,10 +73,12 @@ class AllGraphs extends React.Component {
     }
 
     startSimulation() {
-        var newData = this.simulation.getPPMOverall(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
+        var newData = this.state.currentData == null ? this.simulation.getPPMOverall(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
-            this.state.agricultureIncrease);
-
+            this.state.agricultureIncrease) : this.simulation.resumeFromCurrentState(this.state.currentData, this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
+            this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
+            this.state.agricultureIncrease, );
+        console.log(this.state.currentData)
         this.updateModuleData(newData)
         document.getElementById("buttonStartSim").style.display = 'none';
         document.getElementById("buttonsWhenStarted").style.display = 'initial';
@@ -172,7 +174,8 @@ class AllGraphs extends React.Component {
         this.setState({
             currentData: data,
             currentState: 'Paused'
-        })
+        }, () => console.log(this.state.currentData))
+
 
     }
 

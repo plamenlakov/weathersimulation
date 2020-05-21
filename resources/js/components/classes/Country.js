@@ -236,11 +236,11 @@ class Country {
 
     }
 
-    cloneObject() {
+    cloneObject(overrides) {
         const { name, area, ppm, population, populationGrowth, forests, forestsGrowth,
             electricity, electricityGrowth, transportation, transportationGrowth, building_value,
             buildingGrowth, manufacturing, manufacturingGrowth, industry, industryGrowth,
-            agriculture, agricultureGrowth } = this;
+            agriculture, agricultureGrowth } = {...this, ...overrides};
         var country = new Country(name, area, ppm, population, populationGrowth, forests, forestsGrowth,
             electricity, electricityGrowth, transportation, transportationGrowth, building_value,
             buildingGrowth, manufacturing, manufacturingGrowth, industry, industryGrowth,

@@ -365,14 +365,14 @@ class Map extends React.Component {
   }
 
   getValuesChosenCountry(data) {
-    var yearStopped = +Object.keys(this.props.currentYearData)
-    var countriesReceived = this.props.currentYearData[yearStopped]
+    var yearStopped = this.props.currentYearData == null ? +Object.keys(this.props.data) : +Object.keys(this.props.currentYearData)
+    var countriesReceived = this.props.currentYearData == null ? this.props.data[yearStopped] : this.props.currentYearData[yearStopped]
     for(let i = 0; i < countriesReceived.length; i++){
       if (countriesReceived[i].name == data.name){
         countriesReceived[i] = data
       }
     }
-    this.props.updateCurrentData(this.props.currentYearData)
+    this.props.updateCurrentData(this.props.currentYearData == null ? this.props.data[0] : this.props.currentYearData)
   }
 
   render() {
