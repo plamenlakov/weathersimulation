@@ -12,6 +12,7 @@ import Modal from './ModalCountry';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Tab from "react-bootstrap/Tab";
 import Tabs from 'react-bootstrap/Tabs';
+import { ServerStyleSheets } from '@material-ui/core';
 
 class Map extends React.Component {
   constructor(props) {
@@ -22,6 +23,7 @@ class Map extends React.Component {
       bordersData: null,
       waterLevel: 0,
       sliderValue: 0,
+      yearIndex: 0,
 
       scene: null,
       renderer: null,
@@ -31,12 +33,16 @@ class Map extends React.Component {
       chosenCountry: null,
       mapValue: null,
 
+      terrainGeometry: null,
+      colorsArray: null,
+      heightsArray: null,
+
       dataLoaded: false,
       bordersLoaded: false,
       showBorders: true,
       mapLoaded: false
     }
-
+    this.loadData('stats.bin', 'Europe1.geo.json');
   }
 
   loadData(fileBin, fileJSON) {
@@ -51,7 +57,7 @@ class Map extends React.Component {
     xhr.onload = function (evt) {
       if (xhr.response) {
         var terrainData = new Uint16Array(xhr.response);
-        
+
         d3.json(fileJSON)
           .then(topology => {
             self.setState({
@@ -179,13 +185,13 @@ class Map extends React.Component {
       controls.enableDamping = true;
       controls.dampingFactor = 1;
       controls.rotateSpeed = .8;
-      //controls.maxPolarAngle = Math.PI / 2 - .3;
+      controls.maxPolarAngle = Math.PI / 2 - .05;
 
       //initialize plane ***** 999, 999 because file size is 1000x1000
       var terrainGeometry = new THREE.PlaneBufferGeometry(WIDTH - 3200, WIDTH + 2100, 999, 999);
       terrainGeometry.castShadow = true;
       terrainGeometry.receiveShadow = true;
-
+      this.state.terrainGeometry = terrainGeometry;
       var heightsArray = terrainGeometry.attributes.position.array;
 
       // apply height map to vertices of terrainGeometry
@@ -199,39 +205,8 @@ class Map extends React.Component {
 
       var colorsArray = new Float32Array(heightsArray.length);
 
-      var adjustHeight = 11.7 - this.state.waterLevel// 0.1 ~ 50cm water level, starts from 1.7
-      
-      function addColors(counterJ, colorR, colorG, colorB) {
-        colorsArray[counterJ] = new THREE.Color(colorR).r;
-        colorsArray[counterJ + 1] = new THREE.Color(colorG).g;
-        colorsArray[counterJ + 2] = new THREE.Color(colorB).b;
-      }
-
-      for (let i = 2, j = 0; i < heightsArray.length; i += 3, j += 3) {
-
-        if (heightsArray[i] >= 0 && heightsArray[i] < 350 / adjustHeight) {
-          addColors(j, 0x000000, 0x006900, 0x000094);
-        }
-        else if (heightsArray[i] >= 350 / adjustHeight && heightsArray[i] < 900 / adjustHeight) {
-          addColors(j, 0x6e0000, 0x00dc00, 0x00006e);
-        }
-        else if (heightsArray[i] >= 900 / adjustHeight && heightsArray[i] < 1300 / adjustHeight) {
-          addColors(j, 0xf00000, 0x00fa00, 0x0000a0);
-        }
-        else if (heightsArray[i] >= 1300 / adjustHeight && heightsArray[i] < 1900 / adjustHeight) {
-          addColors(j, 0xe00000, 0x0bd00, 0x000077);
-        }
-        else if (heightsArray[i] >= 1900 / adjustHeight && heightsArray[i] < 2500 / adjustHeight) {
-          addColors(j, 0xdd0000, 0x009800, 0x000056);
-        }
-        else if (heightsArray[i] >= 2500 / adjustHeight && heightsArray[i] < 3300 / adjustHeight) {
-          addColors(j, 0xa00000, 0x005200, 0x00002d);
-        }
-        else {
-          addColors(j, 0xd20000, 0x00d200, 0x0000d2);
-        }
-
-      }
+      this.state.colorsArray = colorsArray;
+      this.state.heightsArray = heightsArray;
 
       terrainGeometry.setAttribute('position', new THREE.BufferAttribute(heightsArray, 3));
       terrainGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3))
@@ -240,18 +215,20 @@ class Map extends React.Component {
         vertexColors: THREE.VertexColors, side: THREE.DoubleSide
       })
 
+      terrainMaterial.needsUpdate = true;
+
       var terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
       terrainMesh.rotation.x = - Math.PI / 2;
-      terrainMesh.matrixAutoUpdate = false;
-      terrainMesh.updateMatrix();
+      this.state.terrainMesh = terrainMesh;
+
+      this.drawTerrain(heightsArray, colorsArray, terrainGeometry);
 
       terrainGeometry.computeFaceNormals();
       terrainGeometry.computeVertexNormals();
-
       this.state.scene.add(terrainMesh);
-      //const interaction = new Interaction(renderer, this.state.scene, camera)
 
       this.createBorders(dataJSON);
+
 
       function animate() {
         requestAnimationFrame(animate)
@@ -266,6 +243,52 @@ class Map extends React.Component {
       }
       window.addEventListener('resize', onWindowResize, false);
     }
+
+  }
+
+  drawTerrain(heightsArray, colorsArray, terrainGeometry) {
+
+
+    if (this.state.waterLevel > 11.7) {
+      this.state.waterLevel = 11.7
+    }
+
+    var adjustHeight = 11.7 - this.state.waterLevel;
+
+    function addColors(counterJ, colorR, colorG, colorB) {
+      colorsArray[counterJ] = new THREE.Color(colorR).r;
+      colorsArray[counterJ + 1] = new THREE.Color(colorG).g;
+      colorsArray[counterJ + 2] = new THREE.Color(colorB).b;
+    }
+
+    for (let i = 2, j = 0; i < heightsArray.length; i += 3, j += 3) {
+
+      if (heightsArray[i] >= 0 && heightsArray[i] < 350 / adjustHeight) {
+        addColors(j, 0x000000, 0x006900, 0x000094);
+      }
+      else if (heightsArray[i] >= 350 / adjustHeight && heightsArray[i] < 900 / adjustHeight) {
+        addColors(j, 0x6e0000, 0x00dc00, 0x00006e);
+      }
+      else if (heightsArray[i] >= 900 / adjustHeight && heightsArray[i] < 1300 / adjustHeight) {
+        addColors(j, 0xf00000, 0x00fa00, 0x0000a0);
+      }
+      else if (heightsArray[i] >= 1300 / adjustHeight && heightsArray[i] < 1900 / adjustHeight) {
+        addColors(j, 0xe00000, 0x0bd00, 0x000077);
+      }
+      else if (heightsArray[i] >= 1900 / adjustHeight && heightsArray[i] < 2500 / adjustHeight) {
+        addColors(j, 0xdd0000, 0x009800, 0x000056);
+      }
+      else if (heightsArray[i] >= 2500 / adjustHeight && heightsArray[i] < 3300 / adjustHeight) {
+        addColors(j, 0xa00000, 0x005200, 0x00002d);
+      }
+      else {
+        addColors(j, 0xd20000, 0x00d200, 0x0000d2);
+      }
+
+    }
+
+    terrainGeometry.deleteAttribute('color');
+    terrainGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3))
 
   }
 
@@ -293,7 +316,7 @@ class Map extends React.Component {
       .attr("stroke", "#333333")
       .attr("stroke-width", "0.5")
 
-      .on("mouseover", function(d){
+      .on("mouseover", function (d) {
         d3.select(this).attr("fill", "darkgrey").style("cursor", "pointer");
       })
       .on("click", this.countryOnClick.bind(this))
@@ -337,7 +360,7 @@ class Map extends React.Component {
 
   }
 
-  changeChosenCountry(chosenCountry){
+  changeChosenCountry(chosenCountry) {
     this.setState({
       chosenCountry: chosenCountry
     })
@@ -351,30 +374,47 @@ class Map extends React.Component {
     this.state.borders.position.y = value * 25
   }
 
-  componentWillMount() {
-    this.loadData('stats.bin', 'Europe1.geo.json');
-  }
-
-  componentDidUpdate(prevProps){
-    if(prevProps.data != this.props.data){
+  componentDidUpdate(prevProps) {
+    if (prevProps.data != this.props.data) {
       this.setState({
         countries: this.props.data[this.props.data.length - 1][+Object.keys(this.props.data[0]) + this.props.data.length - 1]
       })
     }
-    if(prevProps.currentWaterLevel != this.props.currentWaterLevel){
-      
-      this.setState({
-        waterLevel: this.props.currentWaterLevel
-      })
+
+    if (prevProps.currentWaterLevels != this.props.currentWaterLevels) {
+      this.state.yearIndex = 0;
+      this.play();
     }
-    
+
+  }
+
+  play() {
+    var self = this;
+
+    var interval = setInterval(function () {
+      if (self.state.yearIndex < self.props.currentWaterLevels.length) {
+        if (self.props.paused) {
+          clearInterval(interval)
+        }
+        else {
+          self.state.waterLevel = self.props.currentWaterLevels[self.state.yearIndex];
+          self.drawTerrain(self.state.heightsArray, self.state.colorsArray, self.state.terrainGeometry);
+          self.state.yearIndex++;
+        }
+
+
+      }
+      else {
+        clearInterval(interval);
+      }
+    }, 1200)
   }
 
   getValuesChosenCountry(data) {
     var yearStopped = this.props.currentYearData == null ? +Object.keys(this.props.data) : +Object.keys(this.props.currentYearData)
     var countriesReceived = this.props.currentYearData == null ? this.props.data[yearStopped] : this.props.currentYearData[yearStopped]
-    for(let i = 0; i < countriesReceived.length; i++){
-      if (countriesReceived[i].name == data.name){
+    for (let i = 0; i < countriesReceived.length; i++) {
+      if (countriesReceived[i].name == data.name) {
         countriesReceived[i] = data
       }
     }
@@ -398,7 +438,7 @@ class Map extends React.Component {
           <ListGroup horizontal >
             <ListGroup.Item action href="#terrainMap">
               Terrain map
-                                </ListGroup.Item>
+             </ListGroup.Item>
             <ListGroup.Item action href="#politicalMap">
               Political map
                                 </ListGroup.Item>
@@ -432,8 +472,8 @@ class Map extends React.Component {
                         />
                       </Col>
                     </Row>
-                    {this.state.chosenCountry == null ? <div style={{display: 'none'}}></div> : <Modal country={this.state.chosenCountry} updateChosenCountry ={this.getValuesChosenCountry.bind(this)}
-                                                                                                       handler={this.changeChosenCountry}/>}
+                    {this.state.chosenCountry == null ? <div style={{ display: 'none' }}></div> : <Modal country={this.state.chosenCountry} updateChosenCountry={this.getValuesChosenCountry.bind(this)}
+                      handler={this.changeChosenCountry} />}
 
 
                   </div> :

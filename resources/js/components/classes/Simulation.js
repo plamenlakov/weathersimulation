@@ -31,20 +31,22 @@ class Simulation {
                 Number(data.industry_value), Number(data.industry_change), Number(data.agriculture_value), Number(data.agriculture_change));
             self.initialCountries.push(country);
         });
-        this.temperatureIncrease = [];
+        
         return readCSV;
     }
 
     resumeFromCurrentState(data, year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
         inputIndustry, inputAgriculture) {
-
+        this.temperatureIncrease = [];
         var result = [];
-        var yearStopped =  +Object.keys(data)
-        var copyArray = data[yearStopped].map((obj) => obj.cloneObject())
+        var yearStopped =  +Object.keys(data);
+        var copyArray = data[yearStopped].map((obj) => obj.cloneObject());
+
         
         for (let index = yearStopped; index <= year; index++) {
-           
-            result.push({ [index]: copyArray.map((obj) => obj.cloneObject()) })
+            var countriesInThisYear = copyArray.map((obj) => obj.cloneObject());
+            this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);
+            result.push({ [index]: countriesInThisYear })
             if (index !== year) {
                 this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
                     inputIndustry, inputAgriculture)
@@ -57,6 +59,7 @@ class Simulation {
 
     getPPMOverall(year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
         inputIndustry, inputAgriculture) {
+        this.temperatureIncrease = [];
         let result = [];
         let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
 
@@ -70,7 +73,7 @@ class Simulation {
             }  
            
         }
-        //this.getWaterLevels(this.temperatureIncrease)
+        
         return result;
 
     }
@@ -79,7 +82,7 @@ class Simulation {
         var waterLevels = [];
 
         tempArray.forEach(t => {
-            waterLevels.push(Math.round((t * 0.1) * 1000) / 1000)
+            waterLevels.push(Math.round((t * 0.5) * 1000) / 1000)
         })
         return waterLevels;
     }

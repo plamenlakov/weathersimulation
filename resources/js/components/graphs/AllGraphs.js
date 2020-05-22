@@ -36,7 +36,7 @@ class AllGraphs extends React.Component {
             currentData: null,
             stateIcon: null,
             currentState: null,
-            currentWaterLevel: null,
+            currentWaterLevels: null,
 
             moduleData: null,
             yearToStop: 2020,
@@ -81,11 +81,7 @@ class AllGraphs extends React.Component {
             this.state.agricultureIncrease);
         
         this.updateModuleData(newData)
-        this.setState({
-            currentWaterLevel: this.simulation.getWaterLevels(this.simulation.temperatureIncrease)[this.simulation.temperatureIncrease.length-1]
-        })
-        console.log(this.simulation.getWaterLevels(this.simulation.temperatureIncrease)[this.simulation.temperatureIncrease.length-1])
-        // console.log(this.simulation.getWaterLevels(this.simulation.temperatureIncrease))
+      
         document.getElementById("buttonStartSim").style.display = 'none';
         document.getElementById("buttonsWhenStarted").style.display = 'initial';
 
@@ -225,7 +221,7 @@ class AllGraphs extends React.Component {
         this.setState({
             moduleData: data,
             isFetching: false,
-            
+            currentWaterLevels: this.simulation.getWaterLevels(this.simulation.temperatureIncrease)
         })
     }
 
@@ -290,7 +286,7 @@ class AllGraphs extends React.Component {
 
 
                             </Col>
-                            <Col md="9" className='p-3'><Map data={this.state.moduleData} currentWaterLevel = {this.state.currentWaterLevel} currentYearData = {this.state.currentData} updateCurrentData = {this.updateCountryDataOnRunTime.bind(this)} /></Col>
+                            <Col md="9" className='p-3'><Map data={this.state.moduleData} paused={this.state.paused} currentWaterLevels = {this.state.currentWaterLevels} currentYearData = {this.state.currentData} updateCurrentData = {this.updateCountryDataOnRunTime.bind(this)} /></Col>
                         </Row>
 
                         <Alert variant='primary' className='m-3'>
