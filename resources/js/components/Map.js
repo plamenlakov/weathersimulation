@@ -12,7 +12,8 @@ import Modal from './ModalCountry';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Tab from "react-bootstrap/Tab";
 import Tabs from 'react-bootstrap/Tabs';
-import { ServerStyleSheets } from '@material-ui/core';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 class Map extends React.Component {
   constructor(props) {
@@ -146,10 +147,10 @@ class Map extends React.Component {
     svg.remove();
 
     this.createPoliticalMap(dataJSON);
+
     this.state.bordersLoaded = true;
     this.state.mapLoaded = true;
   }
-
 
   createTerrain(dataBin, dataJSON, container) {
 
@@ -349,6 +350,7 @@ class Map extends React.Component {
       }
 
     })
+
     if (chosenCountry) {
       this.changeChosenCountry(chosenCountry);
       document.getElementById("buttonCountryClick").click();
@@ -422,10 +424,10 @@ class Map extends React.Component {
   }
 
   render() {
-
+    var container = document.getElementById("main_map");
     if (this.state.dataLoaded) {
 
-      var container = document.getElementById("main_map");
+      
       this.createTerrain(this.state.terrainData, this.state.bordersData, container);
 
     }
@@ -436,18 +438,19 @@ class Map extends React.Component {
 
         <Tab.Container id="list-group-tabs" defaultActiveKey="#terrainMap">
           <ListGroup horizontal >
-            <ListGroup.Item action href="#terrainMap">
+            <ListGroup.Item action href="#terrainMap" style={{borderBottomLeftRadius: 0 + '%'}}>
               Terrain map
              </ListGroup.Item>
-            <ListGroup.Item action href="#politicalMap">
+            <ListGroup.Item action href="#politicalMap" style={{borderBottomRightRadius: 0 + '%'}}>
               Political map
                                 </ListGroup.Item>
 
           </ListGroup>
           <Tab.Content >
-            <Tab.Pane eventKey="#terrainMap" className="show">
+           
+              <Tab.Pane id="mapPane" eventKey="#terrainMap" className="show">
 
-              <div id="main_map" style={{ width: 100 + "%", height: 100 + "%" }}>
+                <div id="main_map" style={{ width: 100 + "%", height: 100 + "%" }}></div>
                 {this.state.bordersLoaded ?
                   <div>
                     <Row className="m-1 text-left">
@@ -474,27 +477,24 @@ class Map extends React.Component {
                     </Row>
                     {this.state.chosenCountry == null ? <div style={{ display: 'none' }}></div> : <Modal country={this.state.chosenCountry} updateChosenCountry={this.getValuesChosenCountry.bind(this)}
                       handler={this.changeChosenCountry} />}
-
-
                   </div> :
-                  <h3 className="text-center justify-content-center align-self-center">Loading map<br />
-                    <Spinner animation="grow"></Spinner>
-                    <Spinner animation="grow"></Spinner>
-                    <Spinner animation="grow"></Spinner>
-                  </h3>}
-              </div>
-            </Tab.Pane>
+                  <>
+                    <LinearProgress />
+                    <LinearProgress />
+                    <Skeleton  animation="wave" variant="rect" width='100%' height={900} />
+                  </>
+                }
+
+              </Tab.Pane>
+          
             <Tab.Pane eventKey="#politicalMap">
-              <div id="Map" className="border border-primary rounded img-thumbnail" style={{ backgroundColor: "#7fcdff" }}></div>
+              <div id="Map" className="border" style={{ backgroundColor: "#7fcdff"}}></div>
             </Tab.Pane>
 
           </Tab.Content>
         </Tab.Container>
 
-
-
-
-      </div>
+      </div >
     );
 
 

@@ -7,19 +7,15 @@ import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
 import Map from "../Map";
 import Simulation from '../classes/Simulation';
-//import PPMData from '../classes/PPMData';
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
-import Button from "react-bootstrap/Button";
-//import MapData from "../classes/MapData";
-import Spinner from 'react-bootstrap/Spinner';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Form from 'react-bootstrap/Form';
 import BarChart from './BarChart';
 import TextField from '@material-ui/core/TextField';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay, faStop, faRedoAlt } from '@fortawesome/free-solid-svg-icons';
 import Badge from '@material-ui/core/Badge';
-
+import Button from 'react-bootstrap/Button';
+import Spinner from 'react-bootstrap/Spinner';
 
 class AllGraphs extends React.Component {
     constructor(props) {
@@ -38,13 +34,15 @@ class AllGraphs extends React.Component {
             currentState: null,
             currentWaterLevels: null,
 
+
             moduleData: null,
             yearToStop: 2020,
             warning: "",
+
             isFetching: true,
             inputError: false,
             paused: false,
-            isMapLoaded: false
+            isMapLoaded: 'none'
         }
         this.startSimulation = this.startSimulation.bind(this);
     }
@@ -77,11 +75,11 @@ class AllGraphs extends React.Component {
         var newData = this.state.currentData == null ? this.simulation.getPPMOverall(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
             this.state.agricultureIncrease) : this.simulation.resumeFromCurrentState(this.state.currentData, this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
-            this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
-            this.state.agricultureIncrease);
-        
+                this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
+                this.state.agricultureIncrease);
+
         this.updateModuleData(newData)
-      
+
         document.getElementById("buttonStartSim").style.display = 'none';
         document.getElementById("buttonsWhenStarted").style.display = 'initial';
 
@@ -183,12 +181,15 @@ class AllGraphs extends React.Component {
 
     }
 
+ 
+
     updateState(state) {
         if (state == 'Finished') {
             this.setState({
                 currentData: null,
                 stateIcon: <FontAwesomeIcon icon={faRedoAlt} />
             })
+
         } else {
             this.setState({
                 stateIcon: <FontAwesomeIcon icon={faStop} />
@@ -232,9 +233,9 @@ class AllGraphs extends React.Component {
     render() {
         return (
             <div className="App">
-                {this.state.isFetching ? <h3 className="text-center justify-content-center align-self-center">Loading data...<br /><Spinner animation="grow"></Spinner><Spinner animation="grow"></Spinner><Spinner animation="grow"></Spinner></h3> :
+                {this.state.isFetching ? <div className="text-center justify-content-center align-self-center"><h3 >Loading data...<br /><br /></h3> <Spinner animation="border" variant="primary" /></div> :
 
-                    <>
+                    <div>
                         <Row className="m-2 text-center">
                             <Col md="3" className="border border-primary rounded p-3 mt-3">
 
@@ -286,7 +287,7 @@ class AllGraphs extends React.Component {
 
 
                             </Col>
-                            <Col md="9" className='p-3'><Map data={this.state.moduleData} paused={this.state.paused} currentWaterLevels = {this.state.currentWaterLevels} currentYearData = {this.state.currentData} updateCurrentData = {this.updateCountryDataOnRunTime.bind(this)} /></Col>
+                            <Col md="9" className='p-3'><Map data={this.state.moduleData} paused={this.state.paused} currentWaterLevels={this.state.currentWaterLevels} currentYearData={this.state.currentData} updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /></Col>
                         </Row>
 
                         <Alert variant='primary' className='m-3'>
@@ -308,7 +309,7 @@ class AllGraphs extends React.Component {
 
                         </Alert>
 
-                    </>
+                    </div>
 
 
                 }
