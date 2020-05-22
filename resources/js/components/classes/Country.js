@@ -212,28 +212,45 @@ class Country {
     electricityChange(inputElectricity, inputManufacturing) {
         let electricity_manufacturing_pct = (this.manufacturingGrowth + inputManufacturing) * 0.3;
         this.electricity += ((this.electricityGrowth + inputElectricity + electricity_manufacturing_pct) / 100) * this.electricity;
+        if(this.electricity < 0){
+            this.electricity = 0;
+        }
     }
 
     industryChange(inputIndustry, inputManufacturing) {
         let industry_manufacturing_pct = (this.manufacturingGrowth + inputManufacturing) * 0.2;
         this.industry += ((this.industryGrowth + inputIndustry + industry_manufacturing_pct) / 100) * this.industry;
+        if(this.industry < 0){
+            this.industry = 0;
+        }
     }
 
     transportationChange(inputTransportation) {
         this.transportation += ((this.transportationGrowth + inputTransportation) / 100) * this.transportation;
+        if(this.transportation < 0){
+            this.transportation = 0;
+        }
     }
     buildingChange(inputBuilding) {
         this.building_value += ((this.buildingGrowth + inputBuilding) / 100) * this.building_value;
+        if(this.building_value < 0){
+            this.building_value = 0;
+        }
     }
     manufacturingChange(inputManufacturing, inputBuilding, inputTransportation) {
         let building_manufacturing_pct = (this.buildingGrowth + inputBuilding) * 0.15;
         let transportation_manufacturing_pct = (this.transportationGrowth + inputTransportation) * 0.1;
         this.manufacturing += ((this.manufacturingGrowth + inputManufacturing + building_manufacturing_pct + transportation_manufacturing_pct) / 100) * this.manufacturing;
+        if(this.manufacturing < 0){
+            this.manufacturing = 0;
+        }
     }
 
     agricultureChange(inputAgriculture) {
         this.agriculture += ((this.agricultureGrowth + inputAgriculture) / 100) * this.agriculture;
-
+        if(this.agriculture < 0){
+            this.agriculture = 0;
+        }
     }
 
     cloneObject() {
