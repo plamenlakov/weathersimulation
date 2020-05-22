@@ -407,7 +407,7 @@ class Map extends React.Component {
       else {
         clearInterval(interval);
       }
-    }, 1200)
+    }, 1300)
   }
 
   getValuesChosenCountry(data) {
