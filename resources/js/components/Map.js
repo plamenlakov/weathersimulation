@@ -20,7 +20,7 @@ class Map extends React.Component {
       terrainData: null,
       countries: null,
       bordersData: null,
-      waterLevel: 1.7,
+      waterLevel: 0,
       sliderValue: 0,
 
       scene: null,
@@ -199,8 +199,8 @@ class Map extends React.Component {
 
       var colorsArray = new Float32Array(heightsArray.length);
 
-      var adjustHeight = 10 + this.state.waterLevel// 0.1 ~ 50cm water level, starts from 1.7
-
+      var adjustHeight = 11.7 - this.state.waterLevel// 0.1 ~ 50cm water level, starts from 1.7
+      
       function addColors(counterJ, colorR, colorG, colorB) {
         colorsArray[counterJ] = new THREE.Color(colorR).r;
         colorsArray[counterJ + 1] = new THREE.Color(colorG).g;
@@ -359,6 +359,12 @@ class Map extends React.Component {
     if(prevProps.data != this.props.data){
       this.setState({
         countries: this.props.data[this.props.data.length - 1][+Object.keys(this.props.data[0]) + this.props.data.length - 1]
+      })
+    }
+    if(prevProps.currentWaterLevel != this.props.currentWaterLevel){
+      
+      this.setState({
+        waterLevel: this.props.currentWaterLevel
       })
     }
     

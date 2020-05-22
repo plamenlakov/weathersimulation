@@ -105,7 +105,7 @@ class ModalCountry extends React.Component {
     modalBody() {
   
         //var firstCountry = this.props.countries[0];
-        console.log(this.state.agricultureIncrease)
+        //console.log(this.state.agricultureIncrease)
         var modalBody =
             <>
                 <Tab.Container id="list-group-tabs" defaultActiveKey="#info">
