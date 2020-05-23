@@ -50,8 +50,9 @@ class PPMLineGraph extends React.Component {
     }
     nextYear(){
         let newData = this.formatedData(this.state.yearIndex);
-        // console.log("LineGrap")
+        console.log("LineGrap")
         // console.log(newData);
+        this.chart.addData({'Year': newData[0].Year, 'sumPPM': newData[0].sumPPM});
         this.chart.data[0].PPM = newData[0].sumPPM;
         this.chart.invalidateRawData();
         this.state.yearIndex++;
@@ -119,14 +120,15 @@ class PPMLineGraph extends React.Component {
         // }, () => { chart.data = this.state.chartData })
 
         // Create axes
-        let yearAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-        yearAxis.renderer.grid.template.location = 0;
-        yearAxis.renderer.minGridDistance = 30;
-        yearAxis.dataFields.category = "Year";
-        yearAxis.title.text = "Year";
-        yearAxis.renderer.inside = true;
-        yearAxis.renderer.axisFills.template.disabled = true;
-        yearAxis.renderer.ticks.template.disabled = true;
+        let dateAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+        dateAxis.renderer.grid.template.location = 0;
+        dateAxis.renderer.minGridDistance = 30;
+        dateAxis.dataFields.category = "Year";
+        // dateAxis.title.text = "Year";
+        // dateAxis.dateFormats.setKey("default");
+        dateAxis.renderer.inside = true;
+        dateAxis.renderer.axisFills.template.disabled = true;
+        dateAxis.renderer.ticks.template.disabled = true;
 
         // Create value axis
         let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
@@ -149,11 +151,11 @@ class PPMLineGraph extends React.Component {
         series.tensionX = 0.8;
 
         chart.events.on("datavalidated", function () {
-            yearAxis.zoom({ start: 1 / 15, end: 1.2 }, false, true);
+            dateAxis.zoom({ start: 1 / 15, end: 1.2 }, false, true);
         });
 
-        yearAxis.interpolationDuration = 500;
-        yearAxis.rangeChangeDuration = 500;
+        dateAxis.interpolationDuration = 500;
+        dateAxis.rangeChangeDuration = 500;
         // Create a range to change stroke for values below 0
         // let range = valueAxis.createSeriesRange(series);
         // range.value = 0;
@@ -172,6 +174,7 @@ class PPMLineGraph extends React.Component {
         // chart.background.fill = "#fff0ff";
         // chart.paddingRight = 40;
 
+
         series.tooltip.getFillFromObject = false;
         series.tooltip.adapter.add("x", (x, target) => {
             if (series.tooltip.tooltipDataItem.valueY < 0) {
@@ -182,7 +185,16 @@ class PPMLineGraph extends React.Component {
             }
             return x;
         });
+        var bullet = series.createChild(am4charts.CircleBullet);
+        bullet.circle.radius = 5;
+        bullet.fillOpacity = 1;
+        bullet.fill = chart.colors.getIndex(0);
+        bullet.isMeasured = false;
 
+        series.events.on("validated", function() {
+            bullet.moveTo(series.dataItems.last.point);
+            bullet.validatePosition();
+        });
     
         this.chart = chart;
     }
