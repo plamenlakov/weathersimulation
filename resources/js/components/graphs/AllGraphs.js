@@ -300,7 +300,7 @@ class AllGraphs extends React.Component {
 
                                 </Col>
                                 <Col md="6" className="text-center mt-3">
-                                    <PPMLineGraph data={this.state.moduleData} />
+                                    <PPMLineGraph data={this.state.moduleData} paused={this.state.paused}/>
                                 </Col>
                             </Row>
 
