@@ -37,6 +37,7 @@ class Map extends React.Component {
       terrainGeometry: null,
       colorsArray: null,
       heightsArray: null,
+      treeGroup: null,
 
       dataLoaded: false,
       bordersLoaded: false,
@@ -264,25 +265,33 @@ class Map extends React.Component {
 
     var treesPositions = [];
 
-    function addTreesPositions(counter){
-      
-        treesPositions.push({
-          x: heightsArray[counter - 2],
-          y: heightsArray[counter - 1],
-          z: heightsArray[counter]
-        })
+    function addTreesPositions(counter) {
 
-      
+      treesPositions.push({
+        x: heightsArray[counter - 2],
+        y: heightsArray[counter],
+        z: heightsArray[counter-1]
+      })
+
+
     }
-
+    var treecounter = 0;
+    var treeGroup = new THREE.Group();
     for (let i = 2, j = 0; i < heightsArray.length; i += 3, j += 3) {
 
       if (heightsArray[i] >= 0 && heightsArray[i] < 350 / adjustHeight) {
         addColors(j, 0x000000, 0x006900, 0x000094);
+        
       }
       else if (heightsArray[i] >= 350 / adjustHeight && heightsArray[i] < 900 / adjustHeight) {
         addColors(j, 0x6e0000, 0x00dc00, 0x00006e);
-        addTreesPositions(i);
+        addTreesPositions(j)
+        if(treecounter < 500){
+          //this.drawTrees(heightsArray[j - 2], heightsArray[j], heightsArray[j - 1], treeGroup)
+          treecounter++;
+        }
+        
+        //addTreesPositions(i);
       }
       else if (heightsArray[i] >= 900 / adjustHeight && heightsArray[i] < 1300 / adjustHeight) {
         addColors(j, 0xf00000, 0x00fa00, 0x0000a0);
@@ -292,19 +301,59 @@ class Map extends React.Component {
       }
       else if (heightsArray[i] >= 1900 / adjustHeight && heightsArray[i] < 2500 / adjustHeight) {
         addColors(j, 0xdd0000, 0x009800, 0x000056);
+        
       }
       else if (heightsArray[i] >= 2500 / adjustHeight && heightsArray[i] < 3300 / adjustHeight) {
         addColors(j, 0xa00000, 0x005200, 0x00002d);
       }
       else {
         addColors(j, 0xd20000, 0x00d200, 0x0000d2);
+        
       }
 
     }
-
+    if(!this.state.mapLoaded){
+      for(let i = 0; i < 300; i++){
+        this.drawTrees(treesPositions, treeGroup);
+      }
+    }
+    
+    
+    treeGroup.rotateY(Math.PI / 2)
+    this.state.scene.add(treeGroup)
     terrainGeometry.deleteAttribute('color');
     terrainGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3))
-    console.log(treesPositions)
+    
+    
+
+  }
+
+  drawTrees(treesPositions, treeGroup) {
+    
+    var deciduousGeometry = new THREE.DodecahedronBufferGeometry(1, 1);
+    var stemGeometry = new THREE.DodecahedronBufferGeometry(0.75, 1);
+
+    var deciduousMaterial = new THREE.MeshLambertMaterial({ color: 0xA2FF7A });
+    var stemMaterial = new THREE.MeshLambertMaterial({ color: 0x7D5A4F });
+
+    var stemDeciduous = new THREE.Mesh(stemGeometry, stemMaterial);
+    stemDeciduous.position.set(0, 10, 0);
+    stemDeciduous.scale.set(25, 100, 25);
+
+    var deciduousCrown = new THREE.Mesh(deciduousGeometry, deciduousMaterial);
+    deciduousCrown.position.set(0, 120, 0);
+    deciduousCrown.scale.set(100, 100, 100);
+
+    var tree = new THREE.Group();
+    tree.add(stemDeciduous);
+    tree.add(deciduousCrown);
+    var position = Math.round(Math.random() * treesPositions.length)
+    tree.position.set(treesPositions[position].x, treesPositions[position].z, treesPositions[position].y);
+
+    treeGroup.add(tree);
+    
+    
+    
   }
 
   createPoliticalMap(dataJSON) {
@@ -441,7 +490,7 @@ class Map extends React.Component {
     var container = document.getElementById("main_map");
     if (this.state.dataLoaded) {
 
-      
+
       this.createTerrain(this.state.terrainData, this.state.bordersData, container);
 
     }
@@ -452,57 +501,57 @@ class Map extends React.Component {
 
         <Tab.Container id="list-group-tabs" defaultActiveKey="#terrainMap">
           <ListGroup horizontal >
-            <ListGroup.Item action href="#terrainMap" style={{borderBottomLeftRadius: 0 + '%'}}>
+            <ListGroup.Item action href="#terrainMap" style={{ borderBottomLeftRadius: 0 + '%' }}>
               Terrain map
              </ListGroup.Item>
-            <ListGroup.Item action href="#politicalMap" style={{borderBottomRightRadius: 0 + '%'}}>
+            <ListGroup.Item action href="#politicalMap" style={{ borderBottomRightRadius: 0 + '%' }}>
               Political map
                                 </ListGroup.Item>
 
           </ListGroup>
           <Tab.Content >
-           
-              <Tab.Pane id="mapPane" eventKey="#terrainMap" className="show">
 
-                <div id="main_map" style={{ width: 100 + "%", height: 100 + "%" }}></div>
-                {this.state.bordersLoaded ?
-                  <div>
-                    <Row className="m-1 text-left">
-                      <Col md="3">
-                        <Form.Check
-                          type="switch"
-                          id="borders_switch"
-                          label="Show borders"
-                          defaultChecked="true"
-                          onChange={this.showBordersHandler.bind(this)}
-                        />
-                      </Col>
-                      <Col md="1">
+            <Tab.Pane id="mapPane" eventKey="#terrainMap" className="show">
 
-                      </Col>
-                      <Col md="8">
-                        <Slider
-                          step={1}
-                          min={0}
-                          max={100}
-                          onChange={this.moveBordersHandler.bind(this)}
-                        />
-                      </Col>
-                    </Row>
-                    {this.state.chosenCountry == null ? <div style={{ display: 'none' }}></div> : <Modal country={this.state.chosenCountry} updateChosenCountry={this.getValuesChosenCountry.bind(this)}
-                      handler={this.changeChosenCountry} />}
-                  </div> :
-                  <>
-                    <LinearProgress />
-                    <LinearProgress />
-                    <Skeleton  animation="wave" variant="rect" width='100%' height={900} />
-                  </>
-                }
+              <div id="main_map" style={{ width: 100 + "%", height: 100 + "%" }}></div>
+              {this.state.bordersLoaded ?
+                <div>
+                  <Row className="m-1 text-left">
+                    <Col md="3">
+                      <Form.Check
+                        type="switch"
+                        id="borders_switch"
+                        label="Show borders"
+                        defaultChecked="true"
+                        onChange={this.showBordersHandler.bind(this)}
+                      />
+                    </Col>
+                    <Col md="1">
 
-              </Tab.Pane>
-          
+                    </Col>
+                    <Col md="8">
+                      <Slider
+                        step={1}
+                        min={0}
+                        max={100}
+                        onChange={this.moveBordersHandler.bind(this)}
+                      />
+                    </Col>
+                  </Row>
+                  {this.state.chosenCountry == null ? <div style={{ display: 'none' }}></div> : <Modal country={this.state.chosenCountry} updateChosenCountry={this.getValuesChosenCountry.bind(this)}
+                    handler={this.changeChosenCountry} />}
+                </div> :
+                <>
+                  <LinearProgress />
+                  <LinearProgress />
+                  <Skeleton animation="wave" variant="rect" width='100%' height={900} />
+                </>
+              }
+
+            </Tab.Pane>
+
             <Tab.Pane eventKey="#politicalMap">
-              <div id="Map" className="border" style={{ backgroundColor: "#7fcdff"}}></div>
+              <div id="Map" className="border" style={{ backgroundColor: "#7fcdff" }}></div>
             </Tab.Pane>
 
           </Tab.Content>
