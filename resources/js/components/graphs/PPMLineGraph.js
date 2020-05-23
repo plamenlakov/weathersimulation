@@ -32,7 +32,7 @@ class PPMLineGraph extends React.Component {
     }
     play(){
         let self = this;
-
+        console.log("play")
         var interval = setInterval(function () {
             if (self.state.yearIndex < self.props.data.length) {
                 if (self.props.paused) {
@@ -41,28 +41,37 @@ class PPMLineGraph extends React.Component {
                     self.nextYear();
                 }
             }
+            else {
                 clearInterval(interval);
+            }
         }, 1300)
 
 
     }
     nextYear(){
         let newData = this.formatedData(this.state.yearIndex);
-
-        for (let i = 0; i < this.chart.data.length; i++) {
-            this.chart.data[i].PPM = newData[i].PPM
-        }
+        // console.log("LineGrap")
+        // console.log(newData);
+        this.chart.data[0].PPM = newData[0].sumPPM;
         this.chart.invalidateRawData();
         this.state.yearIndex++;
     }
 
-    formatedData(yearIndex){
+    formatedData(year){
        
         let chartdata = [];
         let currentYear;
         let totalPPMYear;
+        let countryPPMs = [];
+        let yearData = [];
+        yearData = this.props.data[year];
 
-        let yearData = this.props.data[yearIndex];
+        for (var country in yearData) {
+            let countryData = yearData[country];
+            countryPPMs = countryData.map(c => c['ppm']);
+
+        }
+        // console.log(countryPPMs)
 
         // for(let yearIdentifier in yearData){
         //     yearArray.push(+Object.keys(this.props.data[yearIdentifier]))
@@ -72,25 +81,20 @@ class PPMLineGraph extends React.Component {
         //
         // }
         currentYear = +Object.keys(yearData);
-        totalPPMYear = (this.sumPPM(yearData));
+        totalPPMYear = (this.sumPPM(countryPPMs));
 
         chartdata.push({'Year': currentYear, 'sumPPM': totalPPMYear})
         // for(let year in yearArray){
         //     chartdata.push({'Year': yearArray[year], 'sumPPM': totalPPMArray[year]})
         // }
-        // console.log(chartdata)
         return chartdata;
     }
 
     sumPPM(array) {
         var result = 0;
-        console.log(array);
-        for (let i = 0; i < array.length; i++){
-            result += array[i].ppm
-        }
-        // array.forEach(c => {
-        //         //     result += c.ppm;
-        //         // });
+        array.forEach(c => {
+                    result += c;
+                });
 
         return result;
     }
@@ -138,7 +142,7 @@ class PPMLineGraph extends React.Component {
 
         // Create series
         let series = chart.series.push(new am4charts.LineSeries());
-        series.dataFields.valueY = "sumPPM";
+        series.dataFields.valueY = "PPM";
         series.dataFields.categoryX = "Year";
         series.interpolationDuration = 500;
         series.defaultState.transitionDuration = 0;
