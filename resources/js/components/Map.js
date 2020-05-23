@@ -262,6 +262,19 @@ class Map extends React.Component {
       colorsArray[counterJ + 2] = new THREE.Color(colorB).b;
     }
 
+    var treesPositions = [];
+
+    function addTreesPositions(counter){
+      
+        treesPositions.push({
+          x: heightsArray[counter - 2],
+          y: heightsArray[counter - 1],
+          z: heightsArray[counter]
+        })
+
+      
+    }
+
     for (let i = 2, j = 0; i < heightsArray.length; i += 3, j += 3) {
 
       if (heightsArray[i] >= 0 && heightsArray[i] < 350 / adjustHeight) {
@@ -269,6 +282,7 @@ class Map extends React.Component {
       }
       else if (heightsArray[i] >= 350 / adjustHeight && heightsArray[i] < 900 / adjustHeight) {
         addColors(j, 0x6e0000, 0x00dc00, 0x00006e);
+        addTreesPositions(i);
       }
       else if (heightsArray[i] >= 900 / adjustHeight && heightsArray[i] < 1300 / adjustHeight) {
         addColors(j, 0xf00000, 0x00fa00, 0x0000a0);
@@ -290,7 +304,7 @@ class Map extends React.Component {
 
     terrainGeometry.deleteAttribute('color');
     terrainGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3))
-
+    console.log(treesPositions)
   }
 
   createPoliticalMap(dataJSON) {
