@@ -314,9 +314,9 @@ class AllGraphs extends React.Component {
                                 </div>
                                 <div class="mt-4">
                                     <Form.Check
-                                    disabled={this.state.paused}
+                                    disabled={this.state.isRunning}
                                     type="switch"
-                                    id="borders_switch"
+                                    id="pandemic_switch"
                                     label="🦠 Start Pandemic"
                                     onChange={evt => this.togglePandemic(evt)}
                                     />
