@@ -44,8 +44,6 @@ class PPMLineGraph extends React.Component {
                 clearInterval(interval);
             }
         }, 1300)
-
-
     }
     nextYear(){
         let newData = this.formatedData(this.state.yearIndex);
@@ -55,8 +53,6 @@ class PPMLineGraph extends React.Component {
         this.chart.data[0].PPM = newData[0].sumPPM;
         this.chart.invalidateData();
         this.state.yearIndex++;
-
-
     }
 
     formatedData(year){
@@ -73,22 +69,10 @@ class PPMLineGraph extends React.Component {
             countryPPMs = countryData.map(c => c['ppm']);
 
         }
-        // console.log(countryPPMs)
 
-        // for(let yearIdentifier in yearData){
-        //     yearArray.push(+Object.keys(this.props.data[yearIdentifier]))
-        //     for(let year in this.props.data[yearIdentifier]){
-        //         totalPPMArray.push(this.sumPPM(this.props.data[yearIdentifier][year]))
-        //     }
-        //
-        // }
         currentYear = +Object.keys(yearData);
         totalPPMYear = (this.sumPPM(countryPPMs));
-
         chartdata.push({'Year': currentYear, 'sumPPM': totalPPMYear})
-        // for(let year in yearArray){
-        //     chartdata.push({'Year': yearArray[year], 'sumPPM': totalPPMArray[year]})
-        // }
         return chartdata;
     }
 
@@ -101,90 +85,164 @@ class PPMLineGraph extends React.Component {
         return result;
     }
 
+    // createChart(container){
+    //     //
+    //     //     // Themes begin
+    //     //     am4core.useTheme(am4themes_animated);
+    //     //     am4core.useTheme(am4themes_dataviz);
+    //     //     // Themes end
+    //     //
+    //     //     // Create chart instance
+    //     //     let chart = am4core.create(container, am4charts.XYChart);
+    //     //     chart.hiddenState.properties.opacity = 0;
+    //     //     chart.padding(0, 0, 0, 0);
+    //     //     chart.zoomOutButton.disabled = true;
+    //     //
+    //     //     // Add data
+    //     //     chart.data = this.formatedData(0);
+    //     //     //console.log(chartdata);
+    //     //
+    //     //     // this.setState({
+    //     //     //     chartData: chartdata
+    //     //     // }, () => { chart.data = this.state.chartData })
+    //     //
+    //     //     // Create axes
+    //     //     let dateAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    //     //     dateAxis.renderer.grid.template.location = 0;
+    //     //     dateAxis.renderer.minGridDistance = 30;
+    //     //     dateAxis.dataFields.category = "Year";
+    //     //     // dateAxis.title.text = "Year";
+    //     //     // dateAxis.dateFormats.setKey("default");
+    //     //     dateAxis.renderer.inside = true;
+    //     //     dateAxis.renderer.axisFills.template.disabled = true;
+    //     //     dateAxis.renderer.ticks.template.disabled = true;
+    //     //
+    //     //     this.state.yearAxis = dateAxis;
+    //     //
+    //     //     // Create value axis
+    //     //     let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    //     //     valueAxis.title.text = "[font-style: italic]CO2 emissions in PPM[/]";
+    //     //     valueAxis.tooltip.disabled = true;
+    //     //     valueAxis.interpolationDuration = 500;
+    //     //     valueAxis.rangeChangeDuration = 500;
+    //     //     valueAxis.renderer.inside = true;
+    //     //     valueAxis.renderer.minLabelPosition = 0.05;
+    //     //     valueAxis.renderer.maxLabelPosition = 0.95;
+    //     //     valueAxis.renderer.axisFills.template.disabled = true;
+    //     //     valueAxis.renderer.ticks.template.disabled = true;
+    //     //
+    //     //     // Create series
+    //     //     let series = chart.series.push(new am4charts.LineSeries());
+    //     //     series.dataFields.valueY = "PPM";
+    //     //     series.dataFields.categoryX = "Year";
+    //     //     series.interpolationDuration = 500;
+    //     //     series.defaultState.transitionDuration = 0;
+    //     //     series.tensionX = 0.8;
+    //     //
+    //     //     series.fillOpacity = 1;
+    //     //     let gradient = new am4core.LinearGradient();
+    //     //     gradient.addColor(chart.colors.getIndex(0), 0.4);
+    //     //     gradient.addColor(chart.colors.getIndex(0), 0.2);
+    //     //     series.fill = gradient;
+    //     //
+    //     //     chart.events.on("datavalidated", function () {
+    //     //         dateAxis.zoom({ start: 1 / 15, end: 1.2 }, false, true);
+    //     //     });
+    //     //
+    //     //     dateAxis.interpolationDuration = 500;
+    //     //     dateAxis.rangeChangeDuration = 500;
+    //     //     // Create a range to change stroke for values below 0
+    //     //     // let range = valueAxis.createSeriesRange(series);
+    //     //     // range.value = 0;
+    //     //     // range.endValue = -100000;
+    //     //     // range.contents.stroke = chart.colors.getIndex(4);
+    //     //     // range.contents.fill = range.contents.stroke;
+    //     //     // range.contents.strokeOpacity = 0.7;
+    //     //     // range.contents.fillOpacity = 0.1;
+    //     //     //
+    //     //     // // Add cursor
+    //     //     // chart.cursor = new am4charts.XYCursor();
+    //     //     // chart.cursor.xAxis = yearAxis;
+    //     //     // chart.scrollbarX = new am4core.Scrollbar();
+    //     //     //
+    //     //     // chart.numberFormatter.numberFormat = "####.###";
+    //     //     // chart.background.fill = "#fff0ff";
+    //     //     // chart.paddingRight = 40;
+    //     //
+    //     //
+    //     //     series.tooltip.getFillFromObject = false;
+    //     //     series.tooltip.adapter.add("x", (x, target) => {
+    //     //         if (series.tooltip.tooltipDataItem.valueY < 0) {
+    //     //             series.tooltip.background.fill = chart.colors.getIndex(4);
+    //     //         }
+    //     //         else {
+    //     //             series.tooltip.background.fill = chart.colors.getIndex(0);
+    //     //         }
+    //     //         return x;
+    //     //     });
+    //     //     var bullet = series.createChild(am4charts.CircleBullet);
+    //     //     bullet.circle.radius = 5;
+    //     //     bullet.fillOpacity = 1;
+    //     //     bullet.fill = chart.colors.getIndex(0);
+    //     //     bullet.isMeasured = false;
+    //     //
+    //     //     series.events.on("validated", function() {
+    //     //         bullet.moveTo(series.dataItems.last.point);
+    //     //         bullet.validatePosition();
+    //     //     });
+    //     //     dateAxis.events.on("validated", function () {
+    //     //         am4core.iter.each(dateAxis.renderer.labels.iterator(), function (label) {
+    //     //             label.fillOpacity = label.fillOpacity;
+    //     //         })
+    //     //     });
+    //     //     dateAxis.renderer.labels.template.adapter.add("fillOpacity", function (fillOpacity, target) {
+    //     //         let dataItem = target.dataItem;
+    //     //         return dataItem.position;
+    //     //     })
+    //     //
+    //     //
+    //     //     this.chart = chart;
+    // }
     createChart(container){
-
         // Themes begin
         am4core.useTheme(am4themes_animated);
-        am4core.useTheme(am4themes_dataviz);
         // Themes end
-
-        // Create chart instance
         let chart = am4core.create(container, am4charts.XYChart);
-        chart.hiddenState.properties.opacity = 0;
-        chart.padding(0, 0, 0, 0);
-        chart.zoomOutButton.disabled = true;
-
-        // Add data
         chart.data = this.formatedData(0);
-        //console.log(chartdata);
-
-        // this.setState({
-        //     chartData: chartdata
-        // }, () => { chart.data = this.state.chartData })
-
         // Create axes
-        let dateAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-        dateAxis.renderer.grid.template.location = 0;
-        dateAxis.renderer.minGridDistance = 30;
-        dateAxis.dataFields.category = "Year";
-        // dateAxis.title.text = "Year";
-        // dateAxis.dateFormats.setKey("default");
-        dateAxis.renderer.inside = true;
-        dateAxis.renderer.axisFills.template.disabled = true;
-        dateAxis.renderer.ticks.template.disabled = true;
-
-        this.state.yearAxis = dateAxis;
+        let yearAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+        yearAxis.dataFields.category = "Year";
+        yearAxis.title.text = "Year";
 
         // Create value axis
         let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
         valueAxis.title.text = "[font-style: italic]CO2 emissions in PPM[/]";
-        valueAxis.tooltip.disabled = true;
-        valueAxis.interpolationDuration = 500;
-        valueAxis.rangeChangeDuration = 500;
-        valueAxis.renderer.inside = true;
-        valueAxis.renderer.minLabelPosition = 0.05;
-        valueAxis.renderer.maxLabelPosition = 0.95;
-        valueAxis.renderer.axisFills.template.disabled = true;
-        valueAxis.renderer.ticks.template.disabled = true;
 
         // Create series
         let series = chart.series.push(new am4charts.LineSeries());
         series.dataFields.valueY = "PPM";
         series.dataFields.categoryX = "Year";
-        series.interpolationDuration = 500;
-        series.defaultState.transitionDuration = 0;
-        series.tensionX = 0.8;
+        series.strokeWidth = 3;
+        series.tooltipText = "{valueY.value}";
+        series.fillOpacity = 0.1;
 
-        series.fillOpacity = 1;
-        let gradient = new am4core.LinearGradient();
-        gradient.addColor(chart.colors.getIndex(0), 0.4);
-        gradient.addColor(chart.colors.getIndex(0), 0.2);
-        series.fill = gradient;
-
-        chart.events.on("datavalidated", function () {
-            dateAxis.zoom({ start: 1 / 15, end: 1.2 }, false, true);
-        });
-
-        dateAxis.interpolationDuration = 500;
-        dateAxis.rangeChangeDuration = 500;
         // Create a range to change stroke for values below 0
-        // let range = valueAxis.createSeriesRange(series);
-        // range.value = 0;
-        // range.endValue = -100000;
-        // range.contents.stroke = chart.colors.getIndex(4);
-        // range.contents.fill = range.contents.stroke;
-        // range.contents.strokeOpacity = 0.7;
-        // range.contents.fillOpacity = 0.1;
-        //
-        // // Add cursor
-        // chart.cursor = new am4charts.XYCursor();
-        // chart.cursor.xAxis = yearAxis;
-        // chart.scrollbarX = new am4core.Scrollbar();
-        //
-        // chart.numberFormatter.numberFormat = "####.###";
-        // chart.background.fill = "#fff0ff";
-        // chart.paddingRight = 40;
+        let range = valueAxis.createSeriesRange(series);
+        range.value = 0;
+        range.endValue = -100000;
+        range.contents.stroke = chart.colors.getIndex(4);
+        range.contents.fill = range.contents.stroke;
+        range.contents.strokeOpacity = 0.7;
+        range.contents.fillOpacity = 0.1;
 
+        // Add cursor
+        chart.cursor = new am4charts.XYCursor();
+        chart.cursor.xAxis = yearAxis;
+        chart.scrollbarX = new am4core.Scrollbar();
+
+        chart.numberFormatter.numberFormat = "####.###";
+        chart.background.fill = "#fff0ff";
+        chart.paddingRight = 40;
 
         series.tooltip.getFillFromObject = false;
         series.tooltip.adapter.add("x", (x, target) => {
@@ -196,28 +254,21 @@ class PPMLineGraph extends React.Component {
             }
             return x;
         });
-        var bullet = series.createChild(am4charts.CircleBullet);
-        bullet.circle.radius = 5;
-        bullet.fillOpacity = 1;
-        bullet.fill = chart.colors.getIndex(0);
-        bullet.isMeasured = false;
+            var bullet = series.createChild(am4charts.CircleBullet);
+            bullet.circle.radius = 5;
+            bullet.fillOpacity = 1;
+            bullet.fill = chart.colors.getIndex(0);
+            bullet.isMeasured = false;
 
-        series.events.on("validated", function() {
-            bullet.moveTo(series.dataItems.last.point);
-            bullet.validatePosition();
-        });
-        dateAxis.events.on("validated", function () {
-            am4core.iter.each(dateAxis.renderer.labels.iterator(), function (label) {
-                label.fillOpacity = label.fillOpacity;
-            })
-        });
-        dateAxis.renderer.labels.template.adapter.add("fillOpacity", function (fillOpacity, target) {
-            let dataItem = target.dataItem;
-            return dataItem.position;
-        })
-
+            series.events.on("validated", function() {
+                bullet.moveTo(series.dataItems.last.point);
+                bullet.validatePosition();
+            });
 
         this.chart = chart;
+
+
+
     }
 
 
