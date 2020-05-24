@@ -74,8 +74,6 @@ class BarChart extends React.Component {
     nextYear() {
        
         var newData = this.formatedData(this.state.yearIndex);
-        console.log("Barcha")
-        console.log(newData);
 
         for (let i = 0; i < this.chart.data.length; i++) {
             this.chart.data[i].PPM = newData[i].PPM
