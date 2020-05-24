@@ -249,28 +249,28 @@ class AllGraphs extends React.Component {
                         <Row className="m-2 text-center">
                             <Col md="3" className="border border-primary rounded p-3 mt-3">
 
-                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
+                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
                                     this.updateDeforestationInput(evt)} fullWidth />
 
-                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.electricityIncrease.toString()} label="Electricity increase %" variant="outlined" onChange={evt =>
+                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.electricityIncrease.toString()} label="Electricity increase %" variant="outlined" onChange={evt =>
                                     this.updateElectricityInput(evt)} fullWidth />
 
-                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.transportationIncrease.toString()} label="Transportation increase %" variant="outlined" onChange={evt =>
+                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.transportationIncrease.toString()} label="Transportation increase %" variant="outlined" onChange={evt =>
                                     this.updateTransportationInput(evt)} fullWidth />
 
-                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.buildingIncrease.toString()} label="Building increase %" variant="outlined" onChange={evt =>
+                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.buildingIncrease.toString()} label="Building increase %" variant="outlined" onChange={evt =>
                                     this.updateBuildingInput(evt)} fullWidth />
 
-                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
+                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
                                     this.updateManufacturingInput(evt)} fullWidth />
 
-                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.industryIncrease.toString()} label="Industry increase %" variant="outlined" onChange={evt =>
+                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.industryIncrease.toString()} label="Industry increase %" variant="outlined" onChange={evt =>
                                     this.updateIndustryInput(evt)} fullWidth />
 
-                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.agricultureIncrease.toString()} label="Agriculture increase %" variant="outlined" onChange={evt =>
+                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.agricultureIncrease.toString()} label="Agriculture increase %" variant="outlined" onChange={evt =>
                                     this.updateAgricultureInput(evt)} fullWidth />
 
-                                <TextField className="m-2 mb-3" disabled={this.state.isRunning} placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
+                                <TextField className="mb-5" disabled={this.state.isRunning} placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
                                     this.updateYearInput(evt)} fullWidth helperText={this.state.warning} error={this.state.inputError} />
 
                                 <Button variant="success" id="buttonStartSim"
@@ -312,12 +312,15 @@ class AllGraphs extends React.Component {
                                     </Snackbar>
                                     
                                 </div>
-                                <Form.Check
-                                type="switch"
-                                id="borders_switch"
-                                label="🦠 Start Pandemic"
-                                onChange={evt => this.togglePandemic(evt)}
-                                />
+                                <div class="mt-4">
+                                    <Form.Check
+                                    disabled={this.state.paused}
+                                    type="switch"
+                                    id="borders_switch"
+                                    label="🦠 Start Pandemic"
+                                    onChange={evt => this.togglePandemic(evt)}
+                                    />
+                                </div>
                             </Col>
                             <Col md="9" className='p-3'><Map data={this.state.moduleData} isRunning={this.state.isRunning} paused={this.state.paused} currentWaterLevels={this.state.currentWaterLevels} currentYearData={this.state.currentData} updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /></Col>
                         </Row>
