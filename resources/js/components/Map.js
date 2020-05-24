@@ -276,7 +276,7 @@ class Map extends React.Component {
 
     }
     var treecounter = 0;
-    var treeGroup = new THREE.Group();
+    //var treeGroup = new THREE.Group();
     for (let i = 2, j = 0; i < heightsArray.length; i += 3, j += 3) {
 
       if (heightsArray[i] >= 0 && heightsArray[i] < 350 / adjustHeight) {
@@ -286,12 +286,6 @@ class Map extends React.Component {
       else if (heightsArray[i] >= 350 / adjustHeight && heightsArray[i] < 900 / adjustHeight) {
         addColors(j, 0x6e0000, 0x00dc00, 0x00006e);
         addTreesPositions(j)
-        if(treecounter < 500){
-          //this.drawTrees(heightsArray[j - 2], heightsArray[j], heightsArray[j - 1], treeGroup)
-          treecounter++;
-        }
-        
-        //addTreesPositions(i);
       }
       else if (heightsArray[i] >= 900 / adjustHeight && heightsArray[i] < 1300 / adjustHeight) {
         addColors(j, 0xf00000, 0x00fa00, 0x0000a0);
@@ -312,15 +306,15 @@ class Map extends React.Component {
       }
 
     }
-    if(!this.state.mapLoaded){
-      for(let i = 0; i < 300; i++){
-        this.drawTrees(treesPositions, treeGroup);
-      }
-    }
+    // if(!this.state.mapLoaded){
+    //   for(let i = 0; i < 300; i++){
+    //     this.drawTrees(treesPositions, treeGroup);
+    //   }
+    // }
     
     
-    treeGroup.rotateY(Math.PI / 2)
-    this.state.scene.add(treeGroup)
+    // treeGroup.rotateY(Math.PI / 2)
+    // this.state.scene.add(treeGroup)
     terrainGeometry.deleteAttribute('color');
     terrainGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3))
     

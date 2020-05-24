@@ -63,7 +63,7 @@ class ModalCountry extends React.Component {
         this.setState({
             industryIncrease: +evt.target.value
         })
-        
+
     }
     updateAgricultureInput(evt) {
         this.setState({
@@ -86,14 +86,9 @@ class ModalCountry extends React.Component {
     }
 
     updateChosenCountry() {
-        // var dataUpdate = [];
-        // dataUpdate.push(this.state.deforestationIncrease, this.state.electricityIncrease, this.state.transportationIncrease,
-        //                 this.state.buildingIncrease, this.state.agricultureIncrease,
-        //                 this.state.industryIncrease, this.state.manufacturingIncrease);
-        // this.props.updateChosenCountry(dataUpdate);
         this.props.country.deforestationGrowth = this.state.deforestationIncrease
         this.props.country.electricityGrowth = this.state.electricityIncrease
-        this.props.country.transportationGrowth =this.state.transportationIncrease
+        this.props.country.transportationGrowth = this.state.transportationIncrease
         this.props.country.buildingGrowth = this.state.buildingIncrease
         this.props.country.agricultureGrowth = this.state.agricultureIncrease
         this.props.country.industryGrowth = this.state.industryIncrease
@@ -103,9 +98,6 @@ class ModalCountry extends React.Component {
 
 
     modalBody() {
-  
-        //var firstCountry = this.props.countries[0];
-        //console.log(this.state.agricultureIncrease)
         var modalBody =
             <>
                 <Tab.Container id="list-group-tabs" defaultActiveKey="#info">
@@ -118,7 +110,16 @@ class ModalCountry extends React.Component {
                         </ListGroup.Item>
                     </ListGroup>
                     <Tab.Content className="m-3">
-                        <Tab.Pane eventKey="#info">
+                        <Tab.Pane eventKey="#info" >
+                            <Row>
+                                <Col md='6'>
+                                    <img src={'images/flags/' + this.props.country.name + '.png'} style={{ width: 100 + '%' }}></img>
+                                </Col>
+                                <Col md='6'>
+                                
+                                </Col>
+                            </Row>
+
                             <Piechart className="m-1" country={this.props.country} />
                         </Tab.Pane>
                         <Tab.Pane eventKey="#inputs">
@@ -177,7 +178,7 @@ class ModalCountry extends React.Component {
                     <Modal.Header closeButton>
                         <Modal.Title>{this.props.country.name}</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body id="bodyOfModal">
+                    <Modal.Body id="bodyOfModal" style={{ backgroundColor: '#F2F2FA' }}>
                         {this.modalBody()}
                     </Modal.Body>
                     <Modal.Footer>
