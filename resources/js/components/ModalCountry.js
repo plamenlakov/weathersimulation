@@ -12,6 +12,7 @@ import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import Tabs from 'react-bootstrap/Tabs'
 import TextField from '@material-ui/core/TextField';
+import Table from 'react-bootstrap/Table';
 
 class ModalCountry extends React.Component {
     constructor(props) {
@@ -112,11 +113,31 @@ class ModalCountry extends React.Component {
                     <Tab.Content className="m-3">
                         <Tab.Pane eventKey="#info" >
                             <Row>
-                                <Col md='6'>
-                                    <img src={'images/flags/' + this.props.country.name + '.png'} style={{ width: 100 + '%' }}></img>
-                                </Col>
-                                <Col md='6'>
-                                
+                                <Col md='12'>
+                                    <Table bordered>
+                                        <thead>
+                                            <tr>
+                                                <th>Population</th>
+                                                <th>Area (in km²)</th>
+                                                <th>Forest area (in km²)</th>
+                                                <th>Forest area (in %)</th>
+                                                <th>PPM</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>{this.props.country.population}</td>
+                                                <td>{this.props.country.area}</td>
+                                                <td>{Math.round(this.props.country.getForestArea() * 100) / 100}</td>
+                                                <td>{this.props.country.forests}</td>
+                                                <td>{Math.round(this.props.country.ppm * 100) / 100}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colSpan="5" className='text-center'><img src={'images/flags/' + this.props.country.name + '.png'} style={{ width: 25 + '%' }}></img> </td>
+                                            </tr>
+                                        </tbody>
+                                    </Table>
                                 </Col>
                             </Row>
 
@@ -167,7 +188,8 @@ class ModalCountry extends React.Component {
 
         const handleClose = () => this.setState({ show: false });
         const handleShow = () => this.setState({ show: true });
-
+        const handleSaveAndClose = () => {this.updateChosenCountry.bind(this); handleClose()}
+        
         return (
             <>
                 <Button variant="primary" onClick={handleShow} id="buttonCountryClick" style={{ display: 'none' }}>
@@ -185,7 +207,7 @@ class ModalCountry extends React.Component {
                         <Button variant="secondary" onClick={handleClose}>
                             Close
                         </Button>
-                        <Button variant="primary" onClick={this.updateChosenCountry.bind(this)}>
+                        <Button variant="primary" onClick={handleSaveAndClose}>
                             Save Changes
                         </Button>
                     </Modal.Footer>

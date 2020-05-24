@@ -79,7 +79,6 @@ class AllGraphs extends React.Component {
                 this.state.agricultureIncrease);
 
         this.updateModuleData(newData)
-
         document.getElementById("buttonStartSim").style.display = 'none';
         document.getElementById("buttonsWhenStarted").style.display = 'initial';
 
@@ -108,7 +107,8 @@ class AllGraphs extends React.Component {
             this.unpauseSimulation();
         }
         this.setState({
-            currentData: null
+            currentData: null,
+            
         })
         this.updateModuleData(newData)
         document.getElementById("buttonStartSim").style.display = 'initial';
@@ -181,7 +181,7 @@ class AllGraphs extends React.Component {
 
     }
 
- 
+
 
     updateState(state) {
         if (state == 'Finished') {
@@ -303,7 +303,7 @@ class AllGraphs extends React.Component {
 
                                 </Col>
                                 <Col md="6" className="text-center mt-3">
-                                    <PPMLineGraph data={this.state.moduleData} paused={this.state.paused}/>
+                                    <PPMLineGraph data={this.state.moduleData} paused={this.state.paused} />
                                 </Col>
                             </Row>
 

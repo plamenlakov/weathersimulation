@@ -18,7 +18,7 @@ class Piechart extends React.Component {
                 title: `CO₂ in tons per sector`,
                 backgroundColor: '#fff0ff',
                 pieSliceText: 'label',
-                legend: { position: 'right' },
+                legend: { position: 'bottom' },
                 animation: {
                     duration: 1200,
                     easing: 'ease',

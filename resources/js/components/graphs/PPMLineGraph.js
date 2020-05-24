@@ -94,14 +94,15 @@ class PPMLineGraph extends React.Component {
     createChart(container) {
         // Themes begin
         am4core.useTheme(am4themes_animated);
+        
         // Themes end
         let chart = am4core.create(container, am4charts.XYChart);
         chart.data = this.formatedData(0);
+
         // Create axes
         let yearAxis = chart.xAxes.push(new am4charts.ValueAxis());
         yearAxis.dataFields.category = "Year";
         yearAxis.title.text = "Year";
-        //yearAxis.max = 2100
         yearAxis.interpolationDuration = 650;
         yearAxis.duration = 650;
         yearAxis.renderer.axisFills.template.disabled = true;
