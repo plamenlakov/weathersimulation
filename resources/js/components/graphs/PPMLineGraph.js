@@ -4,6 +4,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import am4themes_dataviz from "@amcharts/amcharts4/themes/dataviz";
 import { sum } from 'd3';
 
 class PPMLineGraph extends React.Component {
@@ -13,7 +14,7 @@ class PPMLineGraph extends React.Component {
             chartData: [],
             yearIndex: 0,
 
-
+            yearAxis: null
         }
     }
 
@@ -26,13 +27,11 @@ class PPMLineGraph extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.data != prevProps.data) {
             this.state.yearIndex = 0;
-            // this.chart.data = this.formatedData(this.state.yearIndex);
             this.play();
         }
     }
     play(){
         let self = this;
-        console.log("play")
         var interval = setInterval(function () {
             if (self.state.yearIndex < self.props.data.length) {
                 if (self.props.paused) {
@@ -51,11 +50,13 @@ class PPMLineGraph extends React.Component {
     nextYear(){
         let newData = this.formatedData(this.state.yearIndex);
         console.log("LineGrap")
-        // console.log(newData);
-        this.chart.addData({'Year': newData[0].Year, 'sumPPM': newData[0].sumPPM});
+        console.log(newData);
+        this.chart.addData({'Year': newData[0].Year, 'PPM': newData[0].sumPPM});
         this.chart.data[0].PPM = newData[0].sumPPM;
-        this.chart.invalidateRawData();
+        this.chart.invalidateData();
         this.state.yearIndex++;
+
+
     }
 
     formatedData(year){
@@ -103,7 +104,9 @@ class PPMLineGraph extends React.Component {
     createChart(container){
 
         // Themes begin
-        am4core.useTheme(am4themes_animated);        // Themes end
+        am4core.useTheme(am4themes_animated);
+        am4core.useTheme(am4themes_dataviz);
+        // Themes end
 
         // Create chart instance
         let chart = am4core.create(container, am4charts.XYChart);
@@ -130,6 +133,8 @@ class PPMLineGraph extends React.Component {
         dateAxis.renderer.axisFills.template.disabled = true;
         dateAxis.renderer.ticks.template.disabled = true;
 
+        this.state.yearAxis = dateAxis;
+
         // Create value axis
         let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
         valueAxis.title.text = "[font-style: italic]CO2 emissions in PPM[/]";
@@ -149,6 +154,12 @@ class PPMLineGraph extends React.Component {
         series.interpolationDuration = 500;
         series.defaultState.transitionDuration = 0;
         series.tensionX = 0.8;
+
+        series.fillOpacity = 1;
+        let gradient = new am4core.LinearGradient();
+        gradient.addColor(chart.colors.getIndex(0), 0.4);
+        gradient.addColor(chart.colors.getIndex(0), 0.2);
+        series.fill = gradient;
 
         chart.events.on("datavalidated", function () {
             dateAxis.zoom({ start: 1 / 15, end: 1.2 }, false, true);
@@ -195,19 +206,30 @@ class PPMLineGraph extends React.Component {
             bullet.moveTo(series.dataItems.last.point);
             bullet.validatePosition();
         });
-    
+        dateAxis.events.on("validated", function () {
+            am4core.iter.each(dateAxis.renderer.labels.iterator(), function (label) {
+                label.fillOpacity = label.fillOpacity;
+            })
+        });
+        dateAxis.renderer.labels.template.adapter.add("fillOpacity", function (fillOpacity, target) {
+            let dataItem = target.dataItem;
+            return dataItem.position;
+        })
+
+
         this.chart = chart;
     }
 
+
     componentDidMount() {
-        var container = document.getElementById("chartdiv");
+        var container = document.getElementById("linechartdiv");
         this.createChart(container);
     }
 
     render() {
         
         return (
-            <div id="chartdiv" style={{ height: 500 + 'px' }}></div>
+            <div id="linechartdiv" style={{ height: 500 + 'px' }}></div>
         )
     }
 }
