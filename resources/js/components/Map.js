@@ -532,7 +532,7 @@ class Map extends React.Component {
                       />
                     </Col>
                   </Row>
-                  {this.state.chosenCountry == null ? <div style={{ display: 'none' }}></div> : <Modal country={this.state.chosenCountry} updateChosenCountry={this.getValuesChosenCountry.bind(this)}
+                  {this.state.chosenCountry == null ? <div style={{ display: 'none' }}></div> : <Modal isRunning={this.props.isRunning} country={this.state.chosenCountry} updateChosenCountry={this.getValuesChosenCountry.bind(this)}
                     handler={this.changeChosenCountry} />}
                 </div> :
                 <>

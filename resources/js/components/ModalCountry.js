@@ -14,6 +14,7 @@ import Tabs from 'react-bootstrap/Tabs'
 import TextField from '@material-ui/core/TextField';
 import Table from 'react-bootstrap/Table';
 
+
 class ModalCountry extends React.Component {
     constructor(props) {
         super(props);
@@ -144,30 +145,30 @@ class ModalCountry extends React.Component {
                             <Piechart className="m-1" country={this.props.country} />
                         </Tab.Pane>
                         <Tab.Pane eventKey="#inputs">
-                            <TextField className="m-2" placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
+                            <TextField className="m-2" disabled={this.props.isRunning} placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
                                 this.updateDeforestationInput(evt)} fullWidth />
                             <Row>
                                 <Col md="4">
-                                    <TextField className="m-2" placeholder={this.state.electricityIncrease.toString()} label="Electricity increase %" variant="outlined" onChange={evt =>
+                                    <TextField className="m-2" disabled={this.props.isRunning} placeholder={this.state.electricityIncrease.toString()} label="Electricity increase %" variant="outlined" onChange={evt =>
                                         this.updateElectricityInput(evt)} fullWidth />
 
-                                    <TextField className="m-2" placeholder={this.state.transportationIncrease.toString()} label="Transportation increase %" variant="outlined" onChange={evt =>
+                                    <TextField className="m-2" disabled={this.props.isRunning} placeholder={this.state.transportationIncrease.toString()} label="Transportation increase %" variant="outlined" onChange={evt =>
                                         this.updateTransportationInput(evt)} fullWidth />
                                 </Col>
 
                                 <Col md="4">
-                                    <TextField className="m-2" placeholder={this.state.buildingIncrease.toString()} label="Building increase %" variant="outlined" onChange={evt =>
+                                    <TextField className="m-2" disabled={this.props.isRunning} placeholder={this.state.buildingIncrease.toString()} label="Building increase %" variant="outlined" onChange={evt =>
                                         this.updateBuildingInput(evt)} fullWidth />
 
-                                    <TextField className="m-2" placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
+                                    <TextField className="m-2" disabled={this.props.isRunning} placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
                                         this.updateManufacturingInput(evt)} fullWidth />
                                 </Col>
 
                                 <Col md="4">
-                                    <TextField className="m-2" placeholder={this.state.industryIncrease.toString()} label="Industry increase %" variant="outlined" onChange={evt =>
+                                    <TextField className="m-2" disabled={this.props.isRunning} placeholder={this.state.industryIncrease.toString()} label="Industry increase %" variant="outlined" onChange={evt =>
                                         this.updateIndustryInput(evt)} fullWidth />
 
-                                    <TextField className="m-2" placeholder={this.state.agricultureIncrease.toString()} label="Agriculture increase %" variant="outlined" onChange={evt =>
+                                    <TextField className="m-2" disabled={this.props.isRunning} placeholder={this.state.agricultureIncrease.toString()} label="Agriculture increase %" variant="outlined" onChange={evt =>
                                         this.updateAgricultureInput(evt)} fullWidth />
                                 </Col>
                             </Row>
@@ -189,7 +190,7 @@ class ModalCountry extends React.Component {
         const handleClose = () => this.setState({ show: false });
         const handleShow = () => this.setState({ show: true });
         const handleSaveAndClose = () => {this.updateChosenCountry.bind(this); handleClose()}
-        
+
         return (
             <>
                 <Button variant="primary" onClick={handleShow} id="buttonCountryClick" style={{ display: 'none' }}>

@@ -15,7 +15,8 @@ class PPMLineGraph extends React.Component {
             yearIndex: 0,
 
             yearAxis: null,
-            valueAxis: null
+            valueAxis: null,
+            series: null,
         }
     }
 
@@ -28,9 +29,9 @@ class PPMLineGraph extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.data != prevProps.data) {
             if (+Object.keys(this.props.data[0]) == 2020) {
-                this.state.yearAxis.max = +Object.keys(this.props.data[this.props.data.length - 1]) + 5
                 this.chart.data = []
             }
+            this.state.yearAxis.max = +Object.keys(this.props.data[this.props.data.length - 1]) + 5
             this.state.yearIndex = 0;
             this.play();
         }
@@ -94,7 +95,7 @@ class PPMLineGraph extends React.Component {
     createChart(container) {
         // Themes begin
         am4core.useTheme(am4themes_animated);
-        
+
         // Themes end
         let chart = am4core.create(container, am4charts.XYChart);
         chart.data = this.formatedData(0);
@@ -108,6 +109,9 @@ class PPMLineGraph extends React.Component {
         yearAxis.renderer.axisFills.template.disabled = true;
         yearAxis.renderer.ticks.template.disabled = true;
         yearAxis.min = 2015;
+        yearAxis.max = 2025;
+        yearAxis.keepSelection = true;
+
         this.state.yearAxis = yearAxis;
 
         // Create value axis
@@ -135,8 +139,8 @@ class PPMLineGraph extends React.Component {
         series.interpolationDuration = 1300;
         series.defaultState.transitionDuration = 0;
         series.tensionX = 0.9;
-
-
+        series.minBulletDistance = 35;
+        this.state.series = series;
         // Create a range to change stroke for values below 0
         // let range = valueAxis.createSeriesRange(series);
         // range.value = 0;
@@ -154,20 +158,22 @@ class PPMLineGraph extends React.Component {
         chart.scrollbarX = new am4charts.XYChartScrollbar();
         chart.scrollbarX.series.push(series);
 
+        
+
         chart.numberFormatter.numberFormat = "####.###";
         chart.background.fill = "#fff0ff";
         chart.paddingRight = 40;
 
-        series.tooltip.getFillFromObject = false;
-        series.tooltip.adapter.add("x", (x, target) => {
-            if (series.tooltip.tooltipDataItem.valueY < 0) {
-                series.tooltip.background.fill = chart.colors.getIndex(4);
-            }
-            else {
-                series.tooltip.background.fill = chart.colors.getIndex(0);
-            }
-            return x;
-        });
+        // series.tooltip.getFillFromObject = false;
+        // series.tooltip.adapter.add("x", (x, target) => {
+        //     if (series.tooltip.tooltipDataItem.valueY < 0) {
+        //         series.tooltip.background.fill = chart.colors.getIndex(4);
+        //     }
+        //     else {
+        //         series.tooltip.background.fill = chart.colors.getIndex(0);
+        //     }
+        //     return x;
+        // });
 
         var bullet = series.bullets.push(new am4charts.CircleBullet());
         bullet.circle.strokeWidth = 2;

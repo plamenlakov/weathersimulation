@@ -1,14 +1,10 @@
 import React from 'react';
-import Piechart from "./Piechart";
 import PPMLineGraph from "./PPMLineGraph";
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
 import Map from "../Map";
 import Simulation from '../classes/Simulation';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Form from 'react-bootstrap/Form';
 import BarChart from './BarChart';
 import TextField from '@material-ui/core/TextField';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,6 +12,10 @@ import { faPause, faPlay, faStop, faRedoAlt } from '@fortawesome/free-solid-svg-
 import Badge from '@material-ui/core/Badge';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
+import AlertM from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
+import Chip from '@material-ui/core/Chip';
+
 
 class AllGraphs extends React.Component {
     constructor(props) {
@@ -41,8 +41,8 @@ class AllGraphs extends React.Component {
 
             isFetching: true,
             inputError: false,
-            paused: false,
-            isMapLoaded: 'none'
+            paused: true,
+            isRunning: false,
         }
         this.startSimulation = this.startSimulation.bind(this);
     }
@@ -78,6 +78,8 @@ class AllGraphs extends React.Component {
                 this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
                 this.state.agricultureIncrease);
 
+        this.unpauseSimulation();
+        this.changeRunningState(true)
         this.updateModuleData(newData)
         document.getElementById("buttonStartSim").style.display = 'none';
         document.getElementById("buttonsWhenStarted").style.display = 'initial';
@@ -85,16 +87,24 @@ class AllGraphs extends React.Component {
 
     }
 
+    changeRunningState(state) {
+        this.setState({
+            isRunning: state
+        })
+    }
+
     pauseSimulation() {
 
         this.setState({
-            paused: true
+            paused: true,
+            isRunning: false
         })
     }
 
     unpauseSimulation() {
         this.setState({
-            paused: false
+            paused: false,
+            isRunning: true
         })
     }
 
@@ -106,10 +116,11 @@ class AllGraphs extends React.Component {
         if (this.state.paused) {
             this.unpauseSimulation();
         }
+
         this.setState({
             currentData: null,
-            
         })
+        this.changeRunningState(false);
         this.updateModuleData(newData)
         document.getElementById("buttonStartSim").style.display = 'initial';
         document.getElementById("buttonsWhenStarted").style.display = 'none';
@@ -120,6 +131,7 @@ class AllGraphs extends React.Component {
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
             this.state.agricultureIncrease)
 
+        this.changeRunningState(true);
         this.unpauseSimulation();
         this.updateModuleData(newData);
 
@@ -239,28 +251,28 @@ class AllGraphs extends React.Component {
                         <Row className="m-2 text-center">
                             <Col md="3" className="border border-primary rounded p-3 mt-3">
 
-                                <TextField className="m-2" placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
+                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
                                     this.updateDeforestationInput(evt)} fullWidth />
 
-                                <TextField className="m-2" placeholder={this.state.electricityIncrease.toString()} label="Electricity increase %" variant="outlined" onChange={evt =>
+                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.electricityIncrease.toString()} label="Electricity increase %" variant="outlined" onChange={evt =>
                                     this.updateElectricityInput(evt)} fullWidth />
 
-                                <TextField className="m-2" placeholder={this.state.transportationIncrease.toString()} label="Transportation increase %" variant="outlined" onChange={evt =>
+                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.transportationIncrease.toString()} label="Transportation increase %" variant="outlined" onChange={evt =>
                                     this.updateTransportationInput(evt)} fullWidth />
 
-                                <TextField className="m-2" placeholder={this.state.buildingIncrease.toString()} label="Building increase %" variant="outlined" onChange={evt =>
+                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.buildingIncrease.toString()} label="Building increase %" variant="outlined" onChange={evt =>
                                     this.updateBuildingInput(evt)} fullWidth />
 
-                                <TextField className="m-2" placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
+                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
                                     this.updateManufacturingInput(evt)} fullWidth />
 
-                                <TextField className="m-2" placeholder={this.state.industryIncrease.toString()} label="Industry increase %" variant="outlined" onChange={evt =>
+                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.industryIncrease.toString()} label="Industry increase %" variant="outlined" onChange={evt =>
                                     this.updateIndustryInput(evt)} fullWidth />
 
-                                <TextField className="m-2" placeholder={this.state.agricultureIncrease.toString()} label="Agriculture increase %" variant="outlined" onChange={evt =>
+                                <TextField className="m-2" disabled={this.state.isRunning} placeholder={this.state.agricultureIncrease.toString()} label="Agriculture increase %" variant="outlined" onChange={evt =>
                                     this.updateAgricultureInput(evt)} fullWidth />
 
-                                <TextField className="m-2 mb-3" placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
+                                <TextField className="m-2 mb-3" disabled={this.state.isRunning} placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
                                     this.updateYearInput(evt)} fullWidth helperText={this.state.warning} error={this.state.inputError} />
 
                                 <Button variant="success" id="buttonStartSim"
@@ -274,20 +286,38 @@ class AllGraphs extends React.Component {
                                     <Button variant="primary" id="buttonResumeSim" className='m-2' disabled={!this.state.paused}
                                         onClick={this.resumeSimulation.bind(this)}><FontAwesomeIcon icon={faPlay} /></Button>
 
-                                    <Badge color="secondary" badgeContent={this.state.currentState} anchorOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'right',
-                                    }}>
-                                        <Button variant="danger" id="buttonStopSim" className='m-2'
-                                            onClick={this.stopSimulation.bind(this)}>{this.state.stateIcon}</Button>
-                                    </Badge>
+                                    <Button variant="danger" id="buttonStopSim" className='m-2'
+                                        onClick={this.stopSimulation.bind(this)}>{this.state.stateIcon}</Button>
+                                    <Row>
+                                        <Col md='4'>
+
+                                        </Col>
+                                        <Col md='4'>
+                                            <Chip label={this.state.currentState}/>
+                                        </Col>
+                                        <Col md='4'>
+
+                                        </Col>
+                                    </Row>
+
+
+                                    <Snackbar
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                        open={this.state.isRunning}
+                                        autoHideDuration={6000}
+                                    >
+                                        <AlertM severity="warning">
+                                            The simulation must be paused to change values!
+                                        </AlertM>
+                                    </Snackbar>
 
                                 </div>
 
-
-
                             </Col>
-                            <Col md="9" className='p-3'><Map data={this.state.moduleData} paused={this.state.paused} currentWaterLevels={this.state.currentWaterLevels} currentYearData={this.state.currentData} updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /></Col>
+                            <Col md="9" className='p-3'><Map data={this.state.moduleData} isRunning={this.state.isRunning} paused={this.state.paused} currentWaterLevels={this.state.currentWaterLevels} currentYearData={this.state.currentData} updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /></Col>
                         </Row>
 
                         <Alert variant='primary' className='m-3'>
