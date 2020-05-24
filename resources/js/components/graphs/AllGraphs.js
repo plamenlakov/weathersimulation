@@ -34,7 +34,6 @@ class AllGraphs extends React.Component {
             currentState: null,
             currentWaterLevels: null,
 
-
             moduleData: null,
             yearToStop: 2020,
             warning: "",
@@ -238,10 +237,6 @@ class AllGraphs extends React.Component {
         })
     }
 
-    updateSingleCountry(data) {
-
-    }
-
     render() {
         return (
             <div className="App">
@@ -307,8 +302,7 @@ class AllGraphs extends React.Component {
                                             horizontal: 'left',
                                         }}
                                         open={this.state.isRunning}
-                                        autoHideDuration={6000}
-                                    >
+                                        autoHideDuration={6000}>
                                         <AlertM severity="warning">
                                             The simulation must be paused to change values!
                                         </AlertM>
@@ -349,16 +343,5 @@ class AllGraphs extends React.Component {
         )
     }
 }
-
-// function AllGraphs() {
-//     return (
-//         <div>
-//
-//
-//
-//
-//         </div>
-//     );
-// }
 
 export default AllGraphs;

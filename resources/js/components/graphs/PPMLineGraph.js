@@ -125,6 +125,7 @@ class PPMLineGraph extends React.Component {
         valueAxis.renderer.ticks.template.disabled = true;
         valueAxis.max = chart.data[0].PPM * 2
         this.state.valueAxis = valueAxis;
+        
         // Create series
         let series = chart.series.push(new am4charts.LineSeries());
         series.dataFields.valueY = "PPM";
@@ -141,14 +142,6 @@ class PPMLineGraph extends React.Component {
         series.tensionX = 0.9;
         series.minBulletDistance = 35;
         this.state.series = series;
-        // Create a range to change stroke for values below 0
-        // let range = valueAxis.createSeriesRange(series);
-        // range.value = 0;
-        // range.endValue = 800;
-        // range.contents.stroke = chart.colors.getIndex(4);
-        // range.contents.fill = range.contents.stroke;
-        // range.contents.strokeOpacity = 0.7;
-        // range.contents.fillOpacity = 0.1;
 
         // Add cursor
         chart.cursor = new am4charts.XYCursor();
@@ -164,17 +157,6 @@ class PPMLineGraph extends React.Component {
         chart.background.fill = "#fff0ff";
         chart.paddingRight = 40;
 
-        // series.tooltip.getFillFromObject = false;
-        // series.tooltip.adapter.add("x", (x, target) => {
-        //     if (series.tooltip.tooltipDataItem.valueY < 0) {
-        //         series.tooltip.background.fill = chart.colors.getIndex(4);
-        //     }
-        //     else {
-        //         series.tooltip.background.fill = chart.colors.getIndex(0);
-        //     }
-        //     return x;
-        // });
-
         var bullet = series.bullets.push(new am4charts.CircleBullet());
         bullet.circle.strokeWidth = 2;
         bullet.circle.radius = 4;
@@ -182,22 +164,6 @@ class PPMLineGraph extends React.Component {
 
         var bullethover = bullet.states.create("hover");
         bullethover.properties.scale = 1.3;
-        // var bullet = series.createChild(am4charts.CircleBullet);
-        // bullet.circle.radius = 5;
-        // bullet.fillOpacity = 1;
-        // bullet.fill = chart.colors.getIndex(0);
-        // bullet.isMeasured = false;
-
-        // series.events.on("validated", function () {
-        //     if (series.dataItems.last) {
-        //         bullet.moveTo(series.dataItems.last.point);
-        //     }
-        //     else {
-
-        //     }
-
-        //     bullet.validatePosition();
-        // });
 
         this.chart = chart;
 
