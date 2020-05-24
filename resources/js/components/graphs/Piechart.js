@@ -15,10 +15,8 @@ class Piechart extends React.Component {
     options() {
         return (
             {
-                title: `${this.props.data[0]}`,
+                title: `CO₂ in tons per sector`,
                 backgroundColor: '#fff0ff',
-                pieHole: 0.4,
-                //sliceVisibilityThreshold: 0.02,
                 pieSliceText: 'label',
                 legend: { position: 'bottom' },
                 animation: {
@@ -30,16 +28,31 @@ class Piechart extends React.Component {
         )
     }
 
+    formatedData(){
+        var pieData = [];
+
+        pieData.push(["SectorName", "Sector"]);
+        pieData.push(["Electricity", this.props.country.electricity])
+        pieData.push(["Transportation", this.props.country.transportation])
+        pieData.push(["Industry", this.props.country.industry]);
+        pieData.push(["Agriculture", this.props.country.agriculture]);
+        pieData.push(["Manufacturing", this.props.country.manufacturing]);
+        pieData.push(["Building", this.props.country.building_value]);
+        
+        return pieData;
+    }
+
+
 
     render() {
         return (
             <div>
                 <Chart
                     width={'100%'}
-                    height={'500px'}
-                    chartType="PieChart"
+                    height={'400px'}
+                    chartType="PieChart"    
                     loader={<h4>Loading graph<Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /><Spinner animation="grow" size="sm" /></h4>}
-                    data={this.props.data}
+                    data={this.formatedData()}
                     options={this.options()}
                     rootProps={{ 'data-testid': '3' }} />
             </div>
