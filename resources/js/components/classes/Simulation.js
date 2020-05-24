@@ -20,6 +20,14 @@ class Simulation {
         return this._temperatureIncrease;
     }
 
+    set hasPandemic(v) {
+        this._hasPandemic = v;
+    }
+
+    get hasPandemic() {
+        return this._hasPandemic;
+    }
+
     loadCountries(path) {
         this.initialCountries = [];
         var self = this;
@@ -48,9 +56,13 @@ class Simulation {
             this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);
             result.push({ [index]: countriesInThisYear })
             if (index !== year) {
-                this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
-                    inputIndustry, inputAgriculture)
-            }  
+                if(this.hasPandemic){
+                    this.updateCountries(copyArray, inputPopulation + 0.1, inputDeforestation - 0.1, inputElectricity + 0.6, inputTransportation - 5, inputBuilding, inputManufacturing - 2.5, inputIndustry - 2, inputAgriculture + 0.5)
+                } else {
+                    this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                        inputIndustry, inputAgriculture)
+                }
+            }   
            
         }
 
@@ -68,9 +80,13 @@ class Simulation {
             this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);
             result.push({ [index]: countriesInThisYear})
             if (index !== year) {
-                this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
-                    inputIndustry, inputAgriculture)
-            }  
+                if(this.hasPandemic){
+                    this.updateCountries(copyArray, inputPopulation + 0.1, inputDeforestation - 0.1, inputElectricity + 0.6, inputTransportation - 5, inputBuilding, inputManufacturing - 2.5, inputIndustry - 2, inputAgriculture + 0.5)
+                } else {
+                    this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                        inputIndustry, inputAgriculture)
+                }
+            }   
            
         }
         

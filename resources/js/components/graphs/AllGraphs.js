@@ -15,6 +15,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import AlertM from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 import Chip from '@material-ui/core/Chip';
+import Form from 'react-bootstrap/Form';
 
 
 class AllGraphs extends React.Component {
@@ -192,7 +193,9 @@ class AllGraphs extends React.Component {
 
     }
 
-
+    togglePandemic() {
+        this.simulation.hasPandemic = !this.simulation.hasPandemic;
+    }
 
     updateState(state) {
         if (state == 'Finished') {
@@ -307,9 +310,14 @@ class AllGraphs extends React.Component {
                                             The simulation must be paused to change values!
                                         </AlertM>
                                     </Snackbar>
-
+                                    
                                 </div>
-
+                                <Form.Check
+                                type="switch"
+                                id="borders_switch"
+                                label="🦠 Start Pandemic"
+                                onChange={evt => this.togglePandemic(evt)}
+                                />
                             </Col>
                             <Col md="9" className='p-3'><Map data={this.state.moduleData} isRunning={this.state.isRunning} paused={this.state.paused} currentWaterLevels={this.state.currentWaterLevels} currentYearData={this.state.currentData} updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /></Col>
                         </Row>
