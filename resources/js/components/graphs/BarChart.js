@@ -62,6 +62,7 @@ class BarChart extends React.Component {
                 
             }
             else {
+                self.sendDataToParent(self.props.data[self.state.yearIndex - 1])
                 self.sendStateToParent('Finished')
 
                 clearInterval(interval);

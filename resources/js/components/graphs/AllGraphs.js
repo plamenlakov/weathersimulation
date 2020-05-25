@@ -200,10 +200,10 @@ class AllGraphs extends React.Component {
     updateState(state) {
         if (state == 'Finished') {
             this.setState({
-                currentData: null,
-                stateIcon: <FontAwesomeIcon icon={faRedoAlt} />
+                stateIcon: <FontAwesomeIcon icon={faRedoAlt} />,
+                paused: true
             })
-
+            this.changeRunningState(false)
         } else {
             this.setState({
                 stateIcon: <FontAwesomeIcon icon={faStop} />
@@ -291,7 +291,7 @@ class AllGraphs extends React.Component {
 
                                         </Col>
                                         <Col md='4'>
-                                            <Chip label={this.state.currentState}/>
+                                            <Chip label={this.state.currentState} />
                                         </Col>
                                         <Col md='4'>
 
@@ -310,17 +310,24 @@ class AllGraphs extends React.Component {
                                             The simulation must be paused to change values!
                                         </AlertM>
                                     </Snackbar>
-                                    
+
+
                                 </div>
-                                <div class="mt-4">
+                                <div className="mt-4">
                                     <Form.Check
-                                    disabled={this.state.isRunning}
-                                    type="switch"
-                                    id="pandemic_switch"
-                                    label="🦠 Start Pandemic"
-                                    onChange={evt => this.togglePandemic(evt)}
+                                        disabled={this.state.isRunning}
+                                        type="switch"
+                                        id="pandemic_switch"
+                                        label="🦠 Start Pandemic"
+                                        onChange={evt => this.togglePandemic(evt)}
                                     />
                                 </div>
+                                <div className='m-2' style={{ display: this.simulation.hasPandemic && this.state.isRunning ? 'initial' : 'none' }}>
+                                    <AlertM severity="info" variant='outlined' >
+                                        A pandemic is taking effect!
+                                    </AlertM>
+                                </div>
+
                             </Col>
                             <Col md="9" className='p-3'><Map data={this.state.moduleData} isRunning={this.state.isRunning} paused={this.state.paused} currentWaterLevels={this.state.currentWaterLevels} currentYearData={this.state.currentData} updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /></Col>
                         </Row>
