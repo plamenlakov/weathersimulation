@@ -188,7 +188,7 @@ class AllGraphs extends React.Component {
         this.setState({
             currentData: data,
             currentState: 'Paused'
-        }, () => console.log(this.state.currentData))
+        })
 
 
     }

@@ -189,7 +189,7 @@ class ModalCountry extends React.Component {
 
         const handleClose = () => this.setState({ show: false });
         const handleShow = () => this.setState({ show: true });
-        const handleSaveAndClose = () => {this.updateChosenCountry.bind(this); handleClose()}
+        const handleSaveAndClose = () => {this.updateChosenCountry(); handleClose()}
 
         return (
             <>
