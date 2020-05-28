@@ -125,7 +125,7 @@ class PPMLineGraph extends React.Component {
         valueAxis.renderer.ticks.template.disabled = true;
         valueAxis.max = chart.data[0].PPM * 2
         this.state.valueAxis = valueAxis;
-        
+
         // Create series
         let series = chart.series.push(new am4charts.LineSeries());
         series.dataFields.valueY = "PPM";
@@ -151,7 +151,9 @@ class PPMLineGraph extends React.Component {
         chart.scrollbarX = new am4charts.XYChartScrollbar();
         chart.scrollbarX.series.push(series);
 
-        
+        // chart.scrollbarY = new am4core.Scrollbar();
+        // chart.scrollbarY.parent = chart.leftAxesContainer;
+        // chart.scrollbarY.toBack();
 
         chart.numberFormatter.numberFormat = "####.###";
         chart.background.fill = "#fff0ff";

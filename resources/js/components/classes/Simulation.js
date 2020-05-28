@@ -81,7 +81,7 @@ class Simulation {
             result.push({ [index]: countriesInThisYear})
             if (index !== year) {
                 if(this.hasPandemic){
-                    this.updateCountries(copyArray, inputPopulation + 0.1, inputDeforestation - 0.1, inputElectricity + 0.6, inputTransportation - 5, inputBuilding, inputManufacturing - 2.5, inputIndustry - 2, inputAgriculture + 0.5)
+                    this.updateCountries(copyArray, inputPopulation + 0.1, inputDeforestation - 0.1, inputElectricity + 0.6, inputTransportation - 12, inputBuilding, inputManufacturing - 2.5, inputIndustry - 10, inputAgriculture + 0.5)
                 } else {
                     this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
                         inputIndustry, inputAgriculture)
