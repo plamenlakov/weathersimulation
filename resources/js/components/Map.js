@@ -42,7 +42,8 @@ class Map extends React.Component {
       dataLoaded: false,
       bordersLoaded: false,
       showBorders: true,
-      mapLoaded: false
+      mapLoaded: false,
+      test: 0
     }
     this.loadData('stats.bin', 'Europe1.geo.json');
   }
@@ -456,6 +457,10 @@ class Map extends React.Component {
           clearInterval(interval)
         }
         else {
+          self.setState({ 
+            test: 2
+          }, () => console.log(self.state.test))
+          
           self.state.waterLevel = self.props.currentWaterLevels[self.state.yearIndex];
           self.drawTerrain(self.state.heightsArray, self.state.colorsArray, self.state.terrainGeometry);
           self.state.yearIndex++;

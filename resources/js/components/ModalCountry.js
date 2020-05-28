@@ -13,7 +13,12 @@ import Container from "react-bootstrap/Container";
 import Tabs from 'react-bootstrap/Tabs'
 import TextField from '@material-ui/core/TextField';
 import Table from 'react-bootstrap/Table';
-
+import Electricity from './classes/ConcreteSectors/Electricity';
+import Building from './classes/ConcreteSectors/Building';
+import Transportation from './classes/ConcreteSectors/Transportation';
+import Agriculture from './classes/ConcreteSectors/Agriculture';
+import Manufacturing from './classes/ConcreteSectors/Manufacturing';
+import Industry from './classes/ConcreteSectors/Industry';
 
 class ModalCountry extends React.Component {
     constructor(props) {
@@ -24,12 +29,12 @@ class ModalCountry extends React.Component {
             items: [],
 
             deforestationIncrease: props.country.forestsGrowth,
-            electricityIncrease: props.country.electricityGrowth,
-            transportationIncrease: props.country.transportationGrowth,
-            buildingIncrease: props.country.buildingGrowth,
-            agricultureIncrease: props.country.agricultureGrowth,
-            industryIncrease: props.country.industryGrowth,
-            manufacturingIncrease: props.country.manufacturingGrowth
+            electricityIncrease: props.country.sectors.find(el => el instanceof Electricity).percentage,
+            transportationIncrease: props.country.sectors.find(tr => tr instanceof Transportation).percentage,
+            buildingIncrease: props.country.sectors.find(bl => bl instanceof Building).percentage,
+            agricultureIncrease: props.country.sectors.find(ag => ag instanceof Agriculture).percentage,
+            industryIncrease: props.country.sectors.find(ind => ind instanceof Industry).percentage,
+            manufacturingIncrease: props.country.sectors.find(man => man instanceof Manufacturing).percentage
         }
 
     }
@@ -77,12 +82,12 @@ class ModalCountry extends React.Component {
         if (prevProps.country != this.props.country) {
             this.setState({
                 deforestationIncrease: this.props.country.forestsGrowth,
-                electricityIncrease: this.props.country.electricityGrowth,
-                transportationIncrease: this.props.country.transportationGrowth,
-                buildingIncrease: this.props.country.buildingGrowth,
-                agricultureIncrease: this.props.country.agricultureGrowth,
-                industryIncrease: this.props.country.industryGrowth,
-                manufacturingIncrease: this.props.country.manufacturingGrowth
+                electricityIncrease: this.props.country.sectors.find(el => el instanceof Electricity).percentage,
+                transportationIncrease: this.props.country.sectors.find(tr => tr instanceof Transportation).percentage,
+                buildingIncrease: this.props.country.sectors.find(bl => bl instanceof Building).percentage,
+                agricultureIncrease: this.props.country.sectors.find(ag => ag instanceof Agriculture).percentage,
+                industryIncrease: this.props.country.sectors.find(ind => ind instanceof Industry).percentage,
+                manufacturingIncrease: this.props.country.sectors.find(man => man instanceof Manufacturing).percentage
             })
         }
     }

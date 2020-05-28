@@ -16,6 +16,7 @@ import AlertM from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 import Chip from '@material-ui/core/Chip';
 import Form from 'react-bootstrap/Form';
+import Inputs from './Inputs';
 
 
 class AllGraphs extends React.Component {
@@ -30,6 +31,7 @@ class AllGraphs extends React.Component {
             manufacturingIncrease: 0.0,
             industryIncrease: 0.0,
             agricultureIncrease: 0.0,
+
             currentData: null,
             stateIcon: null,
             currentState: null,
@@ -44,7 +46,7 @@ class AllGraphs extends React.Component {
             paused: true,
             isRunning: false,
         }
-        this.startSimulation = this.startSimulation.bind(this);
+        //this.startSimulation = this.startSimulation.bind(this);
     }
 
     set simulation(v) {
@@ -72,6 +74,7 @@ class AllGraphs extends React.Component {
     }
 
     startSimulation() {
+        
         var newData = this.state.currentData == null ? this.simulation.getPPMOverall(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
             this.state.agricultureIncrease) : this.simulation.resumeFromCurrentState(this.state.currentData, this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
@@ -109,21 +112,24 @@ class AllGraphs extends React.Component {
     }
 
     stopSimulation() {
-        var newData = this.simulation.getPPMOverall(2020, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
-            this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
-            this.state.agricultureIncrease);
-
-        if (this.state.paused) {
-            this.unpauseSimulation();
-        }
-
         this.setState({
             currentData: null,
+        }, () => {
+            var newData = this.simulation.getPPMOverall(2020, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
+                this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
+                this.state.agricultureIncrease);
+    
+            if (this.state.paused) {
+                this.unpauseSimulation();
+            }
+    
+            
+            this.changeRunningState(false);
+            this.updateModuleData(newData)
+            document.getElementById("buttonStartSim").style.display = 'initial';
+            document.getElementById("buttonsWhenStarted").style.display = 'none';
         })
-        this.changeRunningState(false);
-        this.updateModuleData(newData)
-        document.getElementById("buttonStartSim").style.display = 'initial';
-        document.getElementById("buttonsWhenStarted").style.display = 'none';
+        
     }
 
     resumeSimulation() {
@@ -137,51 +143,30 @@ class AllGraphs extends React.Component {
 
     }
 
-    //Update populationIncrease input
-    updatePopulationInput(evt) {
+    changeInputValuesAndStart(yearToStop, inputDeforestation, inputElectricity, inputTransportation, inputAgriculture, inputIndustry, inputBuilding, inputManufacturing) {
         this.setState({
-            populationIncrease: +evt.target.value
-
-        })
-
+            yearToStop: yearToStop,
+            deforestationIncrease: inputDeforestation,
+            electricityIncrease: inputElectricity,
+            transportationIncrease: inputTransportation,
+            agricultureIncrease: inputAgriculture,
+            industryIncrease: inputIndustry,
+            buildingIncrease: inputBuilding,
+            manufacturingIncrease: inputManufacturing
+        }, () => this.startSimulation())
     }
 
-    //Update deforestation input
-    updateDeforestationInput(evt) {
+    changeInputValuesAndResume(yearToStop, inputDeforestation, inputElectricity, inputTransportation, inputAgriculture, inputIndustry, inputBuilding, inputManufacturing) {
         this.setState({
-            deforestationIncrease: +evt.target.value
-        })
-    }
-    updateElectricityInput(evt) {
-        this.setState({
-            electricityIncrease: +evt.target.value
-        })
-    }
-    updateTransportationInput(evt) {
-        this.setState({
-            transportationIncrease: +evt.target.value
-        })
-    }
-    updateBuildingInput(evt) {
-        this.setState({
-            buildingIncrease: +evt.target.value
-        })
-    }
-    updateManufacturingInput(evt) {
-        this.setState({
-            manufacturingIncrease: +evt.target.value
-        })
-    }
-
-    updateIndustryInput(evt) {
-        this.setState({
-            industryIncrease: +evt.target.value
-        })
-    }
-    updateAgricultureInput(evt) {
-        this.setState({
-            agricultureIncrease: +evt.target.value
-        })
+            yearToStop: yearToStop,
+            deforestationIncrease: inputDeforestation,
+            electricityIncrease: inputElectricity,
+            transportationIncrease: inputTransportation,
+            agricultureIncrease: inputAgriculture,
+            industryIncrease: inputIndustry,
+            buildingIncrease: inputBuilding,
+            manufacturingIncrease: inputManufacturing
+        }, () => this.resumeSimulation())
     }
 
     updateCountryDataOnRunTime(data) {
@@ -216,22 +201,6 @@ class AllGraphs extends React.Component {
 
     }
 
-
-    //Update year input
-    updateYearInput(evt) {
-        if (+evt.target.value >= 2021) {
-            this.setState({
-                yearToStop: +evt.target.value,
-                inputError: false
-            }, () => { this.setState({ warning: "Current chosen year: " + this.state.yearToStop }) })
-        } else {
-            this.setState({
-                warning: "Please provide an year after 2021.",
-                inputError: true
-            })
-        }
-    }
-
     updateModuleData(data) {
         this.setState({
             moduleData: data,
@@ -247,89 +216,25 @@ class AllGraphs extends React.Component {
 
                     <div>
                         <Row className="m-2 text-center">
-                            <Col md="3" className="border border-primary rounded p-3 mt-3">
-
-                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
-                                    this.updateDeforestationInput(evt)} fullWidth />
-
-                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.electricityIncrease.toString()} label="Electricity increase %" variant="outlined" onChange={evt =>
-                                    this.updateElectricityInput(evt)} fullWidth />
-
-                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.transportationIncrease.toString()} label="Transportation increase %" variant="outlined" onChange={evt =>
-                                    this.updateTransportationInput(evt)} fullWidth />
-
-                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.buildingIncrease.toString()} label="Building increase %" variant="outlined" onChange={evt =>
-                                    this.updateBuildingInput(evt)} fullWidth />
-
-                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
-                                    this.updateManufacturingInput(evt)} fullWidth />
-
-                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.industryIncrease.toString()} label="Industry increase %" variant="outlined" onChange={evt =>
-                                    this.updateIndustryInput(evt)} fullWidth />
-
-                                <TextField className="mb-4" disabled={this.state.isRunning} placeholder={this.state.agricultureIncrease.toString()} label="Agriculture increase %" variant="outlined" onChange={evt =>
-                                    this.updateAgricultureInput(evt)} fullWidth />
-
-                                <TextField className="mb-5" disabled={this.state.isRunning} placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
-                                    this.updateYearInput(evt)} fullWidth helperText={this.state.warning} error={this.state.inputError} />
-
-                                <Button variant="success" id="buttonStartSim"
-                                    onClick={this.startSimulation}>Create new simulation</Button>
-
-                                <div id="buttonsWhenStarted" style={{ display: 'none' }}>
-
-                                    <Button variant="primary" id="buttonPauseSim" className='m-2' disabled={this.state.paused}
-                                        onClick={this.pauseSimulation.bind(this)} ><FontAwesomeIcon icon={faPause} /></Button>
-
-                                    <Button variant="primary" id="buttonResumeSim" className='m-2' disabled={!this.state.paused}
-                                        onClick={this.resumeSimulation.bind(this)}><FontAwesomeIcon icon={faPlay} /></Button>
-
-                                    <Button variant="danger" id="buttonStopSim" className='m-2'
-                                        onClick={this.stopSimulation.bind(this)}>{this.state.stateIcon}</Button>
-                                    <Row>
-                                        <Col md='4'>
-
-                                        </Col>
-                                        <Col md='4'>
-                                            <Chip label={this.state.currentState} />
-                                        </Col>
-                                        <Col md='4'>
-
-                                        </Col>
-                                    </Row>
-
-
-                                    <Snackbar
-                                        anchorOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'left',
-                                        }}
-                                        open={this.state.isRunning}
-                                        autoHideDuration={6000}>
-                                        <AlertM severity="warning">
-                                            The simulation must be paused to change values!
-                                        </AlertM>
-                                    </Snackbar>
-
-
-                                </div>
-                                <div className="mt-4">
-                                    <Form.Check
-                                        disabled={this.state.isRunning}
-                                        type="switch"
-                                        id="pandemic_switch"
-                                        label="🦠 Start Pandemic"
-                                        onChange={evt => this.togglePandemic(evt)}
-                                    />
-                                </div>
-                                <div className='m-2' style={{ display: this.simulation.hasPandemic && this.state.isRunning ? 'initial' : 'none' }}>
-                                    <AlertM severity="info" variant='outlined' >
-                                        A pandemic is taking effect!
-                                    </AlertM>
-                                </div>
+                            <Col md={this.state.isRunning ? '0' : '3'} className={this.state.isRunning ? '' : 'border border-primary rounded p-3 mt-3'}>
+                                <Inputs paused={this.state.paused}
+                                    changeInputValuesAndStart={this.changeInputValuesAndStart.bind(this)}
+                                    changeInputValuesAndResume={this.changeInputValuesAndResume.bind(this)}
+                                    isRunning={this.state.isRunning}
+                                    currentState={this.state.currentState}
+                                    stateIcon={this.state.stateIcon}
+                                    pauseSimulation={this.pauseSimulation.bind(this)}
+                                    stopSimulation={this.stopSimulation.bind(this)} />
 
                             </Col>
-                            <Col md="9" className='p-3'><Map data={this.state.moduleData} isRunning={this.state.isRunning} paused={this.state.paused} currentWaterLevels={this.state.currentWaterLevels} currentYearData={this.state.currentData} updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /></Col>
+                            <Col md={this.state.isRunning ? '12' : '9'} className='p-3'>
+                                <Map data={this.state.moduleData}
+                                    isRunning={this.state.isRunning}
+                                    paused={this.state.pausted}
+                                    currenWaterLevels={this.state.currentWaterLevels}
+                                    currentYearData={this.state.currentData}
+                                    updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} />
+                            </Col>
                         </Row>
 
                         <Alert variant='primary' className='m-3'>
