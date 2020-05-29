@@ -91,9 +91,6 @@ class Simulation extends React.Component {
         let result = [];
         let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
 
-        console.log(this.initialCountries[0].sectors[0].name)
-        console.log(this.initialCountries[0].sectors[0].value)
-
         for (let index = 2020; index <= year; index++) {
             var countriesInThisYear = copyArray.map((obj) => obj.cloneObject())
             this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);

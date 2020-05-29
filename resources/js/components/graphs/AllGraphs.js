@@ -6,16 +6,8 @@ import Alert from 'react-bootstrap/Alert';
 import Map from "../Map";
 import Simulation from '../classes/Simulation';
 import BarChart from './BarChart';
-import TextField from '@material-ui/core/TextField';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPause, faPlay, faStop, faRedoAlt } from '@fortawesome/free-solid-svg-icons';
-import Badge from '@material-ui/core/Badge';
-import Button from 'react-bootstrap/Button';
-import Spinner from 'react-bootstrap/Spinner';
-import AlertM from '@material-ui/lab/Alert';
-import Snackbar from '@material-ui/core/Snackbar';
-import Chip from '@material-ui/core/Chip';
-import Form from 'react-bootstrap/Form';
+import { faStop, faRedoAlt } from '@fortawesome/free-solid-svg-icons';
 import Inputs from './Inputs';
 
 

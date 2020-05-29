@@ -457,9 +457,6 @@ class Map extends React.Component {
           clearInterval(interval)
         }
         else {
-          self.setState({ 
-            test: 2
-          }, () => console.log(self.state.test))
           
           self.state.waterLevel = self.props.currentWaterLevels[self.state.yearIndex];
           self.drawTerrain(self.state.heightsArray, self.state.colorsArray, self.state.terrainGeometry);
