@@ -38,8 +38,9 @@ class Simulation extends React.Component {
     loadCountries(path) {
         this.initialCountries = [];
         var self = this;
+        this.hasPandemic = false;
         var readCSV = d3.csv(path, function (data) {
-
+        
             var sectors = [];
             sectors.push(
                 new Electricity('Electricity', +data.electricity_value, +data.electricity_change),

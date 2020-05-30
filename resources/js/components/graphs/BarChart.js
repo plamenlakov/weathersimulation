@@ -131,13 +131,14 @@ class BarChart extends React.Component {
         categoryAxis.renderer.inversed = true;
         categoryAxis.renderer.grid.template.disabled = true;
 
+
         //series creation (x,y values)
         var series = chart.series.push(new am4charts.ColumnSeries());
         series.dataFields.valueX = "PPM";
         series.dataFields.categoryY = "country";
         series.tooltipText = "{categoryY.value}"
-        series.columns.template.column.cornerRadiusTopRight = 5;
-        series.columns.template.column.cornerRadiusBottomRight = 5;
+        series.columns.template.column.cornerRadiusTopRight = 2;
+        series.columns.template.column.cornerRadiusBottomRight = 2;
         series.interpolationDuration = 1300;
         series.interpolationEasing = am4core.ease.linear;
 
@@ -148,6 +149,7 @@ class BarChart extends React.Component {
         labelBullet.label.dx = 35;
         labelBullet.label.text = "{values.valueX.workingValue}";
 
+
         //chart styling
         chart.zoomOutButton.disabled = true;
         chart.scrollbarX = new am4core.Scrollbar();
@@ -155,6 +157,10 @@ class BarChart extends React.Component {
         chart.responsive.enabled = true;
         chart.numberFormatter.numberFormat = "###,###.###";
         chart.paddingRight = 50;
+
+        chart.scrollbarY = new am4core.Scrollbar();
+        chart.scrollbarY.parent = chart.leftAxesContainer;
+        chart.scrollbarY.start = categoryAxis.end / 2
 
         var label = chart.plotContainer.createChild(am4core.Label);
         label.x = am4core.percent(97);
@@ -182,11 +188,10 @@ class BarChart extends React.Component {
 
     render() {
 
-        //this.createBarChart(this.props.data, container)
         return (
             <>
 
-                <div id="barchartdiv" style={{ height: 800 + 'px' }}></div>
+                <div id="barchartdiv" style={{ height: 700 + 'px' }}></div>
             </>
 
         );

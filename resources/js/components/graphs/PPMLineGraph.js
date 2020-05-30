@@ -28,6 +28,7 @@ class PPMLineGraph extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.data != prevProps.data) {
+                      
             if (+Object.keys(this.props.data[0]) == 2020) {
                 this.chart.data = []
             }
@@ -183,6 +184,7 @@ class PPMLineGraph extends React.Component {
 
         return (
             <div id="linechartdiv" style={{ height: 500 + 'px' }}></div>
+            
         )
     }
 }

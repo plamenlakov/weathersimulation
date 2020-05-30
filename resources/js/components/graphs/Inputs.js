@@ -32,38 +32,38 @@ class Inputs extends React.Component {
     updateDeforestationInput(evt) {
         this.setState({
             deforestationIncrease: +evt.target.value
-        })
+        }, () => this.props.changeDeforestationIncrease(this.state.deforestationIncrease))
     }
     updateElectricityInput(evt) {
         this.setState({
             electricityIncrease: +evt.target.value
-        })
+        }, () => this.props.changeElectricityIncrease(this.state.electricityIncrease))
     }
     updateTransportationInput(evt) {
         this.setState({
             transportationIncrease: +evt.target.value
-        })
+        }, () => this.props.changeTransportationIncrease(this.state.transportationIncrease))
     }
     updateBuildingInput(evt) {
         this.setState({
             buildingIncrease: +evt.target.value
-        })
+        }, () => this.props.changeBuildingIncrease(this.state.buildingIncrease))
     }
     updateManufacturingInput(evt) {
         this.setState({
             manufacturingIncrease: +evt.target.value
-        })
+        }, () => this.props.changeManufacturingIncrease(this.state.manufacturingIncrease))
     }
 
     updateIndustryInput(evt) {
         this.setState({
             industryIncrease: +evt.target.value
-        })
+        }, () => this.props.changeIndustryIncrease(this.state.industryIncrease))
     }
     updateAgricultureInput(evt) {
         this.setState({
             agricultureIncrease: +evt.target.value
-        })
+        }, () => this.props.changeAgricultureIncrease(this.state.agricultureIncrease))
     }
 
     updateYearInput(evt) {
@@ -71,7 +71,7 @@ class Inputs extends React.Component {
             this.setState({
                 yearToStop: +evt.target.value,
                 inputError: false
-            }, () => { this.setState({ warning: "Current chosen year: " + this.state.yearToStop }) })
+            }, () => { this.setState({ warning: "Current chosen year: " + this.state.yearToStop }, () => this.props.changeYearToStop(this.state.yearToStop)) })
         } else {
             this.setState({
                 warning: "Please provide an year after 2021.",
@@ -85,108 +85,35 @@ class Inputs extends React.Component {
 
         return (
             <div>
-                <div style={{ display: this.props.isRunning ? 'none' : 'initial' }}>
-                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
-                        this.updateDeforestationInput(evt)} fullWidth />
-
+                <div>
+                    <TextField className="mb-4 mt-4" disabled={this.props.isRunning} placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
+                        this.updateDeforestationInput(evt)} />
+                    <br />
                     <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.electricityIncrease.toString()} label="Electricity increase %" variant="outlined" onChange={evt =>
-                        this.updateElectricityInput(evt)} fullWidth />
-
+                        this.updateElectricityInput(evt)} />
+                    <br />
                     <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.transportationIncrease.toString()} label="Transportation increase %" variant="outlined" onChange={evt =>
-                        this.updateTransportationInput(evt)} fullWidth />
-
+                        this.updateTransportationInput(evt)} />
+                    <br />
                     <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.buildingIncrease.toString()} label="Building increase %" variant="outlined" onChange={evt =>
-                        this.updateBuildingInput(evt)} fullWidth />
-
+                        this.updateBuildingInput(evt)} />
+                    <br />
                     <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
-                        this.updateManufacturingInput(evt)} fullWidth />
-
+                        this.updateManufacturingInput(evt)} />
+                    <br />
                     <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.industryIncrease.toString()} label="Industry increase %" variant="outlined" onChange={evt =>
-                        this.updateIndustryInput(evt)} fullWidth />
-
+                        this.updateIndustryInput(evt)} />
+                    <br />
                     <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.agricultureIncrease.toString()} label="Agriculture increase %" variant="outlined" onChange={evt =>
-                        this.updateAgricultureInput(evt)} fullWidth />
+                        this.updateAgricultureInput(evt)} />
+                    <br />
+                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
+                        this.updateYearInput(evt)} helperText={this.state.warning} error={this.state.inputError} />
+                    <br />
 
-                    <TextField className="mb-5" disabled={this.props.isRunning} placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
-                        this.updateYearInput(evt)} fullWidth helperText={this.state.warning} error={this.state.inputError} />
 
-
-                    <Button variant="success" id="buttonStartSim"
-                        onClick={() => this.props.changeInputValuesAndStart(this.state.yearToStop, this.state.deforestationIncrease, this.state.electricityIncrease, this.state.transportationIncrease, this.state.agricultureIncrease, this.state.industryIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease)}>Create new simulation</Button>
-
-                    <div id="buttonsWhenStarted" style={{display: 'none'}}>
-                        <Button variant="primary" id="buttonPauseSim" className='m-2' disabled={this.props.paused}
-                            onClick={this.props.pauseSimulation} ><FontAwesomeIcon icon={faPause} /></Button>
-
-                        <Button variant="primary" id="buttonResumeSim" className='m-2' disabled={!this.props.paused}
-                            onClick={() => this.props.changeInputValuesAndResume(this.state.yearToStop, this.state.deforestationIncrease, this.state.electricityIncrease, this.state.transportationIncrease, this.state.agricultureIncrease, this.state.industryIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease)}><FontAwesomeIcon icon={faPlay} /></Button>
-
-                        <Button variant="danger" id="buttonStopSim" className='m-2'
-                            onClick={this.props.stopSimulation}>{this.props.stateIcon}</Button>
-                        <div className='text-center'>
-                            <Chip label={this.props.currentState} />
-                        </div>
-
-                    </div>
-
-                    <div className="mt-4">
-                        <Form.Check
-                            disabled={this.props.isRunning}
-                            type="switch"
-                            id="pandemic_switch"
-                            label="🦠 Start Pandemic"
-                            onChange={evt => this.togglePandemic(evt)}
-                        />
-                    </div>
                 </div>
 
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-                    }}
-                    open={this.props.isRunning}
-                    autoHideDuration={6000}>
-                    <AlertM icon={false} severity="info">
-                        <div>
-
-                            <Button variant="primary" id="buttonPauseSim" className='m-2' disabled={this.props.paused}
-                                onClick={this.props.pauseSimulation} ><FontAwesomeIcon icon={faPause} /></Button>
-
-                            <Button variant="primary" id="buttonResumeSim" className='m-2' disabled={!this.props.paused}
-                                onClick={this.props.resumeSimulation}><FontAwesomeIcon icon={faPlay} /></Button>
-
-                            <Button variant="danger" id="buttonStopSim" className='m-2'
-                                onClick={this.props.stopSimulation}>{this.props.stateIcon}</Button>
-                            <div className='text-center'>
-                                <Chip label={this.props.currentState} />
-                            </div>
-
-                        </div>
-                    </AlertM>
-                </Snackbar>
-
-
-
-
-                {/* <div className='m-2' style={{ display: this.simulation.hasPandemic && this.props.isRunning ? 'initial' : 'none' }}>
-                    <AlertM severity="info" variant='outlined' >
-                        A pandemic is taking effect!
-                    </AlertM>
-                </div> */}
-
-
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    open={this.props.isRunning}
-                    autoHideDuration={6000}>
-                    <AlertM severity="warning">
-                        The simulation must be paused to change values!
-                                        </AlertM>
-                </Snackbar>
             </div>
 
         )
