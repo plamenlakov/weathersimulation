@@ -21,4 +21,10 @@ Route::get('/simulation', function () {
     return view('simulation');
 });
 
+Route::get('/account', function () {
+    return view('auth/account');
+});
 
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
