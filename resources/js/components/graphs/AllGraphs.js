@@ -239,7 +239,14 @@ class AllGraphs extends React.Component {
                                 <Temperature temperatures={this.simulation.temperatureIncrease} />
 
                                 <Button className="mt-3" onClick={evt => this.handleOpenAndClose(evt)}>Open controls</Button>
-
+                                <br/>
+                                <br/>
+                                {this.state.activeSimulation ? 
+                                    <Chip label={this.state.currentState} />
+                                    : 
+                                    <div></div>
+                                }
+                                
                                 <Drawer anchor='left' open={this.state.drawerOpened} onClose={evt => this.handleOpenAndClose(evt)}>
                                     <div className='text-center' id='inputs'>
                                         <Inputs paused={this.state.paused}
@@ -323,7 +330,7 @@ class AllGraphs extends React.Component {
                                             <Button variant="danger" id="buttonStopSim" className='m-2'
                                                 onClick={this.stopSimulation.bind(this)}>{this.state.stateIcon}</Button>
 
-                                            <Chip label={this.state.currentState} />
+                                            
 
 
                                         </div>
