@@ -90,7 +90,7 @@ class Inputs extends React.Component {
             hasPandemic: evt.target.checked
         })
 
-
+        this.props.togglePandemic(evt.target.checked)
     }
 
     changeYearPandemic(evt) {
@@ -140,7 +140,7 @@ class Inputs extends React.Component {
                     <div className="p-3">
                         <FormControlLabel
                             control={<Switch
-                                checked={this.state.hasPandemic}
+                                checked={this.props.hasPandemic}
                                 onChange={evt => this.togglePandemic(evt)}
                                 color="secondary"
                                 name="checkedB" />}
@@ -149,7 +149,7 @@ class Inputs extends React.Component {
                        
                     </div>
 
-                    <div className='text-left' style={{ display: this.state.hasPandemic ? 'initial' : 'none' }}>
+                    <div className='text-left' style={{ display: this.props.hasPandemic && !this.props.isRunning ? 'initial' : 'none' }}>
 
                         <Form.Text className="text-muted">
                             Country to start from:

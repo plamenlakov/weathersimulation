@@ -24,7 +24,7 @@ Route::get('/account', function () {
     return view('auth/account');
 });
 
-Route::post('/account', 'AccountController@updatePicture');
+Route::post('/accountpic', 'AccountController@updatePicture');
 
 Auth::routes();
 

@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>Ecotopia</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -39,7 +39,7 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="navbar-brand" href="/simulation">Simulation</a>
+                        <a class="btn btn-light navbar-brand" href="/simulation"><strong>Simulation</strong></a>
                     </li>
                 </ul>
 
@@ -59,7 +59,7 @@
                     <li class="nav-item">
 
 
-                        <a class="dropdown-item" href="/account">
+                        <a class="btn btn-primary dropdown-item" href="/account">
                             <img class='mr-2' src="images/profilePics/{{Auth::user()->image}}" alt="image" style='max-width: 30px'>
                             <strong>{{ Auth::user()->name }}</strong>
                         </a>
@@ -67,7 +67,7 @@
 
                     </li>
                     <li>
-                        <a class="dropdown-item mt-1" href="{{ route('logout') }}" onclick="event.preventDefault();
+                        <a class="dropdown-item mt-1 btn btn-danger rounded" href="{{ route('logout') }}" onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                             <i class="fas fa-sign-out-alt"></i>
                         </a>

@@ -166,7 +166,11 @@ class AllGraphs extends React.Component {
 
     }
 
-  
+    togglePandemic(state){
+        this.setState({
+            hasPandemic: state
+        })
+    }
 
     updateState(state) {
         if (state == 'Finished') {
@@ -259,6 +263,7 @@ class AllGraphs extends React.Component {
                                             changeTransportationIncrease={this.changeTranportationIncrease.bind(this)}
                                             changeManufacturingIncrease={this.changeManufacturingIncrease.bind(this)}
 
+                                            togglePandemic={this.togglePandemic.bind(this)}
                                             hasPandemic = {this.state.hasPandemic}
                                             countries={this.simulation.initialCountries}
                                             isRunning={this.state.isRunning} />
