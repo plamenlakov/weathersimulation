@@ -7,7 +7,7 @@ import Map from "../Map";
 import Simulation from '../classes/Simulation';
 import BarChart from './BarChart';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStop, faRedoAlt, faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { faStop, faRedoAlt, faPause, faPlay, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 import Inputs from './Inputs';
 import Spinner from 'react-bootstrap/Spinner';
 import Drawer from '@material-ui/core/Drawer';
@@ -281,7 +281,7 @@ class AllGraphs extends React.Component {
 
                                         </div>
 
-                                        <div className="mt-4">
+                                        <div className="mt-3">
                                             <Form.Check
                                                 disabled={this.state.isRunning}
                                                 type="switch"
@@ -317,7 +317,7 @@ class AllGraphs extends React.Component {
                                         horizontal: 'left',
                                     }}
                                     open={this.state.activeSimulation && !this.state.drawerOpened}
-                                    style={{ bottom: 8 + 'vh' }}>
+                                    style={{ bottom: 75 + 'px' }}>
                                     <AlertM icon={false} severity="info">
                                         <div>
 
@@ -329,9 +329,6 @@ class AllGraphs extends React.Component {
 
                                             <Button variant="danger" id="buttonStopSim" className='m-2'
                                                 onClick={this.stopSimulation.bind(this)}>{this.state.stateIcon}</Button>
-
-                                            
-
 
                                         </div>
                                     </AlertM>
@@ -352,12 +349,12 @@ class AllGraphs extends React.Component {
 
                             </Col>
                             <Col md='8' className='p-3'>
-                                <Map data={this.state.moduleData}
+                                {/* <Map data={this.state.moduleData}
                                     isRunning={this.state.isRunning}
                                     paused={this.state.pausted}
                                     currentWaterLevels={this.state.currentWaterLevels}
                                     currentYearData={this.state.currentData}
-                                    updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} />
+                                    updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /> */}
                             </Col>
                         </Row>
 

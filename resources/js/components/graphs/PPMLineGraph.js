@@ -17,6 +17,7 @@ class PPMLineGraph extends React.Component {
             yearAxis: null,
             valueAxis: null,
             series: null,
+            containerWidth: 0
         }
     }
 
@@ -28,7 +29,7 @@ class PPMLineGraph extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.data != prevProps.data) {
-                      
+
             if (+Object.keys(this.props.data[0]) == 2020) {
                 this.chart.data = []
             }
@@ -177,14 +178,24 @@ class PPMLineGraph extends React.Component {
 
     componentDidMount() {
         var container = document.getElementById("linechartdiv");
+        this.setState({
+            containerWidth: container.getBoundingClientRect().right - container.getBoundingClientRect().left
+        })
         this.createChart(container);
+        var self = this;
+        function OnResize(){
+            self.setState({
+                containerWidth: container.getBoundingClientRect().right - container.getBoundingClientRect().left
+            })
+        }
+        window.addEventListener('resize', OnResize, false)
     }
 
     render() {
 
         return (
-            <div id="linechartdiv" style={{ height: 500 + 'px' }}></div>
-            
+            <div id="linechartdiv" style={{ height: this.state.containerWidth + 'px' }}></div>
+
         )
     }
 }
