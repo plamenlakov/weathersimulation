@@ -16,8 +16,10 @@ class CreateSimulationTable extends Migration
         Schema::create('simulation', function (Blueprint $table) {
             $table->bigIncrements('simulation_id');
             $table->unsignedBigInteger('user_id');
+            $table->longText('name');
             $table->longText('inputs');
             $table->longText('simDescription')->nullable();
+            
             $table->mediumText('image')->nullable();
             $table->timestamps();
         });

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\User;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Auth;
-
+use App\Simulation;
 class AccountController extends Controller
 {
     public function updatePicture(Request $req)
@@ -35,4 +35,20 @@ class AccountController extends Controller
             return back();
         }
     }
+
+    public function getSimulations(){
+        $user = User::findOrFail(Auth::user()->id);
+        $simulations = Simulation::where('user_id', '=', $user->id)->get();
+        return back()->with(['simulations', $simulations]);
+    }
+
+
+    public function boot(){
+        $this->getSimulations();
+    }
+    
+
+
+
+
 }

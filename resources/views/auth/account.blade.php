@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class='container shadow p-3 mb-5 mt-5 bg-white rounded' style='height: 650px'>
+<div class='container shadow p-3 bg-white rounded'>
     <div class='text-right'>
         {{Auth::user()->email}}
     </div>
@@ -18,7 +18,55 @@
             <img src="" id="imagePreview" alt="" class="mt-2 rounded-circle" style="max-width: 150px;">
         </form>
 
+        <div class="container">
+            <div class="row">
+                @foreach(Auth::user()->simulations as $s)
+
+                <div class="col-md-4 mt-3">
+                    <div class="card">
+                        <img class="card-img-top" src="images/flags/Netherlands.png" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">{{$s->name}}</h5>
+                            <p class="card-text">{{$s->simDescription}}</p>
+                            <div class="row justify-content-center">
+                                <form class="m-1" action="POST">
+                                    <button type="button" class="btn btn-success"><i class="fas fa-play"></i></button>
+
+                                </form>
+                                <form class="m-1" action="POST">
+                                    <button type="button" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+
+                                </form>
+    
+                                <div class="dropdown mt-1 ml-1">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Compare with...
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        @foreach(Auth::user()->simulations as $sCompare)
+                                        @if($sCompare->simulation_id != $s->simulation_id)
+                                        <a class="dropdown-item" href="#">{{$sCompare->name}}</a>
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @endforeach
+            </div>
+
+        </div>
     </div>
+
 </div>
 
 @endsection
