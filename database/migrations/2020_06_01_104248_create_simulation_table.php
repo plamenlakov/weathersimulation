@@ -17,6 +17,8 @@ class CreateSimulationTable extends Migration
             $table->bigIncrements('simulation_id');
             $table->unsignedBigInteger('user_id');
             $table->longText('inputs');
+            $table->longText('simDescription')->nullable();
+            $table->mediumText('image')->nullable();
             $table->timestamps();
         });
     }
