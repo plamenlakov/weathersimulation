@@ -242,7 +242,7 @@ class Map extends React.Component {
 
       function onWindowResize() {
         let containerWidth = container.getBoundingClientRect().right - container.getBoundingClientRect().left;
-        renderer.setSize(containerWidth, containerWidth / 2 + 100);
+        renderer.setSize(containerWidth, containerWidth / 2 + 150);
       }
       window.addEventListener('resize', onWindowResize, false);
     }

@@ -25,6 +25,8 @@ Route::get('/account', function () {
     return view('auth/account');
 });
 
+Route::post('/account', 'AccountController@updatePicture');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
