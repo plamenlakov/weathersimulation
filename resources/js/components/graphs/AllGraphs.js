@@ -18,6 +18,7 @@ import Chip from '@material-ui/core/Chip';
 import Form from 'react-bootstrap/Form';
 import Temperature from './Temperature'
 import Fab from '@material-ui/core/Fab';
+import TextField from '@material-ui/core/TextField';
 
 class AllGraphs extends React.Component {
     constructor(props) {
@@ -46,7 +47,8 @@ class AllGraphs extends React.Component {
             paused: true,
             isRunning: false,
             drawerOpened: false,
-            activeSimulation: false
+            activeSimulation: false,
+            hasPandemic: false
         }
     }
 
@@ -128,7 +130,7 @@ class AllGraphs extends React.Component {
             this.unpauseSimulation();
             this.simulation.hasPandemic = false;
             this.changeRunningState(false);
-            this.updateModuleData(newData); 
+            this.updateModuleData(newData);
             this.changeActiveState(false);
         })
 
@@ -164,9 +166,7 @@ class AllGraphs extends React.Component {
 
     }
 
-    togglePandemic() {
-        this.simulation.hasPandemic = !this.simulation.hasPandemic;
-    }
+  
 
     updateState(state) {
         if (state == 'Finished') {
@@ -193,7 +193,7 @@ class AllGraphs extends React.Component {
             isFetching: false,
             currentWaterLevels: this.simulation.getWaterLevels(this.simulation.temperatureIncrease)
         })
-       
+
     }
     handleOpenAndClose(event) {
         if (event) {
@@ -239,14 +239,14 @@ class AllGraphs extends React.Component {
                                 <Temperature temperatures={this.simulation.temperatureIncrease} />
 
                                 <Button className="mt-3" onClick={evt => this.handleOpenAndClose(evt)}>Open controls</Button>
-                                <br/>
-                                <br/>
-                                {this.state.activeSimulation ? 
+                                <br />
+                                <br />
+                                {this.state.activeSimulation ?
                                     <Chip label={this.state.currentState} />
-                                    : 
+                                    :
                                     <div></div>
                                 }
-                                
+
                                 <Drawer anchor='left' open={this.state.drawerOpened} onClose={evt => this.handleOpenAndClose(evt)}>
                                     <div className='text-center' id='inputs'>
                                         <Inputs paused={this.state.paused}
@@ -259,6 +259,8 @@ class AllGraphs extends React.Component {
                                             changeTransportationIncrease={this.changeTranportationIncrease.bind(this)}
                                             changeManufacturingIncrease={this.changeManufacturingIncrease.bind(this)}
 
+                                            hasPandemic = {this.state.hasPandemic}
+                                            countries={this.simulation.initialCountries}
                                             isRunning={this.state.isRunning} />
                                     </div>
                                     <div className='text-center'>
@@ -281,15 +283,7 @@ class AllGraphs extends React.Component {
 
                                         </div>
 
-                                        <div className="mt-3">
-                                            <Form.Check
-                                                disabled={this.state.isRunning}
-                                                type="switch"
-                                                id="pandemic_switch"
-                                                label="🦠 Start Pandemic"
-                                                onChange={evt => this.togglePandemic(evt)}
-                                            />
-                                        </div>
+                                       
                                         <div className='p-3' style={{ maxWidth: 300 + 'px' }}>
                                             <AlertM severity={this.state.isRunning ? 'warning' : 'success'}>
                                                 {this.state.isRunning ? 'The simulation must be paused to change values!' : 'Go ahead and change something :)'}

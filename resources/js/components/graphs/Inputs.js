@@ -9,6 +9,9 @@ import { faPause, faPlay, faStop, faRedoAlt } from '@fortawesome/free-solid-svg-
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
 
 class Inputs extends React.Component {
 
@@ -25,8 +28,10 @@ class Inputs extends React.Component {
             yearToStop: 2020,
             inputError: false,
             warning: "",
+            hasPandemic: false,
+            yearToStartPandemic: 2020
         }
-
+        
     }
 
     updateDeforestationInput(evt) {
@@ -80,6 +85,27 @@ class Inputs extends React.Component {
         }
     }
 
+    togglePandemic(evt) {
+        this.setState({
+            hasPandemic: evt.target.checked
+        })
+
+
+    }
+
+    changeYearPandemic(evt) {
+        if (+evt.target.value >= 2020) {
+            this.setState({
+                yearToStartPandemic: +evt.target.value
+            })
+        } else {
+            this.setState({
+                yearToStartPandemic: 2020
+            })
+        }
+
+    }
+
 
     render() {
 
@@ -109,7 +135,53 @@ class Inputs extends React.Component {
                     <br />
                     <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
                         this.updateYearInput(evt)} helperText={this.state.warning} error={this.state.inputError} fullWidth />
-                    <br />
+
+
+                    <div className="p-3">
+                        <FormControlLabel
+                            control={<Switch
+                                checked={this.state.hasPandemic}
+                                onChange={evt => this.togglePandemic(evt)}
+                                color="secondary"
+                                name="checkedB" />}
+                            label="🦠 Start Pandemic"
+                        />
+                       
+                    </div>
+
+                    <div className='text-left' style={{ display: this.state.hasPandemic ? 'initial' : 'none' }}>
+
+                        <Form.Text className="text-muted">
+                            Country to start from:
+                                                </Form.Text>
+                        <Form.Control as="select" custom onChange={evt => this.updateOriginCountryInput(evt)} required>
+
+                            {
+                                this.props.countries.map((country, index) => {
+                                    return (<option key={index} value={index}> {country.name} </option>)
+                                })
+                            }
+                        </Form.Control>
+                        <Form.Group controlId="pandemicForm.RateOfInfection">
+                            <Form.Text className="text-muted">
+                                The severity of the pandemic:
+                                                    </Form.Text>
+                            <Form.Control as="select" defaultValue={10} custom onChange={evt => this.updateRateOfInfectionInput(evt)} required>
+                                <option value={10}>Low</option>
+                                <option value={20}>Medium</option>
+                                <option value={30}>High</option>
+                            </Form.Control>
+
+                        </Form.Group>
+                        <TextField
+                            label='Year to start pandemic'
+                            onChange={evt => changeYearPandemic(evt)}
+                            placeholder={this.state.yearToStartPandemic.toString()}
+                            variant='outlined'
+                            fullWidth />
+
+
+                    </div>
 
 
                 </div>
