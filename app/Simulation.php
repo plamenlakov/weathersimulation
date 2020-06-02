@@ -8,7 +8,7 @@ class Simulation extends Model
 {
  
     protected $fillable = [
-        'user_id', 'simDescription', 'name', 'inputs'
+        'user_id', 'simDescription', 'name', 'inputs',
     ];
 
     protected $table = 'simulation';
@@ -17,5 +17,5 @@ class Simulation extends Model
         return $this->hasOne(User::class);
     }
 
-
+    protected $primaryKey = 'simulation_id';
 }

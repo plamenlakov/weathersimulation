@@ -52,6 +52,7 @@ class AllGraphs extends React.Component {
             inputsInfo: null,
 
         }
+
     }
 
     set simulation(v) {
@@ -73,8 +74,16 @@ class AllGraphs extends React.Component {
                     self.state.transportationIncrease, self.state.buildingIncrease, self.state.manufacturingIncrease, self.state.industryIncrease,
                     self.state.agricultureIncrease);
 
-                self.updateModuleData(initialData)
+                self.updateModuleData(initialData);
+                var inputValues = document.getElementById('reRunInputValues').value;
+                var replayValues = null;
+                if(inputValues != ''){
+                    replayValues = JSON.parse(inputValues);
+                    self.startSimulation();
+                    inputValues = '';
+                }
             })
+
 
     }
 
@@ -208,7 +217,6 @@ class AllGraphs extends React.Component {
             this.state.inputInfo.push({[+Object.keys(this.state.currentData)]:[[this.state.deforestationIncrease,this.state.electricityIncrease,this.state.transportationIncrease,this.state.buildingIncrease,this.state.manufacturingIncrease,
                 this.state.industryIncrease, this.state.agricultureIncrease],data[0][+Object.keys(this.state.currentData)]]})
         }
-        console.log(this.state.inputInfo)
     }
     handleOpenAndClose(event) {
         if (event) {
@@ -365,12 +373,12 @@ class AllGraphs extends React.Component {
 
                             </Col>
                             <Col md='8' className='p-3'>
-                                {/* <Map data={this.state.moduleData}
-                                    isRunning={this.state.isRunning}
-                                    paused={this.state.pausted}
-                                    currentWaterLevels={this.state.currentWaterLevels}
-                                    currentYearData={this.state.currentData}
-                                    updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /> */}
+                                <Map data={this.state.moduleData}
+                                isRunning={this.state.isRunning}
+                                paused={this.state.paused}
+                                currentWaterLevels={this.state.currentWaterLevels}
+                                currentYearData={this.state.currentData}
+                                updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} />
                             </Col>
                         </Row>
 

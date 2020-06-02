@@ -40,8 +40,9 @@
                             </div>
 
                             <div class="row justify-content-center">
-                                <form class="m-1" action="POST">
-                                    <button type="button" class="btn btn-success"><i class="fas fa-play"></i></button>
+                                <form class="m-1" action="/simulationRun" method="GET">
+                                    <input type="hidden" name="simulation_id" value="{{$s->simulation_id}}"/>
+                                    <button type="submit" class="btn btn-success"><i class="fas fa-play"></i></button>
 
                                 </form>
                                 <form class="m-1" action="POST">

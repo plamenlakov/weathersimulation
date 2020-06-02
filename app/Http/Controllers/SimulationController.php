@@ -33,4 +33,11 @@ class SimulationController extends Controller
             return redirect("register");
         }
     }
+
+    public function reRunSimulation(Request $req){
+        $simulation_id = $req->input('simulation_id');
+        $simulation = Simulation::findOrFail($simulation_id);
+//        dd($simulation);
+        return redirect('simulation')->with('input_simulation', $simulation->inputs);
+    }
 }
