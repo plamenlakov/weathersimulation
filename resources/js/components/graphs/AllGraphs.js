@@ -49,6 +49,7 @@ class AllGraphs extends React.Component {
             activeSimulation: false,
             hasPandemic: false,
             showSaveModal: false,
+            inputsInfo: null,
 
         }
     }
@@ -198,7 +199,16 @@ class AllGraphs extends React.Component {
             isFetching: false,
             currentWaterLevels: this.simulation.getWaterLevels(this.simulation.temperatureIncrease)
         })
-
+        if(this.state.currentData == null){
+            this.setState({
+                inputInfo: [{2020:[[this.state.deforestationIncrease,this.state.electricityIncrease,this.state.transportationIncrease,this.state.buildingIncrease,this.state.manufacturingIncrease,
+                                    this.state.industryIncrease, this.state.agricultureIncrease], this.simulation.initialCountries]}]
+            })
+        }else{
+            this.state.inputInfo.push({[+Object.keys(this.state.currentData)]:[[this.state.deforestationIncrease,this.state.electricityIncrease,this.state.transportationIncrease,this.state.buildingIncrease,this.state.manufacturingIncrease,
+                this.state.industryIncrease, this.state.agricultureIncrease],data[0][+Object.keys(this.state.currentData)]]})
+        }
+        console.log(this.state.inputInfo)
     }
     handleOpenAndClose(event) {
         if (event) {
@@ -385,6 +395,7 @@ class AllGraphs extends React.Component {
                             <form action="/saveSimulation" method="POST">
 
                                 <Modal.Body>
+                                    <input type="hidden" name="inputsInfo" value={JSON.stringify(this.state.inputInfo)}/>
                                     <input type="hidden" name="_token" value={csrf_token} />
                                     <TextField id="simulationName" name="simulationName" label="Choose simulation name (required)" variant="outlined" fullWidth />
                                     <br />

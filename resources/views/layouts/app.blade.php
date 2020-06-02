@@ -15,6 +15,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.js" integrity="sha256-2JRzNxMJiS0aHOJjG+liqsEOuBb6++9cY4dSOyiijX4=" crossorigin="anonymous"></script>
     <script>       
         var csrf_token = '{{ csrf_token()}}';
+        {{--var user_in_session = false;--}}
+        {{--@if(Auth::check())--}}
+        {{--    user_in_session = true;--}}
+        {{--@endif--}}
     </script>
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
