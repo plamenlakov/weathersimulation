@@ -18,6 +18,7 @@ import Chip from '@material-ui/core/Chip';
 import Temperature from './Temperature';
 import Modal from 'react-bootstrap/Modal';
 import TextField from '@material-ui/core/TextField';
+import { tickIncrement } from 'd3';
 
 class AllGraphs extends React.Component {
     constructor(props) {
@@ -49,8 +50,7 @@ class AllGraphs extends React.Component {
             activeSimulation: false,
             hasPandemic: false,
             showSaveModal: false,
-            inputsInfo: null,
-
+            replayValues: null
         }
 
     }
@@ -76,9 +76,9 @@ class AllGraphs extends React.Component {
 
                 self.updateModuleData(initialData);
                 var inputValues = document.getElementById('reRunInputValues').value;
-                var replayValues = null;
+                self.state.replayValues = null;
                 if(inputValues != ''){
-                    replayValues = JSON.parse(inputValues);
+                    self.state.replayValues = JSON.parse(inputValues);
                     self.startSimulation();
                     inputValues = '';
                 }
@@ -217,6 +217,10 @@ class AllGraphs extends React.Component {
             this.state.inputInfo.push({[+Object.keys(this.state.currentData)]:[[this.state.deforestationIncrease,this.state.electricityIncrease,this.state.transportationIncrease,this.state.buildingIncrease,this.state.manufacturingIncrease,
                 this.state.industryIncrease, this.state.agricultureIncrease],data[0][+Object.keys(this.state.currentData)]]})
         }
+
+        this.setState({
+            replayValues: null
+        })
     }
     handleOpenAndClose(event) {
         if (event) {
@@ -228,9 +232,13 @@ class AllGraphs extends React.Component {
                     drawerOpened: false
                 })
             } else {
-                this.setState({
-                    drawerOpened: true
-                })
+                if(this.state.replayValues == null){
+                    this.setState({
+                        drawerOpened: true
+                        
+                    })
+                }   
+                
             }
         }
         else {
@@ -239,12 +247,16 @@ class AllGraphs extends React.Component {
                     drawerOpened: false
                 })
             } else {
-                this.setState({
-                    drawerOpened: true
-                })
+                if(this.state.replayValues == null){
+                    this.setState({
+                        drawerOpened: true
+                        
+                    })
+                }  
             }
         }
-
+        
+       
     }
 
     render() {
