@@ -8,7 +8,7 @@ class Simulation extends Model
 {
  
     protected $fillable = [
-        'user_id'
+        'user_id', 'simDescription', 'name', 'inputs'
     ];
 
     protected $table = 'simulation';

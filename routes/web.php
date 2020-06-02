@@ -24,6 +24,8 @@ Route::get('/account', function () {
     return view('auth/account');
 });
 
+Route::post('/saveSimulation', 'SimulationController@saveSimulation');
+
 Route::post('/accountpic', 'AccountController@updatePicture');
 
 Auth::routes();

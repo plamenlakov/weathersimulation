@@ -8,6 +8,7 @@ use App\User;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Auth;
 use App\Simulation;
+
 class AccountController extends Controller
 {
     public function updatePicture(Request $req)

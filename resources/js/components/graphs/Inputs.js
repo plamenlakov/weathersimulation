@@ -1,13 +1,5 @@
 import React from 'react';
-import AlertM from '@material-ui/lab/Alert';
-import Snackbar from '@material-ui/core/Snackbar';
-import Chip from '@material-ui/core/Chip';
 import TextField from '@material-ui/core/TextField';
-import Button from 'react-bootstrap/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPause, faPlay, faStop, faRedoAlt } from '@fortawesome/free-solid-svg-icons';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';

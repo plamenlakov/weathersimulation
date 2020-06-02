@@ -7,7 +7,7 @@ import Map from "../Map";
 import Simulation from '../classes/Simulation';
 import BarChart from './BarChart';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStop, faRedoAlt, faPause, faPlay, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
+import { faStop, faRedoAlt, faPause, faPlay, faSave } from '@fortawesome/free-solid-svg-icons';
 import Inputs from './Inputs';
 import Spinner from 'react-bootstrap/Spinner';
 import Drawer from '@material-ui/core/Drawer';
@@ -15,9 +15,8 @@ import Button from 'react-bootstrap/Button';
 import AlertM from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 import Chip from '@material-ui/core/Chip';
-import Form from 'react-bootstrap/Form';
-import Temperature from './Temperature'
-import Fab from '@material-ui/core/Fab';
+import Temperature from './Temperature';
+import Modal from 'react-bootstrap/Modal';
 import TextField from '@material-ui/core/TextField';
 
 class AllGraphs extends React.Component {
@@ -48,7 +47,9 @@ class AllGraphs extends React.Component {
             isRunning: false,
             drawerOpened: false,
             activeSimulation: false,
-            hasPandemic: false
+            hasPandemic: false,
+            showSaveModal: false,
+
         }
     }
 
@@ -166,7 +167,7 @@ class AllGraphs extends React.Component {
 
     }
 
-    togglePandemic(state){
+    togglePandemic(state) {
         this.setState({
             hasPandemic: state
         })
@@ -229,6 +230,8 @@ class AllGraphs extends React.Component {
     }
 
     render() {
+        const handleCloseModal = () => this.setState({ showSaveModal: false });
+        const handleShowModal = () => this.setState({ showSaveModal: true });
 
         return (
             <div className="App">
@@ -264,7 +267,7 @@ class AllGraphs extends React.Component {
                                             changeManufacturingIncrease={this.changeManufacturingIncrease.bind(this)}
 
                                             togglePandemic={this.togglePandemic.bind(this)}
-                                            hasPandemic = {this.state.hasPandemic}
+                                            hasPandemic={this.state.hasPandemic}
                                             countries={this.simulation.initialCountries}
                                             isRunning={this.state.isRunning} />
                                     </div>
@@ -288,7 +291,7 @@ class AllGraphs extends React.Component {
 
                                         </div>
 
-                                       
+
                                         <div className='p-3' style={{ maxWidth: 300 + 'px' }}>
                                             <AlertM severity={this.state.isRunning ? 'warning' : 'success'}>
                                                 {this.state.isRunning ? 'The simulation must be paused to change values!' : 'Go ahead and change something :)'}
@@ -328,6 +331,10 @@ class AllGraphs extends React.Component {
 
                                             <Button variant="danger" id="buttonStopSim" className='m-2'
                                                 onClick={this.stopSimulation.bind(this)}>{this.state.stateIcon}</Button>
+
+                                            <div style={{ display: this.state.isRunning ? 'none' : 'initial' }}>
+                                                <Button className='m-2' variant="success"><FontAwesomeIcon icon={faSave} onClick={handleShowModal} /></Button>
+                                            </div>
 
                                         </div>
                                     </AlertM>
@@ -370,6 +377,40 @@ class AllGraphs extends React.Component {
                             </Row>
 
                         </Alert>
+
+                        <Modal show={this.state.showSaveModal} onHide={handleCloseModal}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Modal heading</Modal.Title>
+                            </Modal.Header>
+                            <form action="/saveSimulation" method="POST">
+
+                                <Modal.Body>
+                                    <input type="hidden" name="_token" value={csrf_token} />
+                                    <TextField id="simulationName" name="simulationName" label="Choose simulation name (required)" variant="outlined" fullWidth />
+                                    <br />
+                                    <br />
+                                    <TextField
+                                        id="simulationDesc"
+                                        name="simulationDesc"
+                                        label="Simulation description"
+                                        multiline
+                                        rows={4}
+                                        variant="outlined"
+                                        fullWidth
+                                    />
+
+
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="secondary" onClick={handleCloseModal}>
+                                        Close
+                                </Button>
+                                    <Button type='submit' variant="primary" onClick={handleCloseModal}>
+                                        Save simulation
+                                </Button>
+                                </Modal.Footer>
+                            </form>
+                        </Modal>
 
                     </div>
 
