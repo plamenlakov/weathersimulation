@@ -40,7 +40,7 @@ class Simulation extends React.Component {
         var self = this;
         this.hasPandemic = false;
         var readCSV = d3.csv(path, function (data) {
-        
+
             var sectors = [];
             sectors.push(
                 new Electricity('Electricity', +data.electricity_value, +data.electricity_change),
@@ -62,6 +62,7 @@ class Simulation extends React.Component {
 
     resumeFromCurrentState(data, year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
         inputIndustry, inputAgriculture) {
+
         this.temperatureIncrease = [];
         var result = [];
         var yearStopped = +Object.keys(data);
@@ -111,44 +112,60 @@ class Simulation extends React.Component {
 
     }
 
-    playExistingSimulation(replayValues){
+    playExistingSimulation(replayValues) {
         this.temperatureIncrease = [];
         let result = [];
-        //console.log(replayValues)
-        var startCountries = replayValues[0][2020][1];
+        var change = 0;
+        var usableCountries = this.formatReplayCountries(replayValues, change);
+        var lastInputYear = replayValues[replayValues.length - 1][+Object.keys(replayValues[replayValues.length - 1])][2];
+
+        for (let i = 2020; i <= lastInputYear; i++) {
+
+            if(replayValues[change+1] != null){
+                if(i == +Object.keys(replayValues[change+1])){
+                    change++;
+                    usableCountries = this.formatReplayCountries(replayValues, change);
+                }
+            }
+            
+            var countriesInThisYear = usableCountries.map((obj) => obj.cloneObject());
+            this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);
+            result.push({ [i]: countriesInThisYear });
+
+            if (i != lastInputYear) {
+
+                this.updateCountries(usableCountries, 0, +this.formatMainInputs(replayValues, change)[0], +this.formatMainInputs(replayValues, change)[1], +this.formatMainInputs(replayValues, change)[2], +this.formatMainInputs(replayValues, change)[3], +this.formatMainInputs(replayValues, change)[4], +this.formatMainInputs(replayValues, change)[5], +this.formatMainInputs(replayValues, change)[6])
+            }
+        }
+
+        return result;
+
+    }
+
+    formatMainInputs(replayValues, change){
+        return replayValues[change][+Object.keys(replayValues[change])][0];
+    }
+
+    formatReplayCountries(replayValues, change) {
+        var startCountries = replayValues[change][+Object.keys(replayValues[change])][1];
         var usableCountries = [];
         var usableSectors = [];
-        
-        for(let c in startCountries){
 
-            usableSectors.push(new Electricity(startCountries[c]._sectors[0]._name,startCountries[c]._sectors[0]._value, startCountries[c]._sectors[0].forestry_percentage));
-            usableSectors.push(new Transportation(startCountries[c]._sectors[1]._name,startCountries[c]._sectors[1]._value, startCountries[c]._sectors[1].forestry_percentage));
-            usableSectors.push(new Building(startCountries[c]._sectors[2]._name,startCountries[c]._sectors[2]._value, startCountries[c]._sectors[2].forestry_percentage));
-            usableSectors.push(new Manufacturing(startCountries[c]._sectors[3]._name,startCountries[c]._sectors[3]._value, startCountries[c]._sectors[3].forestry_percentage));
-            usableSectors.push(new Industry(startCountries[c]._sectors[4]._name,startCountries[c]._sectors[4]._value, startCountries[c]._sectors[4].forestry_percentage));
-            usableSectors.push(new Agriculture(startCountries[c]._sectors[5]._name,startCountries[c]._sectors[5]._value, startCountries[c]._sectors[5].forestry_percentage));
+        for (let c in startCountries) {
+
+            usableSectors.push(new Electricity(startCountries[c]._sectors[0]._name, startCountries[c]._sectors[0]._value, startCountries[c]._sectors[0]._percentage));
+            usableSectors.push(new Transportation(startCountries[c]._sectors[1]._name, startCountries[c]._sectors[1]._value, startCountries[c]._sectors[1]._percentage));
+            usableSectors.push(new Building(startCountries[c]._sectors[2]._name, startCountries[c]._sectors[2]._value, startCountries[c]._sectors[2]._percentage));
+            usableSectors.push(new Manufacturing(startCountries[c]._sectors[3]._name, startCountries[c]._sectors[3]._value, startCountries[c]._sectors[3]._percentage));
+            usableSectors.push(new Industry(startCountries[c]._sectors[4]._name, startCountries[c]._sectors[4]._value, startCountries[c]._sectors[4]._percentage));
+            usableSectors.push(new Agriculture(startCountries[c]._sectors[5]._name, startCountries[c]._sectors[5]._value, startCountries[c]._sectors[5]._percentage));
 
             usableCountries.push(new Country(startCountries[c]._name, +startCountries[c]._size, +startCountries[c]._ppm, +startCountries[c]._population, +startCountries[c]._populationGrowth, +startCountries[c]._forests, +startCountries[c]._forestsGrowth, usableSectors));
             usableSectors = [];
 
         }
-
-        var startMainInputs = replayValues[0][2020][0];
-        var lastInputYear = replayValues[replayValues.length - 1][+Object.keys(replayValues[replayValues.length - 1])][2];
-        //console.log(usableCountries[0].getProductionCO2())
-        for(let i = 2020; i <= lastInputYear; i++){
-            var countriesInThisYear = usableCountries.map((obj) => obj.cloneObject());
-            this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);
-            result.push({ [i]: countriesInThisYear })
-
-            if(i != lastInputYear){
- 
-                this.updateCountries(usableCountries, 0, +startMainInputs[0], +startMainInputs[1], +startMainInputs[2], +startMainInputs[3], +startMainInputs[4], +startMainInputs[5], +startMainInputs[6])
-            }
-        }
-        console.log(result)
-      return result
-
+        return usableCountries;
+        //var startMainInputs = replayValues[change][2020][0];
     }
 
     getWaterLevels(tempArray) {

@@ -18,7 +18,6 @@ import Chip from '@material-ui/core/Chip';
 import Temperature from './Temperature';
 import Modal from 'react-bootstrap/Modal';
 import TextField from '@material-ui/core/TextField';
-import { tickIncrement } from 'd3';
 
 class AllGraphs extends React.Component {
     constructor(props) {
@@ -37,6 +36,8 @@ class AllGraphs extends React.Component {
             stateIcon: null,
             currentState: null,
             currentWaterLevels: null,
+            replayValues: null,
+            inputInfo: [],
 
             moduleData: null,
             yearToStop: 2020,
@@ -50,9 +51,11 @@ class AllGraphs extends React.Component {
             activeSimulation: false,
             hasPandemic: false,
             showSaveModal: false,
-            replayValues: null
-        }
+            activeReRun: false,
 
+        }
+        console.log(document.getElementById('sim1Compare').value)
+        console.log(document.getElementById('sim2Compare').value)
     }
 
     set simulation(v) {
@@ -77,13 +80,14 @@ class AllGraphs extends React.Component {
                 self.updateModuleData(initialData);
                 var inputValues = document.getElementById('reRunInputValues').value;
                 self.state.replayValues = null;
+                self.setState({ activeReRun: false })
                 if (inputValues != '') {
                     self.state.replayValues = JSON.parse(inputValues);
                     var newData = self.simulation.playExistingSimulation(self.state.replayValues);
                     self.unpauseSimulation();
                     self.changeRunningState(true);
                     self.changeActiveState(true);
-
+                    self.setState({ activeReRun: true })
                     self.updateModuleData(newData);
                     inputValues = '';
                 }
@@ -93,7 +97,7 @@ class AllGraphs extends React.Component {
     }
 
     startSimulation() {
-
+        console.log(this.state.currentData)
         var newData = this.state.currentData == null ? this.simulation.getPPMOverall(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
             this.state.agricultureIncrease) : this.simulation.resumeFromCurrentState(this.state.currentData, this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
@@ -101,6 +105,7 @@ class AllGraphs extends React.Component {
                 this.state.agricultureIncrease);
 
         this.unpauseSimulation();
+        this.updateInputInfo(newData);
         this.changeRunningState(true);
         this.updateModuleData(newData);
         this.handleOpenAndClose();
@@ -144,6 +149,7 @@ class AllGraphs extends React.Component {
                 this.state.agricultureIncrease);
 
             this.unpauseSimulation();
+            this.setState({ activeReRun: false });
             this.simulation.hasPandemic = false;
             this.changeRunningState(false);
             this.updateModuleData(newData);
@@ -158,6 +164,7 @@ class AllGraphs extends React.Component {
             this.state.agricultureIncrease)
 
         this.changeRunningState(true);
+        this.updateInputInfo(newData);
         this.unpauseSimulation();
         this.updateModuleData(newData);
 
@@ -213,22 +220,23 @@ class AllGraphs extends React.Component {
             isFetching: false,
             currentWaterLevels: this.simulation.getWaterLevels(this.simulation.temperatureIncrease)
         })
+
+    }
+
+    updateInputInfo(newData) { 
         if (this.state.currentData == null) {
-            this.setState({
-                inputInfo: [{
-                    2020: [[this.state.deforestationIncrease, this.state.electricityIncrease, this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease,
-                    this.state.industryIncrease, this.state.agricultureIncrease], this.simulation.initialCountries.map((obj) => obj.cloneObject()), this.state.yearToStop]
-                }]
+
+            this.state.inputInfo.push({
+                2020: [[this.state.deforestationIncrease, this.state.electricityIncrease, this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease,
+                this.state.industryIncrease, this.state.agricultureIncrease], this.simulation.initialCountries.map((obj) => obj.cloneObject()), this.state.yearToStop]
             })
+
         } else {
             this.state.inputInfo.push({
                 [+Object.keys(this.state.currentData)]: [[this.state.deforestationIncrease, this.state.electricityIncrease, this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease,
-                this.state.industryIncrease, this.state.agricultureIncrease], data[0][+Object.keys(this.state.currentData)].map((obj) => obj.cloneObject()), this.state.yearToStop]
+                this.state.industryIncrease, this.state.agricultureIncrease], newData[0][+Object.keys(this.state.currentData)].map((obj) => obj.cloneObject()), this.state.yearToStop]
             })
         }
-
-
-
 
     }
     handleOpenAndClose(event) {
@@ -286,7 +294,7 @@ class AllGraphs extends React.Component {
 
                                 <Temperature temperatures={this.simulation.temperatureIncrease} />
 
-                                <Button className="mt-3" onClick={evt => this.handleOpenAndClose(evt)}>Open controls</Button>
+                                <Button disabled={this.state.activeReRun} className="mt-3" onClick={evt => this.handleOpenAndClose(evt)}>Open controls</Button>
                                 <br />
                                 <br />
                                 {this.state.activeSimulation ?
@@ -359,22 +367,22 @@ class AllGraphs extends React.Component {
                                         vertical: 'bottom',
                                         horizontal: 'left',
                                     }}
-                                    open={this.state.activeSimulation && !this.state.drawerOpened}
+                                    open={this.state.activeSimulation && !this.state.drawerOpened && !this.state.activeReRun}
                                     style={{ bottom: 75 + 'px' }}>
                                     <AlertM icon={false} severity="info">
                                         <div>
 
-                                            <Button variant="primary" id="buttonPauseSim" className='m-2' disabled={this.state.paused}
+                                            <Button size='sm' variant="primary" id="buttonPauseSim" className='m-2' disabled={this.state.paused}
                                                 onClick={this.pauseSimulation.bind(this)} ><FontAwesomeIcon icon={faPause} /></Button>
 
-                                            <Button variant="primary" id="buttonResumeSim" className='m-2' disabled={!this.state.paused}
+                                            <Button size='sm' variant="primary" id="buttonResumeSim" className='m-2' disabled={!this.state.paused}
                                                 onClick={this.resumeSimulation.bind(this)}><FontAwesomeIcon icon={faPlay} /></Button>
 
-                                            <Button variant="danger" id="buttonStopSim" className='m-2'
+                                            <Button size='sm' variant="danger" id="buttonStopSim" className='m-2'
                                                 onClick={this.stopSimulation.bind(this)}>{this.state.stateIcon}</Button>
 
                                             <div style={{ display: this.state.isRunning ? 'none' : 'initial' }}>
-                                                <Button className='m-2' variant="success"><FontAwesomeIcon icon={faSave} onClick={handleShowModal} /></Button>
+                                                <Button size='sm' className='m-2' variant="success"><FontAwesomeIcon icon={faSave} onClick={handleShowModal} /></Button>
                                             </div>
 
                                         </div>
@@ -386,10 +394,22 @@ class AllGraphs extends React.Component {
                                         vertical: 'bottom',
                                         horizontal: 'left',
                                     }}
-                                    open={this.state.activeSimulation && !this.state.drawerOpened}>
+                                    open={this.state.activeSimulation && !this.state.drawerOpened && !this.state.activeReRun}>
                                     <AlertM severity={this.state.isRunning ? 'warning' : 'success'}>
                                         {this.state.isRunning ? 'The simulation must be paused to change values!' : 'Go ahead and change something :)'}
 
+                                    </AlertM>
+                                </Snackbar>
+
+                                <Snackbar
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'left',
+                                    }}
+                                    open={this.state.activeReRun}>
+                                    <AlertM icon={false} severity='info'>
+                                        You are watching a replay.
+                                        <Button size='sm' className='m-2' variant="danger"><FontAwesomeIcon icon={faStop} onClick={this.stopSimulation.bind(this)} /></Button>
                                     </AlertM>
                                 </Snackbar>
 
@@ -397,11 +417,11 @@ class AllGraphs extends React.Component {
                             </Col>
                             <Col md='8' className='p-3'>
                                 {/* <Map data={this.state.moduleData}
-                                isRunning={this.state.isRunning}
-                                paused={this.state.paused}
-                                currentWaterLevels={this.state.currentWaterLevels}
-                                currentYearData={this.state.currentData}
-                                updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /> */}
+                                    isRunning={this.state.isRunning}
+                                    paused={this.state.paused}
+                                    currentWaterLevels={this.state.currentWaterLevels}
+                                    currentYearData={this.state.currentData}
+                                    updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /> */}
                             </Col>
                         </Row>
 

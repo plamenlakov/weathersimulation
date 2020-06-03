@@ -93,13 +93,13 @@ class ModalCountry extends React.Component {
     }
 
     updateChosenCountry() {
-        this.props.country.deforestationGrowth = this.state.deforestationIncrease
-        this.props.country.electricityGrowth = this.state.electricityIncrease
-        this.props.country.transportationGrowth = this.state.transportationIncrease
-        this.props.country.buildingGrowth = this.state.buildingIncrease
-        this.props.country.agricultureGrowth = this.state.agricultureIncrease
-        this.props.country.industryGrowth = this.state.industryIncrease
-        this.props.country.manufacturingIncrease = this.state.manufacturingIncrease
+        this.props.country.forestsGrowth = this.state.deforestationIncrease
+        this.props.country.sectors[0].percentage = this.state.electricityIncrease
+        this.props.country.sectors[1].percentage = this.state.transportationIncrease
+        this.props.country.sectors[2].percentage = this.state.buildingIncrease
+        this.props.country.sectors[3].percentage = this.state.manufacturingIncrease
+        this.props.country.sectors[4].percentage = this.state.industryIncrease
+        this.props.country.sectors[5].percentage = this.state.agricultureIncrease
         this.props.updateChosenCountry(this.props.country)
     }
 

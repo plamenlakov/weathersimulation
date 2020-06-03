@@ -26,6 +26,8 @@ Route::get('/account', function () {
 
 Route::post('/saveSimulation', 'SimulationController@saveSimulation');
 
+Route::get('/simulationCompare', 'SimulationController@getInfoForTwoSimulations');
+
 Route::post('/accountpic', 'AccountController@updatePicture');
 
 Auth::routes();

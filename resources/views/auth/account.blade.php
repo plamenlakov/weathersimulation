@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+<div id="compare"></div>
 <div class='container shadow p-3 bg-white rounded'>
+    <input type="hidden" value="{{session("simulation1")}}" id="sim1Compare" />
+    <input type="hidden" value="{{session("simulation2")}}" id="sim2Compare" />
     <div class='text-right'>
         {{Auth::user()->email}}
         <button type="button" class="btn btn-light rounded-circle ml-1" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fas fa-cog"></i></button>
@@ -41,7 +44,7 @@
 
                             <div class="row justify-content-center">
                                 <form class="m-1" action="/simulationRun" method="GET">
-                                    <input type="hidden" name="simulation_id" value="{{$s->simulation_id}}"/>
+                                    <input type="hidden" name="simulation_id" value="{{$s->simulation_id}}" />
                                     <button type="submit" class="btn btn-success"><i class="fas fa-play"></i></button>
 
                                 </form>
@@ -58,7 +61,12 @@
                                         @if(count(Auth::user()->simulations) > 1)
                                         @foreach(Auth::user()->simulations as $sCompare)
                                         @if($sCompare->simulation_id != $s->simulation_id)
-                                        <a class="dropdown-item" href="#">{{$sCompare->name}}</a>
+                                        <form action="/simulationCompare">
+                                            <input name="sim1ID" type="hidden" value='{{$s->simulation_id}}'>
+                                            <input name="sim2ID" type="hidden" value='{{$sCompare->simulation_id}}'>
+                                            <button type="submit" class="btn btn-light dropdown-item">{{$sCompare->name}}</button>
+                                        </form>
+
                                         @endif
                                         @endforeach
                                         @else
