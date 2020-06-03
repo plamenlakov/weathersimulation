@@ -77,9 +77,14 @@ class AllGraphs extends React.Component {
                 self.updateModuleData(initialData);
                 var inputValues = document.getElementById('reRunInputValues').value;
                 self.state.replayValues = null;
-                if(inputValues != ''){
+                if (inputValues != '') {
                     self.state.replayValues = JSON.parse(inputValues);
-                    self.startSimulation();
+                    var newData = self.simulation.playExistingSimulation(self.state.replayValues);
+                    self.unpauseSimulation();
+                    self.changeRunningState(true);
+                    self.changeActiveState(true);
+
+                    self.updateModuleData(newData);
                     inputValues = '';
                 }
             })
@@ -208,19 +213,23 @@ class AllGraphs extends React.Component {
             isFetching: false,
             currentWaterLevels: this.simulation.getWaterLevels(this.simulation.temperatureIncrease)
         })
-        if(this.state.currentData == null){
+        if (this.state.currentData == null) {
             this.setState({
-                inputInfo: [{2020:[[this.state.deforestationIncrease,this.state.electricityIncrease,this.state.transportationIncrease,this.state.buildingIncrease,this.state.manufacturingIncrease,
-                                    this.state.industryIncrease, this.state.agricultureIncrease], this.simulation.initialCountries]}]
+                inputInfo: [{
+                    2020: [[this.state.deforestationIncrease, this.state.electricityIncrease, this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease,
+                    this.state.industryIncrease, this.state.agricultureIncrease], this.simulation.initialCountries.map((obj) => obj.cloneObject()), this.state.yearToStop]
+                }]
             })
-        }else{
-            this.state.inputInfo.push({[+Object.keys(this.state.currentData)]:[[this.state.deforestationIncrease,this.state.electricityIncrease,this.state.transportationIncrease,this.state.buildingIncrease,this.state.manufacturingIncrease,
-                this.state.industryIncrease, this.state.agricultureIncrease],data[0][+Object.keys(this.state.currentData)]]})
+        } else {
+            this.state.inputInfo.push({
+                [+Object.keys(this.state.currentData)]: [[this.state.deforestationIncrease, this.state.electricityIncrease, this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease,
+                this.state.industryIncrease, this.state.agricultureIncrease], data[0][+Object.keys(this.state.currentData)].map((obj) => obj.cloneObject()), this.state.yearToStop]
+            })
         }
 
-        this.setState({
-            replayValues: null
-        })
+
+
+
     }
     handleOpenAndClose(event) {
         if (event) {
@@ -232,13 +241,13 @@ class AllGraphs extends React.Component {
                     drawerOpened: false
                 })
             } else {
-                if(this.state.replayValues == null){
+                if (this.state.replayValues == null) {
                     this.setState({
                         drawerOpened: true
-                        
+
                     })
-                }   
-                
+                }
+
             }
         }
         else {
@@ -247,16 +256,18 @@ class AllGraphs extends React.Component {
                     drawerOpened: false
                 })
             } else {
-                if(this.state.replayValues == null){
+                if (this.state.replayValues == null) {
                     this.setState({
                         drawerOpened: true
-                        
+
                     })
-                }  
+                }
             }
         }
-        
-       
+        this.setState({
+            replayValues: null
+        })
+
     }
 
     render() {
@@ -385,12 +396,12 @@ class AllGraphs extends React.Component {
 
                             </Col>
                             <Col md='8' className='p-3'>
-                                <Map data={this.state.moduleData}
+                                {/* <Map data={this.state.moduleData}
                                 isRunning={this.state.isRunning}
                                 paused={this.state.paused}
                                 currentWaterLevels={this.state.currentWaterLevels}
                                 currentYearData={this.state.currentData}
-                                updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} />
+                                updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /> */}
                             </Col>
                         </Row>
 
@@ -415,7 +426,8 @@ class AllGraphs extends React.Component {
                             <form action="/saveSimulation" method="POST">
 
                                 <Modal.Body>
-                                    <input type="hidden" name="inputsInfo" value={JSON.stringify(this.state.inputInfo)}/>
+                                    <input type="hidden" name="inputsInfo" value={JSON.stringify(this.state.inputInfo)}
+                                    />
                                     <input type="hidden" name="_token" value={csrf_token} />
                                     <TextField id="simulationName" name="simulationName" label="Choose simulation name (required)" variant="outlined" fullWidth />
                                     <br />

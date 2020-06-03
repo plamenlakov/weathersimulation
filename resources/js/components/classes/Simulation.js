@@ -111,6 +111,46 @@ class Simulation extends React.Component {
 
     }
 
+    playExistingSimulation(replayValues){
+        this.temperatureIncrease = [];
+        let result = [];
+        //console.log(replayValues)
+        var startCountries = replayValues[0][2020][1];
+        var usableCountries = [];
+        var usableSectors = [];
+        
+        for(let c in startCountries){
+
+            usableSectors.push(new Electricity(startCountries[c]._sectors[0]._name,startCountries[c]._sectors[0]._value, startCountries[c]._sectors[0].forestry_percentage));
+            usableSectors.push(new Transportation(startCountries[c]._sectors[1]._name,startCountries[c]._sectors[1]._value, startCountries[c]._sectors[1].forestry_percentage));
+            usableSectors.push(new Building(startCountries[c]._sectors[2]._name,startCountries[c]._sectors[2]._value, startCountries[c]._sectors[2].forestry_percentage));
+            usableSectors.push(new Manufacturing(startCountries[c]._sectors[3]._name,startCountries[c]._sectors[3]._value, startCountries[c]._sectors[3].forestry_percentage));
+            usableSectors.push(new Industry(startCountries[c]._sectors[4]._name,startCountries[c]._sectors[4]._value, startCountries[c]._sectors[4].forestry_percentage));
+            usableSectors.push(new Agriculture(startCountries[c]._sectors[5]._name,startCountries[c]._sectors[5]._value, startCountries[c]._sectors[5].forestry_percentage));
+
+            usableCountries.push(new Country(startCountries[c]._name, +startCountries[c]._size, +startCountries[c]._ppm, +startCountries[c]._population, +startCountries[c]._populationGrowth, +startCountries[c]._forests, +startCountries[c]._forestsGrowth, usableSectors));
+            usableSectors = [];
+
+        }
+
+        var startMainInputs = replayValues[0][2020][0];
+        var lastInputYear = replayValues[replayValues.length - 1][+Object.keys(replayValues[replayValues.length - 1])][2];
+        //console.log(usableCountries[0].getProductionCO2())
+        for(let i = 2020; i <= lastInputYear; i++){
+            var countriesInThisYear = usableCountries.map((obj) => obj.cloneObject());
+            this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);
+            result.push({ [i]: countriesInThisYear })
+
+            if(i != lastInputYear){
+ 
+                this.updateCountries(usableCountries, 0, +startMainInputs[0], +startMainInputs[1], +startMainInputs[2], +startMainInputs[3], +startMainInputs[4], +startMainInputs[5], +startMainInputs[6])
+            }
+        }
+        console.log(result)
+      return result
+
+    }
+
     getWaterLevels(tempArray) {
         var waterLevels = [];
 

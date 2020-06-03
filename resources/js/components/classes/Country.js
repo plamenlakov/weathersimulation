@@ -165,7 +165,7 @@ class Country {
 
     }
 
-    updateCurrentData(inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+   updateCurrentData(inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
         inputIndustry, inputAgriculture) {
 
         var electricity = this.sectors.find(el => el instanceof Electricity);
