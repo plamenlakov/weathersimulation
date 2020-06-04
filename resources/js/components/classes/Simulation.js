@@ -63,7 +63,7 @@ class Simulation extends React.Component {
     resumeFromCurrentState(data, year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
         inputIndustry, inputAgriculture) {
 
-        this.temperatureIncrease = [];
+        //this.temperatureIncrease = [];
         var result = [];
         var yearStopped = +Object.keys(data);
         var copyArray = data[yearStopped].map((obj) => obj.cloneObject());

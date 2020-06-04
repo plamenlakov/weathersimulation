@@ -481,6 +481,7 @@ class Map extends React.Component {
         countriesReceived[i] = data
       }
     }
+    
     this.props.updateCurrentData(this.props.currentYearData == null ? this.props.data[0] : this.props.currentYearData)
   }
 
