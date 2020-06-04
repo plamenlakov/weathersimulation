@@ -1,10 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<div id="compare"></div>
 <div class='container shadow p-3 bg-white rounded'>
-    <input type="hidden" value="{{session("simulation1")}}" id="sim1Compare" />
-    <input type="hidden" value="{{session("simulation2")}}" id="sim2Compare" />
+
     <div class='text-right'>
         {{Auth::user()->email}}
         <button type="button" class="btn btn-light rounded-circle ml-1" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fas fa-cog"></i></button>
@@ -21,6 +19,13 @@
             <br>
             <img src="" id="imagePreview" alt="" class="mt-2 rounded-circle" style="max-width: 150px;">
         </form>
+        
+        @if(Session::has('message'))
+        <div class="alert alert-{{session('message')['type']}}">
+            {{session('message')['text']}}
+        </div>
+        @endif
+
         @if(count(Auth::user()->simulations) > 0)
         <div class="container">
             <div class="row">
@@ -38,7 +43,12 @@
                             </a>
                             <div class="collapse" id="collapse{{$s->simulation_id + 3614}}">
                                 <div class="card card-body text-justify">
-                                    <p class="card-text">{{$s->simDescription}}</p>
+                                <form action="/changeDesc" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="simulation_id" value="{{$s->simulation_id}}" />
+                                    <textarea class="form-control" name='simDescription' rows="3">{{$s->simDescription}}</textarea>
+                                    <button type="submit" class="btn btn-primary btn-sm btn-block">Change description</button>
+                                </form>
                                 </div>
                             </div>
 
@@ -48,8 +58,10 @@
                                     <button type="submit" class="btn btn-success"><i class="fas fa-play"></i></button>
 
                                 </form>
-                                <form class="m-1" action="POST">
-                                    <button type="button" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                                <form class="m-1" action="/deleteSim" method="POST">
+                                     @csrf
+                                     <input type="hidden" name="simulation_id" value="{{$s->simulation_id}}" />
+                                    <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
 
                                 </form>
 
@@ -64,7 +76,7 @@
                                         <form action="/simulationCompare">
                                             <input name="sim1ID" type="hidden" value='{{$s->simulation_id}}'>
                                             <input name="sim2ID" type="hidden" value='{{$sCompare->simulation_id}}'>
-                                            <button type="submit" class="btn btn-light dropdown-item">{{$sCompare->name}}</button>
+                                            <button type="submit" class="btn btn-primary dropdown-item">{{$sCompare->name}}</button>
                                         </form>
 
                                         @endif
@@ -93,6 +105,16 @@
 
         @endif
     </div>
+
+    <div class="m-2 p-3">
+        <div id="compare"></div>
+        <input type="hidden" value="{{session("simulation1")}}" id="sim1Compare" />
+        <input type="hidden" value="{{session("simulation2")}}" id="sim2Compare" />
+        <input type="hidden" value="{{session("simulation1Name")}}" id="sim1CompareName" />
+        <input type="hidden" value="{{session("simulation2Name")}}" id="sim2CompareName" />
+    </div>
+
+
 
 </div>
 <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">

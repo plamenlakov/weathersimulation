@@ -27,9 +27,9 @@ Route::get('/account', function () {
 Route::post('/saveSimulation', 'SimulationController@saveSimulation');
 
 Route::get('/simulationCompare', 'SimulationController@getInfoForTwoSimulations');
-
+Route::post('/deleteSim', 'SimulationController@deleteSimulation');
 Route::post('/accountpic', 'AccountController@updatePicture');
-
+Route::post('/changeDesc', 'SimulationController@changeDescription');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

@@ -54,8 +54,7 @@ class AllGraphs extends React.Component {
             activeReRun: false,
 
         }
-        console.log(document.getElementById('sim1Compare').value)
-        console.log(document.getElementById('sim2Compare').value)
+
     }
 
     set simulation(v) {
@@ -223,7 +222,7 @@ class AllGraphs extends React.Component {
 
     }
 
-    updateInputInfo(newData) { 
+    updateInputInfo(newData) {
         if (this.state.currentData == null) {
 
             this.state.inputInfo.push({
@@ -382,7 +381,7 @@ class AllGraphs extends React.Component {
                                                 onClick={this.stopSimulation.bind(this)}>{this.state.stateIcon}</Button>
 
                                             <div style={{ display: this.state.isRunning ? 'none' : 'initial' }}>
-                                                <Button size='sm' className='m-2' variant="success"><FontAwesomeIcon icon={faSave} onClick={handleShowModal} /></Button>
+                                                <Button size='sm' className='m-2' variant="success" onClick={handleShowModal} ><FontAwesomeIcon icon={faSave} /></Button>
                                             </div>
 
                                         </div>
@@ -409,7 +408,8 @@ class AllGraphs extends React.Component {
                                     open={this.state.activeReRun}>
                                     <AlertM icon={false} severity='info'>
                                         You are watching a replay.
-                                        <Button size='sm' className='m-2' variant="danger"><FontAwesomeIcon icon={faStop} onClick={this.stopSimulation.bind(this)} /></Button>
+                                        <Button size='sm' className='m-2' variant="danger" onClick={this.stopSimulation.bind(this)}><FontAwesomeIcon icon={faStop} /></Button>
+                                        
                                     </AlertM>
                                 </Snackbar>
 

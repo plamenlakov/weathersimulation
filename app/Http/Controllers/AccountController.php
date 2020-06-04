@@ -8,6 +8,7 @@ use App\User;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Auth;
 use App\Simulation;
+use Illuminate\Support\Facades\Session as Session;
 
 class AccountController extends Controller
 {
@@ -28,6 +29,8 @@ class AccountController extends Controller
             $img->mask($mask, false)->save(public_path('images/profilePics/' . $filename));
             $user->image = $filename;
             $user->push();
+
+            Session::flash('message', ['text'=>'Picture updated!', 'type'=>'success']);
 
             //has to return the view in order to refresh
             return back();

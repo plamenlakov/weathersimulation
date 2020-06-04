@@ -103,7 +103,7 @@ class PPMLineGraph extends React.Component {
         chart.data = this.formatedData(0);
 
         // Create axes
-        let yearAxis = chart.xAxes.push(new am4charts.ValueAxis());
+        let yearAxis = chart.xAxes.push(new am4charts.CategoryAxis());
         yearAxis.dataFields.category = "Year";
         yearAxis.title.text = "Year";
         yearAxis.interpolationDuration = 650;
@@ -113,7 +113,7 @@ class PPMLineGraph extends React.Component {
         yearAxis.min = 2015;
         yearAxis.max = 2025;
         yearAxis.keepSelection = true;
-
+        yearAxis.dataFields.category = "Year";
         this.state.yearAxis = yearAxis;
 
         // Create value axis
@@ -131,7 +131,7 @@ class PPMLineGraph extends React.Component {
         // Create series
         let series = chart.series.push(new am4charts.LineSeries());
         series.dataFields.valueY = "PPM";
-        series.dataFields.valueX = "Year";
+        series.dataFields.categoryX = "Year";
         series.strokeWidth = 3;
         series.tooltipText = "{valueY}";
         series.tooltip.pointerOrientation = "vertical";
@@ -141,7 +141,7 @@ class PPMLineGraph extends React.Component {
         series.fillOpacity = 0.1;
         series.interpolationDuration = 1300;
         series.defaultState.transitionDuration = 0;
-        series.tensionX = 0.9;
+        //series.tensionX = 0.9;
         series.minBulletDistance = 35;
         this.state.series = series;
 
@@ -149,7 +149,7 @@ class PPMLineGraph extends React.Component {
         chart.cursor = new am4charts.XYCursor();
 
         chart.cursor.xAxis = yearAxis;
-        chart.cursor.snapToSeries = series;
+        //chart.cursor.snapToSeries = series;
         chart.scrollbarX = new am4charts.XYChartScrollbar();
         chart.scrollbarX.series.push(series);
 

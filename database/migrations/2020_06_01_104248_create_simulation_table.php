@@ -19,6 +19,7 @@ class CreateSimulationTable extends Migration
             $table->longText('name');
             $table->longText('inputs');
             $table->longText('simDescription')->nullable();
+            $table->boolean('deleted')->default('0');
             
             $table->mediumText('image')->nullable();
             $table->timestamps();
