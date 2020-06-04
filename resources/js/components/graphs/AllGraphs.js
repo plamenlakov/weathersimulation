@@ -416,12 +416,12 @@ class AllGraphs extends React.Component {
 
                             </Col>
                             <Col md='8' className='p-3'>
-                                {/* <Map data={this.state.moduleData}
+                                <Map data={this.state.moduleData}
                                     isRunning={this.state.isRunning}
                                     paused={this.state.paused}
                                     currentWaterLevels={this.state.currentWaterLevels}
                                     currentYearData={this.state.currentData}
-                                    updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /> */}
+                                    updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} />
                             </Col>
                         </Row>
 
