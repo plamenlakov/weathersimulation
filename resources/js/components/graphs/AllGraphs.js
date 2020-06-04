@@ -38,9 +38,10 @@ class AllGraphs extends React.Component {
             currentWaterLevels: null,
             replayValues: null,
             inputInfo: [],
+            temperatureInfo:[],
 
             moduleData: null,
-            yearToStop: 2020,
+            yearToStop: 2021,
             warning: "",
 
             isFetching: true,
@@ -142,11 +143,12 @@ class AllGraphs extends React.Component {
     stopSimulation() {
         this.setState({
             currentData: null,
+            temperatureInfo: []
         }, () => {
             var newData = this.simulation.getPPMOverall(2020, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
                 this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
                 this.state.agricultureIncrease);
-
+            // this.simulation.temperatureIncrease = [];
             this.unpauseSimulation();
             this.setState({ activeReRun: false });
             this.simulation.hasPandemic = false;
@@ -217,7 +219,8 @@ class AllGraphs extends React.Component {
         this.setState({
             moduleData: data,
             isFetching: false,
-            currentWaterLevels: this.simulation.getWaterLevels(this.simulation.temperatureIncrease)
+            currentWaterLevels: this.simulation.getWaterLevels(this.simulation.temperatureIncrease),
+            temperatureInfo: this.simulation.temperatureIncrease
         })
 
     }
@@ -291,7 +294,7 @@ class AllGraphs extends React.Component {
 
                                 <PPMLineGraph data={this.state.moduleData} paused={this.state.paused} />
 
-                                <Temperature temperatures={this.simulation.temperatureIncrease} />
+                                <Temperature data={this.state.moduleData} temperatures={this.state.temperatureInfo} paused={this.state.paused}/>
 
                                 <Button disabled={this.state.activeReRun} className="mt-3" onClick={evt => this.handleOpenAndClose(evt)}>Open controls</Button>
                                 <br />
@@ -415,14 +418,14 @@ class AllGraphs extends React.Component {
 
 
                             </Col>
-                            <Col md='8' className='p-3'>
-                                <Map data={this.state.moduleData}
-                                    isRunning={this.state.isRunning}
-                                    paused={this.state.paused}
-                                    currentWaterLevels={this.state.currentWaterLevels}
-                                    currentYearData={this.state.currentData}
-                                    updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} />
-                            </Col>
+                            {/*<Col md='8' className='p-3'>*/}
+                            {/*    <Map data={this.state.moduleData}*/}
+                            {/*        isRunning={this.state.isRunning}*/}
+                            {/*        paused={this.state.paused}*/}
+                            {/*        currentWaterLevels={this.state.currentWaterLevels}*/}
+                            {/*        currentYearData={this.state.currentData}*/}
+                            {/*        updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} />*/}
+                            {/*</Col>*/}
                         </Row>
 
                         <Alert variant='primary' className='m-2'>
