@@ -53,6 +53,7 @@ class Comaprison extends React.Component {
             series.tooltip.pointerOrientation = "vertical";
             series.numberFormatter.numberFormat = '###,###.###'
             series.minBulletDistance = 35;
+            
             // Create series 2
             let series2 = chart.series.push(new am4charts.LineSeries());
             series2.dataFields.valueY = "PPM2";

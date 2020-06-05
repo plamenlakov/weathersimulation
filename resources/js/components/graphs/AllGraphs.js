@@ -15,7 +15,6 @@ import Button from 'react-bootstrap/Button';
 import AlertM from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 import Chip from '@material-ui/core/Chip';
-import Temperature from './Temperature';
 import Modal from 'react-bootstrap/Modal';
 import TextField from '@material-ui/core/TextField';
 
@@ -97,7 +96,7 @@ class AllGraphs extends React.Component {
     }
 
     startSimulation() {
-        console.log(this.state.currentData)
+        
         var newData = this.state.currentData == null ? this.simulation.getPPMOverall(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
             this.state.agricultureIncrease) : this.simulation.resumeFromCurrentState(this.state.currentData, this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
@@ -292,9 +291,9 @@ class AllGraphs extends React.Component {
                         <Row className="m-2 text-center">
                             <Col md='4' className='border border-primary rounded p-3 mt-3'>
 
-                                <PPMLineGraph data={this.state.moduleData} paused={this.state.paused} />
+                                <PPMLineGraph data={this.state.moduleData} temperatures={this.state.temperatureInfo} paused={this.state.paused} />
 
-                                <Temperature data={this.state.moduleData} temperatures={this.state.temperatureInfo} paused={this.state.paused}/>
+                                {/* <Temperature data={this.state.moduleData} temperatures={this.state.temperatureInfo} paused={this.state.paused}/> */}
 
                                 <Button disabled={this.state.activeReRun} className="mt-3" onClick={evt => this.handleOpenAndClose(evt)}>Open controls</Button>
                                 <br />

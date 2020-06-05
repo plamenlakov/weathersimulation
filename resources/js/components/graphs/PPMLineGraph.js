@@ -1,11 +1,19 @@
 import React from 'react';
-import { Chart } from "react-google-charts";
-import Spinner from 'react-bootstrap/Spinner';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import am4themes_dataviz from "@amcharts/amcharts4/themes/dataviz";
-import { sum } from 'd3';
+import CountUp from 'react-countup';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import Divider from '@material-ui/core/Divider';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTemperatureHigh, faTemperatureLow } from '@fortawesome/free-solid-svg-icons';
 
 class PPMLineGraph extends React.Component {
     constructor(props) {
@@ -13,11 +21,17 @@ class PPMLineGraph extends React.Component {
         this.state = {
             chartData: [],
             yearIndex: 0,
+            tempIndex: 0,
 
             yearAxis: null,
             valueAxis: null,
             series: null,
-            containerWidth: 0
+            containerWidth: 0,
+            start: 0,
+            end: 0,
+
+            startPPM: 0,
+            endPPM: 0
         }
     }
 
@@ -31,8 +45,10 @@ class PPMLineGraph extends React.Component {
         if (this.props.data != prevProps.data) {
 
             if (+Object.keys(this.props.data[0]) == 2020) {
-                this.chart.data = []
+                this.chart.data = [];
+                this.state.tempIndex = 0;
             }
+
             this.state.yearAxis.max = +Object.keys(this.props.data[this.props.data.length - 1]) + 5
             this.state.yearIndex = 0;
             this.play();
@@ -59,8 +75,31 @@ class PPMLineGraph extends React.Component {
 
         this.chart.addData(newData[0]);
         this.chart.invalidateData();
-        this.state.valueAxis.max = this.chart.data[this.chart.data.length - 1].PPM * 2
+
+        if (this.props.temperatures[this.state.tempIndex + 1]) {
+            this.setState({
+                start: this.props.temperatures[this.state.tempIndex],
+                end: this.props.temperatures[this.state.tempIndex + 1],
+                startPPM: this.chart.data[this.state.tempIndex].PPM,
+                endPPM: this.chart.data[this.state.tempIndex + 1].PPM
+            })
+        } else {
+            this.setState({
+                start: this.props.temperatures[this.state.tempIndex],
+                end: this.props.temperatures[this.state.tempIndex],
+                startPPM: this.chart.data[this.state.tempIndex].PPM,
+                endPPM: this.chart.data[this.state.tempIndex].PPM
+            })
+        }
+
+        if (this.chart.data[this.chart.data.length - 1].PPM > 0) {
+            this.state.valueAxis.max = this.chart.data[this.chart.data.length - 1].PPM * 2
+        }
+        else {
+            this.state.valueAxis.max = Math.max.apply(Math, this.chart.data.map(function (m) { return m.PPM }));
+        }
         this.state.yearIndex++;
+        this.state.tempIndex++;
     }
 
     formatedData(year) {
@@ -103,7 +142,7 @@ class PPMLineGraph extends React.Component {
         chart.data = this.formatedData(0);
 
         // Create axes
-        let yearAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+        let yearAxis = chart.xAxes.push(new am4charts.ValueAxis());
         yearAxis.dataFields.category = "Year";
         yearAxis.title.text = "Year";
         yearAxis.interpolationDuration = 650;
@@ -113,7 +152,7 @@ class PPMLineGraph extends React.Component {
         yearAxis.min = 2015;
         yearAxis.max = 2025;
         yearAxis.keepSelection = true;
-        yearAxis.dataFields.category = "Year";
+        //yearAxis.dataFields.category = "Year";
         this.state.yearAxis = yearAxis;
 
         // Create value axis
@@ -131,7 +170,7 @@ class PPMLineGraph extends React.Component {
         // Create series
         let series = chart.series.push(new am4charts.LineSeries());
         series.dataFields.valueY = "PPM";
-        series.dataFields.categoryX = "Year";
+        series.dataFields.valueX = "Year";
         series.strokeWidth = 3;
         series.tooltipText = "{valueY}";
         series.tooltip.pointerOrientation = "vertical";
@@ -149,13 +188,9 @@ class PPMLineGraph extends React.Component {
         chart.cursor = new am4charts.XYCursor();
 
         chart.cursor.xAxis = yearAxis;
-        //chart.cursor.snapToSeries = series;
+        chart.cursor.snapToSeries = series;
         chart.scrollbarX = new am4charts.XYChartScrollbar();
         chart.scrollbarX.series.push(series);
-
-        // chart.scrollbarY = new am4core.Scrollbar();
-        // chart.scrollbarY.parent = chart.leftAxesContainer;
-        // chart.scrollbarY.toBack();
 
         chart.numberFormatter.numberFormat = "####.###";
         chart.background.fill = "#fff0ff";
@@ -179,11 +214,13 @@ class PPMLineGraph extends React.Component {
     componentDidMount() {
         var container = document.getElementById("linechartdiv");
         this.setState({
-            containerWidth: container.getBoundingClientRect().right - container.getBoundingClientRect().left
+            containerWidth: container.getBoundingClientRect().right - container.getBoundingClientRect().left,
+            end: this.props.temperatures[this.state.tempIndex],
+            endPPM: 0
         })
         this.createChart(container);
         var self = this;
-        function OnResize(){
+        function OnResize() {
             self.setState({
                 containerWidth: container.getBoundingClientRect().right - container.getBoundingClientRect().left
             })
@@ -194,7 +231,41 @@ class PPMLineGraph extends React.Component {
     render() {
 
         return (
-            <div id="linechartdiv" style={{ height: this.state.containerWidth + 'px' }}></div>
+            <div>
+                <div id="linechartdiv" style={{ height: this.state.containerWidth + 'px' }}></div>
+                <div className='container mt-3' style={{ height: 220 + 'px', backgroundColor: '#fff0ff' }}>
+
+
+                    <Row className='h-100 align-items-center'>
+                        <Col className='align-self-center'>
+                            <div style={{ fontSize: this.state.end > 100 - 14.9 ? 20 : 30, color: this.state.end > 2 ? 'red' : 'green' }}>
+                                {this.state.end > 2 ? <FontAwesomeIcon icon={faTemperatureHigh} /> : <FontAwesomeIcon icon={faTemperatureLow} />}
+                                &nbsp;
+                                <CountUp start={this.state.start + 14.9} end={this.state.end + 14.9} delay={1.3} decimals={2} suffix=" °C" />
+
+                            </div>
+                            (<CountUp start={this.state.start} end={this.state.end} delay={1.3} decimals={2} prefix={this.state.end > 0 ? '+' : ''} />)
+                        </Col>
+                        <Col className='align-self-center'>
+
+                            <CountUp start={this.state.startPPM + 417.16} end={this.state.endPPM + 417.16} delay={1.3} decimals={2} suffix=" PPM" />
+
+
+
+                        </Col>
+                        <Col className='align-self-center'>
+
+                            water levels
+
+
+
+                        </Col>
+                    </Row>
+
+
+                </div>
+            </div>
+
 
         )
     }

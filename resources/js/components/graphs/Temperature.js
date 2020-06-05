@@ -21,7 +21,6 @@ class Temperature extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log(this.props.temperatures[this.state.yearIndex]);
         if (this.props.data != prevProps.data) {
 
             if (+Object.keys(this.props.data[0]) == 2020) {
@@ -82,8 +81,8 @@ class Temperature extends React.Component {
 
         return (
             <div className='mt-3' style={{ height: 220 + 'px', backgroundColor: '#fff0ff' }}>
-                <div>
-                    <CountUp start={this.state.start} end={this.state.end} delay={1.2} decimals={4} prefix = "+" suffix = " °C"/>
+                <div style={{fontSize: 50, color: this.state.end > 2 ? 'red' : 'green'}}>
+                    <CountUp start={this.state.start} end={this.state.end} delay={1.3} decimals={2} prefix = {this.state.end > 0 ? '+' : ''} suffix = " °C"/>
                 </div>
 
             </div>

@@ -151,17 +151,20 @@ class Country {
 
     //Calculate the produced CO2 emissions by the population per country
     CO2ProductionPopulation() {
-        var producedCO2 = this.population * 26.25;
+        var producedCO2 = this.population * 0.39;
         return producedCO2;
     }
 
     //Calculate the difference between the produced and the cleaned CO2 and see how the overall ppm changes
     PPMChange() {
-        var ppmChange = (this.getProductionCO2() - this.cleanedCO2()) / (7500000000 * 2);
+        var ppmChange = ((this.getProductionCO2() + this.CO2ProductionPopulation()) - this.cleanedCO2()) / (7500000000 * 2);
         this.ppm = Math.round((this.ppm + ppmChange) * 10000) / 10000;
-        if (this.ppm < 0) {
-            this.ppm = 0.001;
+        if(this.ppm > 10000){
+            this.ppm = 10000;
         }
+        // if (this.ppm < 0) {
+        //     this.ppm = (this.CO2ProductionPopulation() - this.cleanedCO2()) / (7500000000 * 2);
+        // }
 
     }
 
