@@ -5,15 +5,9 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import CountUp from 'react-countup';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import Divider from '@material-ui/core/Divider';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTemperatureHigh, faTemperatureLow } from '@fortawesome/free-solid-svg-icons';
+import { faTemperatureHigh, faTemperatureLow, faSun, faCloudSun, faWater, faSwimmer, faInfoCircle, faExclamationTriangle, faRadiationAlt } from '@fortawesome/free-solid-svg-icons';
+import Alert from 'react-bootstrap/Alert'
 
 class PPMLineGraph extends React.Component {
     constructor(props) {
@@ -22,6 +16,7 @@ class PPMLineGraph extends React.Component {
             chartData: [],
             yearIndex: 0,
             tempIndex: 0,
+            interval: null,
 
             yearAxis: null,
             valueAxis: null,
@@ -31,7 +26,10 @@ class PPMLineGraph extends React.Component {
             end: 0,
 
             startPPM: 0,
-            endPPM: 0
+            endPPM: 0,
+
+            startWater: 0,
+            endWater: 0
         }
     }
 
@@ -43,34 +41,40 @@ class PPMLineGraph extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.data != prevProps.data) {
-
+            clearInterval(this.state.interval);
             if (+Object.keys(this.props.data[0]) == 2020) {
                 this.chart.data = [];
                 this.state.tempIndex = 0;
+                
             }
 
             this.state.yearAxis.max = +Object.keys(this.props.data[this.props.data.length - 1]) + 5
             this.state.yearIndex = 0;
             this.play();
+
         }
+        if (prevProps.simulationSpeed != this.props.simulationSpeed) {
+            clearInterval(this.state.interval);
+            this.play();
+        }
+
     }
     play() {
         let self = this;
-        var interval = setInterval(function () {
+        this.state.interval = setInterval(function () {
             if (self.state.yearIndex < self.props.data.length) {
                 if (self.props.paused) {
-                    clearInterval(interval);
+                    clearInterval(self.state.interval);
                 } else {
                     self.nextYear();
                 }
             }
             else {
-                clearInterval(interval);
+                clearInterval(self.state.interval);
             }
-        }, 1300)
+        }, 1300 / this.props.simulationSpeed)
     }
     nextYear() {
-        var self = this;
         let newData = this.formatedData(this.state.yearIndex);
 
         this.chart.addData(newData[0]);
@@ -81,14 +85,18 @@ class PPMLineGraph extends React.Component {
                 start: this.props.temperatures[this.state.tempIndex],
                 end: this.props.temperatures[this.state.tempIndex + 1],
                 startPPM: this.chart.data[this.state.tempIndex].PPM,
-                endPPM: this.chart.data[this.state.tempIndex + 1].PPM
+                endPPM: this.chart.data[this.state.tempIndex + 1].PPM,
+                startWater: this.props.waterLevels[this.state.tempIndex],
+                endWater: this.props.waterLevels[this.state.tempIndex + 1]
             })
         } else {
             this.setState({
                 start: this.props.temperatures[this.state.tempIndex],
                 end: this.props.temperatures[this.state.tempIndex],
                 startPPM: this.chart.data[this.state.tempIndex].PPM,
-                endPPM: this.chart.data[this.state.tempIndex].PPM
+                endPPM: this.chart.data[this.state.tempIndex].PPM,
+                startWater: this.props.waterLevels[this.state.tempIndex],
+                endWater: this.props.waterLevels[this.state.tempIndex]
             })
         }
 
@@ -210,13 +218,56 @@ class PPMLineGraph extends React.Component {
 
     }
 
+    infoMessage() {
+        var message = <></>;
+        if (this.state.end >= 1 && this.state.end < 2) {
+            message =
+                <Alert variant="primary">
+                    <Alert.Heading> <FontAwesomeIcon icon={faInfoCircle} />&nbsp; Between 1 and 2 °C increase</Alert.Heading>
+            The hot European summer of 2003 will be an annual norm. Instead of absorbing CO2, plants start to emmit it. Around half a billion tonnes of carbon is added to the atmosphere from European plants.
+                </Alert>
+        }
+        else if (this.state.end >= 2 && this.state.end < 3) {
+            message =
+                <Alert variant="warning">
+                    <Alert.Heading><FontAwesomeIcon style={{ color: '#FD7E14' }} icon={faExclamationTriangle} />&nbsp;Between 2 and 3 °C increase</Alert.Heading>
+            Food industry becomes unable to grow plants at the most generous areas in the world nowadays. Billions are left without food. Warmer waters absorb less CO2 leaving more to accumulate in the atmosphere. On land, huge amount of CO2 is stored in soil. It is being released with gigatonnes. The Amazon rainforest will be crippled by drought and heat.
+        </Alert>
+        }
+        else if (this.state.end >= 3 && this.state.end < 4) {
+            message =
+                <Alert variant="danger">
+                    <Alert.Heading><FontAwesomeIcon style={{ color: '#FD7E14' }} icon={faExclamationTriangle} />&nbsp;Between 3 and 4 °C increase</Alert.Heading>
+
+                </Alert>
+        }
+        else if (this.state.end >= 4 && this.state.end < 5) {
+            message =
+                <Alert variant="danger">
+                    <Alert.Heading><FontAwesomeIcon style={{ color: '#FF1E14' }} icon={faRadiationAlt} />&nbsp;Between 4 and 5 °C increase</Alert.Heading>
+
+                </Alert>
+        }
+        else if (this.state.end >= 5 && this.state.end < 6) {
+            message =
+                <Alert variant="danger">
+                    <Alert.Heading><FontAwesomeIcon style={{ color: '#FF1E14' }} icon={faRadiationAlt} />&nbsp;Between 5 and 6 °C increase</Alert.Heading>
+
+                </Alert>
+        }
+
+
+        return message;
+    }
 
     componentDidMount() {
         var container = document.getElementById("linechartdiv");
+
         this.setState({
             containerWidth: container.getBoundingClientRect().right - container.getBoundingClientRect().left,
             end: this.props.temperatures[this.state.tempIndex],
-            endPPM: 0
+            endPPM: this.sumPPM(this.props.data[0][2020].map(function (c) { return c.ppm })),
+            endWater: this.props.waterLevels[this.state.tempIndex]
         })
         this.createChart(container);
         var self = this;
@@ -233,12 +284,13 @@ class PPMLineGraph extends React.Component {
         return (
             <div>
                 <div id="linechartdiv" style={{ height: this.state.containerWidth + 'px' }}></div>
-                <div className='container mt-3' style={{ height: 220 + 'px', backgroundColor: '#fff0ff' }}>
+                <div className='container mt-3' style={{ backgroundColor: '#fff0ff' }}>
 
 
-                    <Row className='h-100 align-items-center'>
-                        <Col className='align-self-center'>
-                            <div style={{ fontSize: this.state.end > 100 - 14.9 ? 20 : 30, color: this.state.end > 2 ? 'red' : 'green' }}>
+                    <Row className='p-4 align-items-center'>
+
+                        <Col md={3} className='align-self-center'>
+                            <div style={{ fontSize: this.state.end > 100 - 14.9 ? 15 : 20, color: this.state.end > 2 ? 'red' : 'green' }}>
                                 {this.state.end > 2 ? <FontAwesomeIcon icon={faTemperatureHigh} /> : <FontAwesomeIcon icon={faTemperatureLow} />}
                                 &nbsp;
                                 <CountUp start={this.state.start + 14.9} end={this.state.end + 14.9} delay={1.3} decimals={2} suffix=" °C" />
@@ -246,20 +298,28 @@ class PPMLineGraph extends React.Component {
                             </div>
                             (<CountUp start={this.state.start} end={this.state.end} delay={1.3} decimals={2} prefix={this.state.end > 0 ? '+' : ''} />)
                         </Col>
-                        <Col className='align-self-center'>
-
-                            <CountUp start={this.state.startPPM + 417.16} end={this.state.endPPM + 417.16} delay={1.3} decimals={2} suffix=" PPM" />
-
-
-
+                        <Col md={6} className='align-self-center'>
+                            <div style={{ fontSize: this.state.end > 100 - 14.9 ? 15 : 20, color: this.state.end > 2 ? 'red' : 'green' }}>
+                                {this.state.end > 2 ? <FontAwesomeIcon icon={faCloudSun} /> : <FontAwesomeIcon icon={faSun} />}
+                                &nbsp;
+                                <CountUp start={this.state.startPPM + 417.16} end={this.state.endPPM + 417.16} delay={1.3} decimals={2} suffix=" PPM" />
+                            </div>
+                            (<CountUp start={this.state.startPPM} end={this.state.endPPM} delay={1.3} decimals={2} prefix={this.state.end > 0 ? '+' : ''} />)
                         </Col>
-                        <Col className='align-self-center'>
-
-                            water levels
-
-
-
+                        <Col md={3} className='align-self-center'>
+                            <div style={{ fontSize: this.state.end > 100 - 14.9 ? 15 : 20, color: this.state.end > 2 ? 'red' : 'green' }}>
+                                {this.state.end > 2 ? <FontAwesomeIcon icon={faSwimmer} /> : <FontAwesomeIcon icon={faWater} />}
+                                &nbsp;
+                                <CountUp start={this.state.startWater} end={this.state.endWater} delay={1.3} decimals={2} suffix=" m." />
+                            </div>
+                            (<CountUp start={this.state.startWater} end={this.state.endWater} delay={1.3} decimals={2} prefix={this.state.end > 0 ? '+' : ''} />)
                         </Col>
+                    </Row>
+                    <Row className='p-2 text-justify'>
+                        <Col>
+                            {this.infoMessage()}
+                        </Col>
+
                     </Row>
 
 

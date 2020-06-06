@@ -65,11 +65,29 @@ class Inputs extends React.Component {
 
     updateYearInput(evt) {
         if (+evt.target.value >= 2021) {
-            this.setState({
-                yearToStop: +evt.target.value,
-                inputError: false
-            }, () => { this.setState({ warning: "Current chosen year: " + this.state.yearToStop }, () => this.props.changeYearToStop(this.state.yearToStop)) })
-        } else {
+            if(this.props.currentData){
+                if(+Object.keys(this.props.currentData) > +evt.target.value){
+                    this.setState({
+                        warning: "Please provide an year that has not passed already",
+                        inputError: true
+                    })
+                }
+                else{
+                    this.setState({
+                        yearToStop: +evt.target.value,
+                        inputError: false
+                    }, () => { this.setState({ warning: "Current chosen year: " + this.state.yearToStop }, () => this.props.changeYearToStop(this.state.yearToStop)) })
+                }
+            }
+            else{
+                this.setState({
+                    yearToStop: +evt.target.value,
+                    inputError: false
+                }, () => { this.setState({ warning: "Current chosen year: " + this.state.yearToStop }, () => this.props.changeYearToStop(this.state.yearToStop)) })
+            }
+           
+        }
+         else {
             this.setState({
                 warning: "Please provide an year after 2021.",
                 inputError: true
@@ -104,28 +122,28 @@ class Inputs extends React.Component {
         return (
             <div>
                 <div className='p-3'>
-                    <TextField className="mb-4 mt-4" disabled={this.props.isRunning} placeholder={this.state.deforestationIncrease.toString()} label="Deforestation %" variant="outlined" onChange={evt =>
+                    <TextField className="mb-4 mt-4" disabled={this.props.isRunning} placeholder={this.props.inputs[0].toString()} label={"Deforestation: " + this.props.inputs[0] + "% increase"} variant="outlined" onChange={evt =>
                         this.updateDeforestationInput(evt)} fullWidth />
                     <br />
-                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.electricityIncrease.toString()} label="Electricity increase %" variant="outlined" onChange={evt =>
+                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.props.inputs[1].toString()} label={"Electricity: " + this.props.inputs[1] + "% increase"} variant="outlined" onChange={evt =>
                         this.updateElectricityInput(evt)} fullWidth />
                     <br />
-                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.transportationIncrease.toString()} label="Transportation increase %" variant="outlined" onChange={evt =>
+                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.props.inputs[2].toString()} label={"Transportation: " + this.props.inputs[2] + "% increase"} variant="outlined" onChange={evt =>
                         this.updateTransportationInput(evt)} fullWidth />
                     <br />
-                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.buildingIncrease.toString()} label="Building increase %" variant="outlined" onChange={evt =>
+                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.props.inputs[3].toString()} label={"Building: " + this.props.inputs[3] + "% increase"} variant="outlined" onChange={evt =>
                         this.updateBuildingInput(evt)} fullWidth />
                     <br />
-                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.manufacturingIncrease.toString()} label="Manufacturing increase %" variant="outlined" onChange={evt =>
+                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.props.inputs[4].toString()} label={"Manufacturing: " + this.props.inputs[4] + "% increase"} variant="outlined" onChange={evt =>
                         this.updateManufacturingInput(evt)} fullWidth />
                     <br />
-                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.industryIncrease.toString()} label="Industry increase %" variant="outlined" onChange={evt =>
+                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.props.inputs[5].toString()} label={"Industry: " + this.props.inputs[5] + "% increase"} variant="outlined" onChange={evt =>
                         this.updateIndustryInput(evt)} fullWidth />
                     <br />
-                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.agricultureIncrease.toString()} label="Agriculture increase %" variant="outlined" onChange={evt =>
+                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.props.inputs[6].toString()} label={"Agriculture: " + this.props.inputs[6] + "% increase"} variant="outlined" onChange={evt =>
                         this.updateAgricultureInput(evt)} fullWidth />
                     <br />
-                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.state.yearToStop.toString()} label="Year to stop simulation" variant="outlined" onChange={evt =>
+                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={ this.props.inputs[7].toString()} label={"Year to stop simulation: " + this.props.inputs[7]} variant="outlined" onChange={evt =>
                         this.updateYearInput(evt)} helperText={this.state.warning} error={this.state.inputError} fullWidth />
 
 

@@ -7,7 +7,7 @@ import Map from "../Map";
 import Simulation from '../classes/Simulation';
 import BarChart from './BarChart';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStop, faRedoAlt, faPause, faPlay, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faStop, faRedoAlt, faPause, faPlay, faSave, faFastForward } from '@fortawesome/free-solid-svg-icons';
 import Inputs from './Inputs';
 import Spinner from 'react-bootstrap/Spinner';
 import Drawer from '@material-ui/core/Drawer';
@@ -17,6 +17,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Chip from '@material-ui/core/Chip';
 import Modal from 'react-bootstrap/Modal';
 import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+
 
 class AllGraphs extends React.Component {
     constructor(props) {
@@ -37,11 +39,12 @@ class AllGraphs extends React.Component {
             currentWaterLevels: null,
             replayValues: null,
             inputInfo: [],
-            temperatureInfo:[],
+            temperatureInfo: [],
 
             moduleData: null,
             yearToStop: 2021,
             warning: "",
+            simulationSpeed: 1,
 
             isFetching: true,
             inputError: false,
@@ -96,7 +99,7 @@ class AllGraphs extends React.Component {
     }
 
     startSimulation() {
-        
+
         var newData = this.state.currentData == null ? this.simulation.getPPMOverall(this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
             this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
             this.state.agricultureIncrease) : this.simulation.resumeFromCurrentState(this.state.currentData, this.state.yearToStop, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
@@ -147,7 +150,8 @@ class AllGraphs extends React.Component {
             var newData = this.simulation.getPPMOverall(2020, this.state.populationIncrease, this.state.deforestationIncrease, this.state.electricityIncrease,
                 this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease,
                 this.state.agricultureIncrease);
-            // this.simulation.temperatureIncrease = [];
+
+            this.changeSimSpeed(1);
             this.unpauseSimulation();
             this.setState({ activeReRun: false });
             this.simulation.hasPandemic = false;
@@ -222,6 +226,7 @@ class AllGraphs extends React.Component {
             temperatureInfo: this.simulation.temperatureIncrease
         })
 
+
     }
 
     updateInputInfo(newData) {
@@ -240,6 +245,13 @@ class AllGraphs extends React.Component {
         }
 
     }
+
+    changeSimSpeed(speed) {
+        this.setState({
+            simulationSpeed: speed
+        })
+    }
+
     handleOpenAndClose(event) {
         if (event) {
             if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -291,7 +303,7 @@ class AllGraphs extends React.Component {
                         <Row className="m-2 text-center">
                             <Col md='4' className='border border-primary rounded p-3 mt-3'>
 
-                                <PPMLineGraph data={this.state.moduleData} temperatures={this.state.temperatureInfo} paused={this.state.paused} />
+                                <PPMLineGraph simulationSpeed={this.state.simulationSpeed} waterLevels={this.state.currentWaterLevels} data={this.state.moduleData} temperatures={this.state.temperatureInfo} paused={this.state.paused} />
 
                                 {/* <Temperature data={this.state.moduleData} temperatures={this.state.temperatureInfo} paused={this.state.paused}/> */}
 
@@ -316,6 +328,8 @@ class AllGraphs extends React.Component {
                                             changeTransportationIncrease={this.changeTranportationIncrease.bind(this)}
                                             changeManufacturingIncrease={this.changeManufacturingIncrease.bind(this)}
 
+                                            inputs={[this.state.deforestationIncrease, this.state.electricityIncrease, this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease, this.state.agricultureIncrease, this.state.yearToStop]}
+                                            currentData={this.state.currentData}
                                             togglePandemic={this.togglePandemic.bind(this)}
                                             hasPandemic={this.state.hasPandemic}
                                             countries={this.simulation.initialCountries}
@@ -387,6 +401,19 @@ class AllGraphs extends React.Component {
                                             </div>
 
                                         </div>
+                                        <IconButton onClick={() => this.changeSimSpeed(1)} className='p-2 mx-1' aria-label="delete" style={{ fontSize: 12 }} size="small">
+                                            x1
+                                        </IconButton>
+                                        <IconButton onClick={() => this.changeSimSpeed(2)} className='p-2 mx-1' aria-label="delete" style={{ fontSize: 12 }} size="small">
+                                            x2
+                                        </IconButton>
+                                        <IconButton onClick={() => this.changeSimSpeed(4)} className='p-2 mx-1' aria-label="delete" style={{ fontSize: 12 }} size="small">
+                                            x4
+                                        </IconButton>
+                                        <IconButton onClick={() => this.changeSimSpeed(1300)} className='p-2 mx-1' aria-label="delete" style={{ fontSize: 12 }} size="small">
+
+                                            <FontAwesomeIcon icon={faFastForward} />
+                                        </IconButton>
                                     </AlertM>
                                 </Snackbar>
 
@@ -411,27 +438,32 @@ class AllGraphs extends React.Component {
                                     <AlertM icon={false} severity='info'>
                                         You are watching a replay.
                                         <Button size='sm' className='m-2' variant="danger" onClick={this.stopSimulation.bind(this)}><FontAwesomeIcon icon={faStop} /></Button>
-                                        
+
                                     </AlertM>
                                 </Snackbar>
 
 
                             </Col>
-                            {/*<Col md='8' className='p-3'>*/}
-                            {/*    <Map data={this.state.moduleData}*/}
-                            {/*        isRunning={this.state.isRunning}*/}
-                            {/*        paused={this.state.paused}*/}
-                            {/*        currentWaterLevels={this.state.currentWaterLevels}*/}
-                            {/*        currentYearData={this.state.currentData}*/}
-                            {/*        updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} />*/}
-                            {/*</Col>*/}
+                            <Col md='8' className='p-3'>
+                                <Map data={this.state.moduleData}
+                                    isRunning={this.state.isRunning}
+                                    simulationSpeed={this.state.simulationSpeed}
+                                    paused={this.state.paused}
+                                    currentWaterLevels={this.state.currentWaterLevels}
+                                    currentYearData={this.state.currentData}
+                                    updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} />
+                            </Col>
                         </Row>
 
                         <Alert variant='primary' className='m-2'>
                             <Alert.Heading className='m-2'>Charts</Alert.Heading>
                             <Row className="m-1 justify-content-center">
                                 <Col md="12" className="mt-3">
-                                    <BarChart data={this.state.moduleData} updateState={this.updateState.bind(this)} paused={this.state.paused} updateCountryDataOnRunTime={this.updateCountryDataOnRunTime.bind(this)} />
+                                    <BarChart simulationSpeed={this.state.simulationSpeed}
+                                        data={this.state.moduleData}
+                                        updateState={this.updateState.bind(this)}
+                                        paused={this.state.paused}
+                                        updateCountryDataOnRunTime={this.updateCountryDataOnRunTime.bind(this)} />
                                 </Col>
 
                             </Row>

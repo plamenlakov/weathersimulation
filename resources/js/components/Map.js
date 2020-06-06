@@ -25,6 +25,8 @@ class Map extends React.Component {
       waterLevel: 0,
       sliderValue: 0,
       yearIndex: 0,
+      waterIndex: 0,
+      interval: null,
 
       scene: null,
       renderer: null,
@@ -436,15 +438,23 @@ class Map extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.data != this.props.data) {
-
+      clearInterval(this.state.interval);
       this.setState({
         countries: this.props.data[this.props.data.length - 1][+Object.keys(this.props.data[0]) + this.props.data.length - 1]
-      })
+      });
+      this.state.yearIndex = 0;
+
+
+      if (+Object.keys(this.props.data[0]) == 2020) {
+        this.state.waterIndex = 0;
+      }
+
+      this.play();
     }
 
-    if (prevProps.currentWaterLevels != this.props.currentWaterLevels) {
 
-      this.state.yearIndex = 0;
+    if (prevProps.simulationSpeed != this.props.simulationSpeed) {
+      clearInterval(this.state.interval);
       this.play();
     }
 
@@ -453,24 +463,25 @@ class Map extends React.Component {
   play() {
     var self = this;
 
-    var interval = setInterval(function () {
+    this.state.interval = setInterval(function () {
       if (self.state.yearIndex < self.props.currentWaterLevels.length) {
         if (self.props.paused) {
-          clearInterval(interval)
+          clearInterval(self.state.interval)
         }
         else {
 
-          self.state.waterLevel = self.props.currentWaterLevels[self.state.yearIndex];
+          self.state.waterLevel = self.props.currentWaterLevels[self.state.waterIndex];
           self.drawTerrain(self.state.heightsArray, self.state.colorsArray, self.state.terrainGeometry);
+          self.state.waterIndex++;
           self.state.yearIndex++;
         }
 
 
       }
       else {
-        clearInterval(interval);
+        clearInterval(self.state.interval);
       }
-    }, 1300)
+    }, 1300 / this.props.simulationSpeed)
   }
 
   getValuesChosenCountry(data) {
@@ -481,7 +492,7 @@ class Map extends React.Component {
         countriesReceived[i] = data
       }
     }
-    
+
     this.props.updateCurrentData(this.props.currentYearData == null ? this.props.data[0] : this.props.currentYearData)
   }
 

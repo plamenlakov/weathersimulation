@@ -170,9 +170,26 @@ class Simulation extends React.Component {
 
     getWaterLevels(tempArray) {
         var waterLevels = [];
+        var level;
 
         tempArray.forEach(t => {
-            waterLevels.push(Math.round((t * 0.5) * 1000) / 1000)
+            if(t <= 0.5){
+                level = Math.round((t * 0.5) * 1000) / 1000
+            }
+            else if(t > 0.5 && t <= 1.8){
+                level = Math.round((t * 0.6) * 1000) / 1000
+            }
+            else if(t > 1.8 && t < 3){
+                level = Math.round((t * 1.3) * 1000) / 1000
+            }
+            else{
+                level = Math.round((t * 5) * 1000) / 1000
+            }
+
+            if(level > 60){
+                level = 60 + level / (t * 10);
+            }
+            waterLevels.push(level)
         })
         return waterLevels;
     }

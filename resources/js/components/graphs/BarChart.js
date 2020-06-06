@@ -15,7 +15,8 @@ class BarChart extends React.Component {
             series: null,
             value: null,
             category: null,
-            label: null
+            label: null,
+            interval: null
         }
     }
     componentWillUnmount() {
@@ -26,59 +27,68 @@ class BarChart extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.data != this.props.data) {
+            clearInterval(this.state.interval);
             this.state.yearIndex = 0;
             this.sendStateToParent('Running...')
             this.play();
         }
 
+        if (prevProps.simulationSpeed != this.props.simulationSpeed) {
+            clearInterval(this.state.interval)
+            this.play();
+        }
+
     }
 
-    sendDataToParent(data){
+    sendDataToParent(data) {
         this.props.updateCountryDataOnRunTime(data)
     }
 
-    sendStateToParent(state){
+    sendStateToParent(state) {
         this.props.updateState(state);
     }
 
     play() {
         var self = this;
 
-        var interval = setInterval(function () {
+        this.state.interval = setInterval(function () {
+
             if (self.state.yearIndex < self.props.data.length) {
-                if(self.props.paused){
+                if (self.props.paused) {
                     let dataToSend;
-                    if(self.state.yearIndex > 0){
+                    if (self.state.yearIndex > 0) {
                         dataToSend = self.props.data[self.state.yearIndex - 1];
-                    }else{
+                    } else {
                         dataToSend = self.props.data[self.state.yearIndex];
                     }
 
                     self.sendDataToParent(dataToSend)
-                    clearInterval(interval);
-                }else{
+                    clearInterval(self.state.interval);
+                } else {
                     self.nextYear();
                 }
-                
+
             }
             else {
                 self.sendDataToParent(self.props.data[self.state.yearIndex - 1])
                 self.sendStateToParent('Finished')
 
-                clearInterval(interval);
+                clearInterval(self.state.interval);
             }
 
-        }, 1300)
+
+
+        }, 1300 / this.props.simulationSpeed)
 
     }
 
     nextYear() {
-       
+
         var newData = this.formatedData(this.state.yearIndex);
-        
+
         for (let i = 0; i < this.chart.data.length; i++) {
             this.chart.data[i].PPM = newData[i].PPM
-            
+
 
         }
 
