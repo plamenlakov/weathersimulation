@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class='container shadow p-3 bg-white rounded'>
+<div class='mt-5 container shadow p-3 bg-white rounded'>
     <div class="row">
         <div class='text-left col'>
             <button type="button" class="btn btn-light ml-1" data-toggle="modal" data-target="#tokenModal">Start from token</button>
