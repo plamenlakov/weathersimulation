@@ -27,7 +27,7 @@
         </form>
         
         @if(Session::has('message'))
-        <div class="alert alert-{{session('message')['type']}}">
+        <div class="alert m-3 alert-{{session('message')['type']}}">
             {{session('message')['text']}}
         </div>
         @endif
