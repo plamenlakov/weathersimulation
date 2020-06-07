@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use Illuminate\Support\Facades\Session as Session;
+use OAuthProvider;
 
 
 class SimulationController extends Controller
@@ -24,6 +25,8 @@ class SimulationController extends Controller
             $simulation->name = $simulationName;
             $simulation->simDescription = $simulationDescription;
             $simulation->inputs = $simInputs;
+            $simulation->token =  bin2hex(random_bytes(6));
+            $simulation->token .= substr(microtime(),-2);
 
             $simulation->push();
             return redirect('account');
@@ -68,5 +71,17 @@ class SimulationController extends Controller
         $simulation_id = $req->input('simulation_id');
         $simulation = Simulation::findOrFail($simulation_id);
         return redirect('simulation')->with('input_simulation', $simulation->inputs);
+    }
+
+    public function startFromToken(Request $req){
+        $token = $req->input('tokenInput');
+        $simulation = Simulation::where('token','=', $token)->get();
+        if(count($simulation) > 0){
+            return redirect('simulation')->with('input_simulation', $simulation[0]->inputs);
+        }
+        else{
+            Session::flash('message', ['text'=> 'There is no simulation with this token!', 'type'=>'danger']);
+            return redirect('account');
+        }
     }
 }

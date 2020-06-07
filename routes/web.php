@@ -35,3 +35,5 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/simulationRun', 'SimulationController@reRunSimulation');
+
+Route::get('/simulationToken', 'SimulationController@startFromToken');

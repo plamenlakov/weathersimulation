@@ -18,6 +18,7 @@ class CreateSimulationTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->longText('name');
             $table->longText('inputs');
+            $table->string('token');
             $table->longText('simDescription')->nullable();
             $table->boolean('deleted')->default('0');
             

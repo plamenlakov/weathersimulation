@@ -2,11 +2,17 @@
 
 @section('content')
 <div class='container shadow p-3 bg-white rounded'>
+    <div class="row">
+        <div class='text-left col'>
+            <button type="button" class="btn btn-light ml-1" data-toggle="modal" data-target="#tokenModal">Start from token</button>
+        </div>
 
-    <div class='text-right'>
-        {{Auth::user()->email}}
-        <button type="button" class="btn btn-light rounded-circle ml-1" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fas fa-cog"></i></button>
+        <div class='text-right col'>
+            {{Auth::user()->email}}
+            <button type="button" class="btn btn-light rounded-circle ml-1" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fas fa-cog"></i></button>
+        </div>
     </div>
+
     <div class="text-center">
         <img class="rounded-circle border border-primary img-thumbnail m-3" src="images/profilePics/{{Auth::user()->image}}" alt="profile pic" style='max-width: 150px'>
         <br>
@@ -52,6 +58,7 @@
                                 </div>
                             </div>
 
+                            <p>Shareable token: {{$s->token}}</p>
                             <div class="row justify-content-center">
                                 <form class="m-1" action="/simulationRun" method="GET">
                                     <input type="hidden" name="simulation_id" value="{{$s->simulation_id}}" />
@@ -140,5 +147,25 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" tabindex="-1" role="dialog" id="tokenModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Insert token</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="GET" action="/simulationToken">
+                <div class="modal-body">
+                    <input class="form-control" name='tokenInput'/>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Start</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
