@@ -44,9 +44,78 @@
     <h2 class="alert-heading">Create your own</h2>
     <hr>
     <div class="w-75 mx-auto">
+        <div class="m-2 p-2 row">
+            <div class="col-md-9 text-right" data-aos="fade-right" data-aos-duration="1000">
+                <div class="border border-primary">
 
-        <div id="stepper"></div>
+                    <img class="w-100" src="images/main/OpenControls.gif" alt="opening controls">
+                </div>
+            </div>
+            <div class="col-md-3 text-justify" data-aos="fade-left" data-aos-duration="1000">
+                <h1>1.</h1>
+                <h3>Changing main inputs</h3>
+                <p> Each value represents a percentage in the increase of a chosen sector. These percentages will take affect for each and every year for all the countries. This means that the same percentage will be added again and again each year. To avoid huge values consider inputting smaller numbers as shown in the example above.
+                </p>
+            </div>
+        </div>
+        <hr class="my-5">
+        <div class="m-2 p-2 row">
+            <div class="col-md-3 text-justify" data-aos="fade-right" data-aos-duration="1000" data-aos-offset="320">
+                <h1>2.</h1>
+                <h3>Changing a single country input</h3>
+                <p> Each value represents a percentage in the increase of a chosen sector but for one country. Under the 'Political map' tab, you can find a 2D political map of Europe. You can change the values of all countries in the EU + UK. Again, the percentage is applied for each year of the simulation.
+                </p>
+            </div>
+            <div class="col-md-9 text-left" data-aos="fade-left" data-aos-duration="1000" data-aos-offset="320">
+                <div class="border border-primary">
+
+                    <img class="w-100" src="images/main/OpenOneCountry.gif" alt="opening controls">
+                </div>
+
+            </div>
+        </div>
+        <hr class="my-5">
+        <div class="m-2 p-2 row">
+            <div class="col-md-9 text-right" data-aos="fade-right" data-aos-duration="1000" data-aos-offset="320">
+                <div class="border border-primary">
+
+                    <img class="w-100" src="images/main/StartSimulation.gif" alt="opening controls">
+                </div>
+            </div>
+            <div class="col-md-3 text-justify" data-aos="fade-left" data-aos-duration="1000" data-aos-offset="320">
+                <h1>3.</h1>
+                <h3>Starting your simulation</h3>
+                <p> When you have the desired inputs, the only thing left is to open the controls again and click on 'Create new simulation'.
+                </p>
+
+            </div>
+        </div>
+        <hr class="my-5">
+        <div class="m-2 p-2 row">
+            <div class="col-md-3 text-justify" data-aos="fade-right" data-aos-duration="1000" data-aos-offset="320">
+                <h1>4.</h1>
+                <h3>Changing values on run time</h3>
+                <p> In order to change anything while the simulation is running you must pause it. Then, you are able to open the contols or any country you desire, and change the values. The changes will then be applied for the years ahead.
+                </p>
+
+            </div>
+            <div class="col-md-9 text-left" data-aos="fade-left" data-aos-duration="1000" data-aos-offset="320">
+                <div class="border border-primary">
+                    <img class="w-100" src="images/main/ChangeValuesOnRuntime.gif" alt="opening controls">
+
+                </div>
+
+            </div>
+        </div>
     </div>
+
+
+    <div class="text-center my-5 py-5">
+        <h2 class="">Congratulations, you are ready to start!</h2>
+        <a href="/simulation" class="btn btn-primary btn-lg">Create you own</a>
+
+    </div>
+
 </div>
 
 
