@@ -35,6 +35,14 @@ class Simulation extends React.Component {
         return this._hasPandemic;
     }
 
+    set pandemic(v) {
+        this._pandemic = v;
+    }
+
+    get pandemic() {
+        return this._pandemic;
+    }
+
     loadCountries(path) {
         this.initialCountries = [];
         var self = this;
@@ -74,12 +82,11 @@ class Simulation extends React.Component {
             this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);
             result.push({ [index]: countriesInThisYear })
             if (index !== year) {
-                if (this.hasPandemic) {
-                    this.updateCountries(copyArray, inputPopulation + 0.1, inputDeforestation - 0.1, inputElectricity + 0.6, inputTransportation - 5, inputBuilding, inputManufacturing - 2.5, inputIndustry - 2, inputAgriculture + 0.5)
-                } else {
-                    this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
-                        inputIndustry, inputAgriculture)
-                }
+
+                this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                    inputIndustry, inputAgriculture);
+                    this.updateCountriesWithPandemic(copyArray);
+
             }
 
         }
@@ -98,12 +105,14 @@ class Simulation extends React.Component {
             this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);
             result.push({ [index]: countriesInThisYear })
             if (index !== year) {
-                if (this.hasPandemic) {
-                    this.updateCountries(copyArray, inputPopulation + 0.1, inputDeforestation - 0.1, inputElectricity + 0.6, inputTransportation - 12, inputBuilding, inputManufacturing - 2.5, inputIndustry - 10, inputAgriculture + 0.5)
-                } else {
-                    this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
-                        inputIndustry, inputAgriculture)
-                }
+
+                this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                    inputIndustry, inputAgriculture);
+
+                this.updateCountriesWithPandemic(copyArray);
+
+
+
             }
 
         }
@@ -121,13 +130,13 @@ class Simulation extends React.Component {
 
         for (let i = 2020; i <= lastInputYear; i++) {
 
-            if(replayValues[change+1] != null){
-                if(i == +Object.keys(replayValues[change+1])){
+            if (replayValues[change + 1] != null) {
+                if (i == +Object.keys(replayValues[change + 1])) {
                     change++;
                     usableCountries = this.formatReplayCountries(replayValues, change);
                 }
             }
-            
+
             var countriesInThisYear = usableCountries.map((obj) => obj.cloneObject());
             this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);
             result.push({ [i]: countriesInThisYear });
@@ -142,7 +151,7 @@ class Simulation extends React.Component {
 
     }
 
-    formatMainInputs(replayValues, change){
+    formatMainInputs(replayValues, change) {
         return replayValues[change][+Object.keys(replayValues[change])][0];
     }
 
@@ -173,20 +182,20 @@ class Simulation extends React.Component {
         var level;
 
         tempArray.forEach(t => {
-            if(t <= 0.5){
+            if (t <= 0.5) {
                 level = Math.round((t * 0.5) * 1000) / 1000
             }
-            else if(t > 0.5 && t <= 1.8){
+            else if (t > 0.5 && t <= 1.8) {
                 level = Math.round((t * 0.6) * 1000) / 1000
             }
-            else if(t > 1.8 && t < 3){
+            else if (t > 1.8 && t < 3) {
                 level = Math.round((t * 1.3) * 1000) / 1000
             }
-            else{
+            else {
                 level = Math.round((t * 5) * 1000) / 1000
             }
 
-            if(level > 60){
+            if (level > 60) {
                 level = 60 + level / (t * 10);
             }
             waterLevels.push(level)
@@ -204,7 +213,32 @@ class Simulation extends React.Component {
         return temperatureIncrease * 0.01;
     }
 
-    async updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+    updateCountriesWithPandemic(copyArray) {
+        var self = this;
+        function isPandemicPassedInCountry(country) {
+            for (let i = 0; i < self.pandemic.countriesInfected; i++) {
+                if (self.pandemic.countriesInfected[i] == country.name) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        if (this.hasPandemic) {
+            for (let i = 0; i < copyArray.length; i++) {
+                if (copyArray[i].name == this.pandemic.originCountry) {
+                    if (!isPandemicPassedInCountry(copyArray[i])) {
+                        copyArray[i].isInfected = true;
+                        this.pandemic.countriesInfected.push(copyArray[i].name);
+                        this.pandemic.originCountry = copyArray[Math.round(Math.random() * 27)].name;
+                    }
+
+                }
+            }
+        }
+    }
+
+    updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
         inputIndustry, inputAgriculture) {
         copyArray.forEach(c => {
             c.updateCurrentData(inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,

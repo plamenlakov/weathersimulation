@@ -3,7 +3,8 @@ import TextField from '@material-ui/core/TextField';
 import Form from 'react-bootstrap/Form';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-
+import Button from 'react-bootstrap/Button';
+import Pandemic from '../classes/Pandemic';
 
 class Inputs extends React.Component {
 
@@ -21,7 +22,9 @@ class Inputs extends React.Component {
             inputError: false,
             warning: "",
             hasPandemic: false,
-            yearToStartPandemic: 2020
+            yearToStopPandemic: 2020,
+            countryToStartPandemic: null,
+            infectionRate: 0
         }
         
     }
@@ -106,16 +109,36 @@ class Inputs extends React.Component {
     changeYearPandemic(evt) {
         if (+evt.target.value >= 2020) {
             this.setState({
-                yearToStartPandemic: +evt.target.value
+                yearToStopPandemic: +evt.target.value
             })
         } else {
             this.setState({
-                yearToStartPandemic: 2020
+                yearToStopPandemic: 2020
             })
         }
 
     }
 
+    updateOriginCountryInput(evt){
+        this.setState({
+            countryToStartPandemic: evt.target.options[evt.target.selectedIndex].text
+        })
+        
+    }
+
+    updateRateOfInfectionInput(evt){
+        this.setState({
+            infectionRate: evt.target.value
+        })
+    }
+
+    createPandemic(){
+        let yearToStartPandemic = this.props.currentData ? +Object.keys(this.props.currentData) : 2020;
+        let newPandemic = new Pandemic(this.state.countryToStartPandemic, this.state.infectionRate, yearToStartPandemic,this.state.yearToStopPandemic);
+
+        this.props.createNewPandemic(newPandemic);
+
+    }
 
     render() {
 
@@ -185,14 +208,13 @@ class Inputs extends React.Component {
                         </Form.Group>
                         <TextField
                             label='Year to start pandemic'
-                            onChange={evt => changeYearPandemic(evt)}
-                            placeholder={this.state.yearToStartPandemic.toString()}
+                            onChange={evt => this.changeYearPandemic(evt)}
+                            placeholder={this.state.yearToStopPandemic.toString()}
                             variant='outlined'
                             fullWidth />
 
-
+                        <Button className='m-2' variant='danger' onClick={this.createPandemic.bind(this)}>Create pandemic</Button>
                     </div>
-
 
                 </div>
 

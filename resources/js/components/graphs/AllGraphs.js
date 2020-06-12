@@ -189,14 +189,16 @@ class AllGraphs extends React.Component {
             currentData: data,
             currentState: 'Paused'
         })
-
-
     }
 
     togglePandemic(state) {
         this.setState({
             hasPandemic: state
-        })
+        }, () => this.simulation.hasPandemic = this.state.hasPandemic)
+    }
+
+    createNewPandemic(pandemic){
+        this.simulation.pandemic = pandemic;
     }
 
     updateState(state) {
@@ -327,6 +329,7 @@ class AllGraphs extends React.Component {
                                             changeIndustryIncrease={this.changeIndustryIncrease.bind(this)}
                                             changeTransportationIncrease={this.changeTranportationIncrease.bind(this)}
                                             changeManufacturingIncrease={this.changeManufacturingIncrease.bind(this)}
+                                            createNewPandemic={this.createNewPandemic.bind(this)}
 
                                             inputs={[this.state.deforestationIncrease, this.state.electricityIncrease, this.state.transportationIncrease, this.state.buildingIncrease, this.state.manufacturingIncrease, this.state.industryIncrease, this.state.agricultureIncrease, this.state.yearToStop]}
                                             currentData={this.state.currentData}
@@ -445,13 +448,13 @@ class AllGraphs extends React.Component {
 
                             </Col>
                             <Col md='8' className='p-3'>
-                                <Map data={this.state.moduleData}
+                                {/* <Map data={this.state.moduleData}
                                     isRunning={this.state.isRunning}
                                     simulationSpeed={this.state.simulationSpeed}
                                     paused={this.state.paused}
                                     currentWaterLevels={this.state.currentWaterLevels}
                                     currentYearData={this.state.currentData}
-                                    updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} />
+                                    updateCurrentData={this.updateCountryDataOnRunTime.bind(this)} /> */}
                             </Col>
                         </Row>
 
