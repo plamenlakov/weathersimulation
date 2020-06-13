@@ -60,7 +60,7 @@ class Simulation extends React.Component {
             );
 
             var country = new Country(data.name, Number(data.area), Number(data.ppm), Number(data.population),
-                Number(data.population_change), Number(data.forestry_percentage), Number(data.forestry_change), sectors);
+                Number(data.population_change), Number(data.forestry_percentage), Number(data.forestry_change), sectors, 0, false, false);
 
             self.initialCountries.push(country);
         });
@@ -85,7 +85,7 @@ class Simulation extends React.Component {
 
                 this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
                     inputIndustry, inputAgriculture);
-                    this.updateCountriesWithPandemic(copyArray);
+                this.updateCountriesWithPandemic(copyArray);
 
             }
 
@@ -116,7 +116,7 @@ class Simulation extends React.Component {
             }
 
         }
-
+        console.log(result);
         return result;
 
     }
@@ -228,9 +228,11 @@ class Simulation extends React.Component {
             for (let i = 0; i < copyArray.length; i++) {
                 if (copyArray[i].name == this.pandemic.originCountry) {
                     if (!isPandemicPassedInCountry(copyArray[i])) {
+
                         copyArray[i].isInfected = true;
-                        this.pandemic.countriesInfected.push(copyArray[i].name);
+                        this.pandemic.countriesInfected.push(copyArray[i].name);                      
                         this.pandemic.originCountry = copyArray[Math.round(Math.random() * 27)].name;
+                        
                     }
 
                 }

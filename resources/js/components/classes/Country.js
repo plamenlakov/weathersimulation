@@ -6,7 +6,7 @@ import Manufacturing from './ConcreteSectors/Manufacturing';
 import Industry from './ConcreteSectors/Industry';
 
 class Country {
-    constructor(name, area, ppm, population, populationGrowth, forests, forestsGrowth, sectors) {
+    constructor(name, area, ppm, population, populationGrowth, forests, forestsGrowth, sectors, infectedPopulation, isInfected, isOnLockDown) {
 
         this.name = name;
         this.area = area;
@@ -19,6 +19,10 @@ class Country {
         this.isInfected = false;
         this.infectedPopulation = 0;
         this.isOnLockDown = false;
+
+        this.infectedPopulation = infectedPopulation;
+        this.isInfected = isInfected;
+        this.isOnLockDown = isOnLockDown;
 
     }
 
@@ -132,11 +136,9 @@ class Country {
 
 
     cloneObject() {
-        const { name, area, ppm, population, populationGrowth, forests, forestsGrowth, sectors } = this;
-        var country = new Country(name, area, ppm, population, populationGrowth, forests, forestsGrowth, sectors.map((obj) => obj.cloneObject()));
-        // country.isInfected = this.isInfected;
-        // country.infectedPopulation = this.infectedPopulation;
-        // country.isOnLockDown = this.isOnLockDown;
+        const { name, area, ppm, population, populationGrowth, forests, forestsGrowth, sectors, infectedPopulation, isInfected, isOnLockDown } = this;
+        var country = new Country(name, area, ppm, population, populationGrowth, forests, forestsGrowth, sectors.map((obj) => obj.cloneObject()), infectedPopulation, isInfected, isOnLockDown);
+
         return country;
     }
 
@@ -200,8 +202,8 @@ class Country {
     }
 
     updateInfectedPopulation() {
-        if (this.isInfected) {
-            if (this.infectedPopulation < this.population / 10) {
+        if (this.isInfected ) {
+            if (this.infectedPopulation < this.population / 100 && !this.isOnLockDown) {
                 this.infectedPopulation += Math.round((Math.random() / (Math.random() * 100)) * this.population);
             } else {
                 this.isOnLockDown = true;
@@ -209,8 +211,13 @@ class Country {
                 this.infectedPopulation += Math.round((Math.random() / (Math.random() * 1000)) * this.population);
                 this.infectedPopulation -= Math.round((Math.random() / (Math.random() * 200)) * this.population);
 
-                if (this.infectedPopulation < this.population / 100) {
+                if(this.infectedPopulation < 0){
+                    this.infectedPopulation = 0;
+                }
+
+                if (this.infectedPopulation < this.population / 1000) {
                     this.isInfected = false;
+                    this.isOnLockDown = false;
                 }
             }
         }
@@ -218,21 +225,22 @@ class Country {
 
     updateCurrentData(inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
         inputIndustry, inputAgriculture) {
-
+            
         var electricity = this.sectors.find(el => el instanceof Electricity);
         var transportation = this.sectors.find(el => el instanceof Transportation);
         var building = this.sectors.find(el => el instanceof Building);
         var manufacturing = this.sectors.find(el => el instanceof Manufacturing);
         var industry = this.sectors.find(el => el instanceof Industry);
         var agriculture = this.sectors.find(el => el instanceof Agriculture);
-
+            console.log(this.name)
         if (this.isInfected) {
-            electricity.sectorChange(manufacturing * 0.7, [inputElectricity * 1.3, inputManufacturing * 0.7]);
-            transportation.sectorChange(inputTransportation * 0.4);
-            building.sectorChange(inputBuilding * 0.8);
-            manufacturing.sectorChange([building * 0.8, transportation * 0.4], [inputBuilding * 0.8, inputTransportation * 0.4, inputManufacturing * 0.7]);
-            industry.sectorChange(manufacturing * 0.7, [inputIndustry * 0.75, inputManufacturing * 0.7]);
-            agriculture.sectorChange(inputAgriculture * 1.2);
+            
+            electricity.sectorChange(manufacturing, [(inputElectricity - 1) * 0.7, (inputManufacturing - 1) * 0.3]);
+            transportation.sectorChange((inputTransportation - 1) * 0.2);
+            building.sectorChange((inputBuilding - 1) * 0.4);
+            manufacturing.sectorChange([building, transportation], [(inputBuilding - 1) * 0.4, (inputTransportation - 1) * 0.2, (inputManufacturing - 1) * 0.3]);
+            industry.sectorChange(manufacturing, [(inputIndustry - 1) * 0.6, (inputManufacturing - 1) * 0.3]);
+            agriculture.sectorChange((inputAgriculture - 1) * 1.2);
         }
         else {
             electricity.sectorChange(manufacturing, [inputElectricity, inputManufacturing]);
@@ -241,6 +249,7 @@ class Country {
             manufacturing.sectorChange([building, transportation], [inputBuilding, inputTransportation, inputManufacturing]);
             industry.sectorChange(manufacturing, [inputIndustry, inputManufacturing]);
             agriculture.sectorChange(inputAgriculture);
+
         }
 
         this.updateInfectedPopulation();
