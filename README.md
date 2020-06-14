@@ -19,6 +19,9 @@ Done! The .env file setup is complete. Now you will need to create your laravel 
 ```
 php artisan key:generate
 ```
+```
+php artisan migrate
+```
 At this point you are almost ready to execute the project. Run:
 ```
 composer install
