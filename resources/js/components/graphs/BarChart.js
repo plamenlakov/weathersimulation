@@ -15,7 +15,8 @@ class BarChart extends React.Component {
             series: null,
             value: null,
             category: null,
-            label: null
+            label: null,
+            interval: null
         }
     }
     componentWillUnmount() {
@@ -26,58 +27,68 @@ class BarChart extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.data != this.props.data) {
+            clearInterval(this.state.interval);
             this.state.yearIndex = 0;
             this.sendStateToParent('Running...')
             this.play();
         }
 
+        if (prevProps.simulationSpeed != this.props.simulationSpeed) {
+            clearInterval(this.state.interval)
+            this.play();
+        }
+
     }
 
-    sendDataToParent(data){
+    sendDataToParent(data) {
         this.props.updateCountryDataOnRunTime(data)
     }
 
-    sendStateToParent(state){
+    sendStateToParent(state) {
         this.props.updateState(state);
     }
 
     play() {
         var self = this;
 
-        var interval = setInterval(function () {
+        this.state.interval = setInterval(function () {
+
             if (self.state.yearIndex < self.props.data.length) {
-                if(self.props.paused){
+                if (self.props.paused) {
                     let dataToSend;
-                    if(self.state.yearIndex > 0){
+                    if (self.state.yearIndex > 0) {
                         dataToSend = self.props.data[self.state.yearIndex - 1];
-                    }else{
+                    } else {
                         dataToSend = self.props.data[self.state.yearIndex];
                     }
 
                     self.sendDataToParent(dataToSend)
-                    clearInterval(interval);
-                }else{
+                    clearInterval(self.state.interval);
+                } else {
                     self.nextYear();
                 }
-                
+
             }
             else {
+                self.sendDataToParent(self.props.data[self.state.yearIndex - 1])
                 self.sendStateToParent('Finished')
 
-                clearInterval(interval);
+                clearInterval(self.state.interval);
             }
 
-        }, 1300)
+
+
+        }, 1300 / this.props.simulationSpeed)
 
     }
 
     nextYear() {
-       
+
         var newData = this.formatedData(this.state.yearIndex);
 
         for (let i = 0; i < this.chart.data.length; i++) {
             this.chart.data[i].PPM = newData[i].PPM
-            
+
 
         }
 
@@ -130,13 +141,14 @@ class BarChart extends React.Component {
         categoryAxis.renderer.inversed = true;
         categoryAxis.renderer.grid.template.disabled = true;
 
+
         //series creation (x,y values)
         var series = chart.series.push(new am4charts.ColumnSeries());
         series.dataFields.valueX = "PPM";
         series.dataFields.categoryY = "country";
         series.tooltipText = "{categoryY.value}"
-        series.columns.template.column.cornerRadiusTopRight = 5;
-        series.columns.template.column.cornerRadiusBottomRight = 5;
+        series.columns.template.column.cornerRadiusTopRight = 2;
+        series.columns.template.column.cornerRadiusBottomRight = 2;
         series.interpolationDuration = 1300;
         series.interpolationEasing = am4core.ease.linear;
 
@@ -147,6 +159,7 @@ class BarChart extends React.Component {
         labelBullet.label.dx = 35;
         labelBullet.label.text = "{values.valueX.workingValue}";
 
+
         //chart styling
         chart.zoomOutButton.disabled = true;
         chart.scrollbarX = new am4core.Scrollbar();
@@ -154,6 +167,10 @@ class BarChart extends React.Component {
         chart.responsive.enabled = true;
         chart.numberFormatter.numberFormat = "###,###.###";
         chart.paddingRight = 50;
+
+        chart.scrollbarY = new am4core.Scrollbar();
+        chart.scrollbarY.parent = chart.leftAxesContainer;
+        chart.scrollbarY.start = categoryAxis.end / 2
 
         var label = chart.plotContainer.createChild(am4core.Label);
         label.x = am4core.percent(97);
@@ -181,11 +198,10 @@ class BarChart extends React.Component {
 
     render() {
 
-        //this.createBarChart(this.props.data, container)
         return (
             <>
 
-                <div id="barchartdiv" style={{ height: 800 + 'px' }}></div>
+                <div id="barchartdiv" style={{ height: 700 + 'px' }}></div>
             </>
 
         );

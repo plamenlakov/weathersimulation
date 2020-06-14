@@ -28,6 +28,13 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function profile(){
+        return $this->hasOne(Account::class);
+    }
+
+    public function simulations(){
+        return $this->hasMany(Simulation::class)->orderBy('created_at');
+    }
     /**
      * The attributes that should be cast to native types.
      *

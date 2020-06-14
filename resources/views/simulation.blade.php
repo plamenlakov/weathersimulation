@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="m-3">
-
+    <div class="m-2">
+        <input type="hidden" value="{{session("input_simulation")}}" id="reRunInputValues"/>
         <div id="root"></div>
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary d-none" id="modalButton" data-toggle="modal" data-target="#exampleModal">

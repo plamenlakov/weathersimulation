@@ -13,5 +13,4 @@ require('./bootstrap');
  */
 
 require('./components/App');
-
-
+AOS.init();

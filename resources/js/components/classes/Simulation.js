@@ -1,7 +1,14 @@
 import Country from "./Country";
 import * as d3 from 'd3';
+import Electricity from './ConcreteSectors/Electricity';
+import Building from './ConcreteSectors/Building';
+import Transportation from './ConcreteSectors/Transportation';
+import Agriculture from './ConcreteSectors/Agriculture';
+import Manufacturing from './ConcreteSectors/Manufacturing';
+import Industry from './ConcreteSectors/Industry';
+import React from 'react';
 
-class Simulation {
+class Simulation extends React.Component {
 
 
     set initialCountries(v) {
@@ -28,42 +35,60 @@ class Simulation {
         return this._hasPandemic;
     }
 
+    set pandemic(v) {
+        this._pandemic = v;
+    }
+
+    get pandemic() {
+        return this._pandemic;
+    }
+
     loadCountries(path) {
         this.initialCountries = [];
         var self = this;
+        this.hasPandemic = false;
         var readCSV = d3.csv(path, function (data) {
+
+            var sectors = [];
+            sectors.push(
+                new Electricity('Electricity', +data.electricity_value, +data.electricity_change),
+                new Transportation('Transportation', +data.transportation_value, +data.transportation_change),
+                new Building('Building', +data.building_value, +data.building_change),
+                new Manufacturing('Manufacturing', +data.manufacturing_value, +data.manufacturing_change),
+                new Industry('Industry', +data.industry_value, +data.industry_change),
+                new Agriculture('Agriculture', +data.agriculture_value, +data.agriculture_change)
+            );
+
             var country = new Country(data.name, Number(data.area), Number(data.ppm), Number(data.population),
-                Number(data.population_change), Number(data.forestry_percentage), Number(data.forestry_change),
-                Number(data.electricity_value), Number(data.electricity_change), Number(data.transportation_value), Number(data.transportation_change),
-                Number(data.building_value), Number(data.building_change), Number(data.manufacturing_value), Number(data.manufacturing_change),
-                Number(data.industry_value), Number(data.industry_change), Number(data.agriculture_value), Number(data.agriculture_change));
+                Number(data.population_change), Number(data.forestry_percentage), Number(data.forestry_change), sectors, 0, false, false);
+
             self.initialCountries.push(country);
         });
-        
+
         return readCSV;
     }
 
     resumeFromCurrentState(data, year, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
         inputIndustry, inputAgriculture) {
-        this.temperatureIncrease = [];
+
+        //this.temperatureIncrease = [];
         var result = [];
-        var yearStopped =  +Object.keys(data);
+        var yearStopped = +Object.keys(data);
         var copyArray = data[yearStopped].map((obj) => obj.cloneObject());
 
-        
+
         for (let index = yearStopped; index <= year; index++) {
             var countriesInThisYear = copyArray.map((obj) => obj.cloneObject());
             this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);
             result.push({ [index]: countriesInThisYear })
             if (index !== year) {
-                if(this.hasPandemic){
-                    this.updateCountries(copyArray, inputPopulation + 0.1, inputDeforestation - 0.1, inputElectricity + 0.6, inputTransportation - 5, inputBuilding, inputManufacturing - 2.5, inputIndustry - 2, inputAgriculture + 0.5)
-                } else {
-                    this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
-                        inputIndustry, inputAgriculture)
-                }
-            }   
-           
+
+                this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                    inputIndustry, inputAgriculture);
+                this.updateCountriesWithPandemic(copyArray, index);
+
+            }
+
         }
 
         return result;
@@ -73,32 +98,105 @@ class Simulation {
         inputIndustry, inputAgriculture) {
         this.temperatureIncrease = [];
         let result = [];
-        let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
 
+        let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
+        
         for (let index = 2020; index <= year; index++) {
             var countriesInThisYear = copyArray.map((obj) => obj.cloneObject())
             this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);
-            result.push({ [index]: countriesInThisYear})
+            result.push({ [index]: countriesInThisYear })
             if (index !== year) {
-                if(this.hasPandemic){
-                    this.updateCountries(copyArray, inputPopulation + 0.1, inputDeforestation - 0.1, inputElectricity + 0.6, inputTransportation - 5, inputBuilding, inputManufacturing - 2.5, inputIndustry - 2, inputAgriculture + 0.5)
-                } else {
-                    this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
-                        inputIndustry, inputAgriculture)
-                }
-            }   
-           
+
+                this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+                    inputIndustry, inputAgriculture);
+
+                this.updateCountriesWithPandemic(copyArray, index);
+            }
+
         }
-        
+
         return result;
 
     }
 
-    getWaterLevels(tempArray){
+    playExistingSimulation(replayValues) {
+        this.temperatureIncrease = [];
+        let result = [];
+        var change = 0;
+        var usableCountries = this.formatReplayCountries(replayValues, change);
+        var lastInputYear = replayValues[replayValues.length - 1][+Object.keys(replayValues[replayValues.length - 1])][2];
+
+        for (let i = 2020; i <= lastInputYear; i++) {
+
+            if (replayValues[change + 1] != null) {
+                if (i == +Object.keys(replayValues[change + 1])) {
+                    change++;
+                    usableCountries = this.formatReplayCountries(replayValues, change);
+                }
+            }
+
+            var countriesInThisYear = usableCountries.map((obj) => obj.cloneObject());
+            this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);
+            result.push({ [i]: countriesInThisYear });
+
+            if (i != lastInputYear) {
+
+                this.updateCountries(usableCountries, 0, +this.formatMainInputs(replayValues, change)[0], +this.formatMainInputs(replayValues, change)[1], +this.formatMainInputs(replayValues, change)[2], +this.formatMainInputs(replayValues, change)[3], +this.formatMainInputs(replayValues, change)[4], +this.formatMainInputs(replayValues, change)[5], +this.formatMainInputs(replayValues, change)[6])
+            }
+        }
+
+        return result;
+
+    }
+
+    formatMainInputs(replayValues, change) {
+        return replayValues[change][+Object.keys(replayValues[change])][0];
+    }
+
+    formatReplayCountries(replayValues, change) {
+        var startCountries = replayValues[change][+Object.keys(replayValues[change])][1];
+        var usableCountries = [];
+        var usableSectors = [];
+
+        for (let c in startCountries) {
+
+            usableSectors.push(new Electricity(startCountries[c]._sectors[0]._name, startCountries[c]._sectors[0]._value, startCountries[c]._sectors[0]._percentage));
+            usableSectors.push(new Transportation(startCountries[c]._sectors[1]._name, startCountries[c]._sectors[1]._value, startCountries[c]._sectors[1]._percentage));
+            usableSectors.push(new Building(startCountries[c]._sectors[2]._name, startCountries[c]._sectors[2]._value, startCountries[c]._sectors[2]._percentage));
+            usableSectors.push(new Manufacturing(startCountries[c]._sectors[3]._name, startCountries[c]._sectors[3]._value, startCountries[c]._sectors[3]._percentage));
+            usableSectors.push(new Industry(startCountries[c]._sectors[4]._name, startCountries[c]._sectors[4]._value, startCountries[c]._sectors[4]._percentage));
+            usableSectors.push(new Agriculture(startCountries[c]._sectors[5]._name, startCountries[c]._sectors[5]._value, startCountries[c]._sectors[5]._percentage));
+
+            usableCountries.push(new Country(startCountries[c]._name, +startCountries[c]._size, +startCountries[c]._ppm, +startCountries[c]._population, +startCountries[c]._populationGrowth, +startCountries[c]._forests, +startCountries[c]._forestsGrowth, usableSectors, 0, false, false));
+            usableSectors = [];
+
+        }
+        return usableCountries;
+        //var startMainInputs = replayValues[change][2020][0];
+    }
+
+    getWaterLevels(tempArray) {
         var waterLevels = [];
+        var level;
 
         tempArray.forEach(t => {
-            waterLevels.push(Math.round((t * 0.5) * 1000) / 1000)
+            if (t <= 0.5) {
+                level = Math.round((t * 0.5) * 1000) / 1000
+            }
+            else if (t > 0.5 && t <= 1.8) {
+                level = Math.round((t * 0.6) * 1000) / 1000
+            }
+            else if (t > 1.8 && t < 3) {
+                level = Math.round((t * 1.3) * 1000) / 1000
+            }
+            else {
+                level = Math.round((t * 5) * 1000) / 1000
+            }
+
+            if (level > 60) {
+                level = 60 + level / (t * 10);
+            }
+            waterLevels.push(level)
         })
         return waterLevels;
     }
@@ -113,7 +211,37 @@ class Simulation {
         return temperatureIncrease * 0.01;
     }
 
-  async updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
+    updateCountriesWithPandemic(copyArray, index) {
+        var self = this;
+        function hasPandemicPassedInCountry(country) {
+            for (let i = 0; i < self.pandemic.countriesInfected; i++) {
+                if (self.pandemic.countriesInfected[i] == country.name) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        if (this.hasPandemic) {
+            if(this.pandemic.endYear <= index){
+                for (let i = 0; i < copyArray.length; i++) {
+                    if (copyArray[i].name == this.pandemic.originCountry) {
+                        if (!hasPandemicPassedInCountry(copyArray[i])) {
+    
+                            copyArray[i].isInfected = true;
+                            this.pandemic.countriesInfected.push(copyArray[i].name);
+                            this.pandemic.originCountry = copyArray[Math.round(Math.random() * 27)].name;
+    
+                        }
+    
+                    }
+                }
+            }
+            
+        }
+    }
+
+    updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
         inputIndustry, inputAgriculture) {
         copyArray.forEach(c => {
             c.updateCurrentData(inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,

@@ -11,7 +11,6 @@ import Col from 'react-bootstrap/Col';
 import Modal from './ModalCountry';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Tab from "react-bootstrap/Tab";
-import Tabs from 'react-bootstrap/Tabs';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Skeleton from '@material-ui/lab/Skeleton';
 
@@ -25,6 +24,8 @@ class Map extends React.Component {
       waterLevel: 0,
       sliderValue: 0,
       yearIndex: 0,
+      waterIndex: 0,
+      interval: null,
 
       scene: null,
       renderer: null,
@@ -42,7 +43,8 @@ class Map extends React.Component {
       dataLoaded: false,
       bordersLoaded: false,
       showBorders: true,
-      mapLoaded: false
+      mapLoaded: false,
+      test: 0
     }
     this.loadData('stats.bin', 'Europe1.geo.json');
   }
@@ -241,7 +243,7 @@ class Map extends React.Component {
 
       function onWindowResize() {
         let containerWidth = container.getBoundingClientRect().right - container.getBoundingClientRect().left;
-        renderer.setSize(containerWidth, containerWidth / 2 + 100);
+        renderer.setSize(containerWidth, containerWidth / 2 + 150);
       }
       window.addEventListener('resize', onWindowResize, false);
     }
@@ -254,76 +256,76 @@ class Map extends React.Component {
     if (this.state.waterLevel > 11.7) {
       this.state.waterLevel = 11.7
     }
+    if (this.state.waterLevel < 11.7 / 2.5) {
+      var adjustHeight = 11.7 - this.state.waterLevel;
 
-    var adjustHeight = 11.7 - this.state.waterLevel;
+      function addColors(counterJ, colorR, colorG, colorB) {
+        colorsArray[counterJ] = new THREE.Color(colorR).r;
+        colorsArray[counterJ + 1] = new THREE.Color(colorG).g;
+        colorsArray[counterJ + 2] = new THREE.Color(colorB).b;
+      }
 
-    function addColors(counterJ, colorR, colorG, colorB) {
-      colorsArray[counterJ] = new THREE.Color(colorR).r;
-      colorsArray[counterJ + 1] = new THREE.Color(colorG).g;
-      colorsArray[counterJ + 2] = new THREE.Color(colorB).b;
+      // var treesPositions = [];
+
+      // function addTreesPositions(counter) {
+
+      //   treesPositions.push({
+      //     x: heightsArray[counter - 2],
+      //     y: heightsArray[counter],
+      //     z: heightsArray[counter-1]
+      //   })
+
+
+      // }
+      // var treecounter = 0;
+      //var treeGroup = new THREE.Group();
+
+      for (let i = 2, j = 0; i < heightsArray.length; i += 3, j += 3) {
+
+        if (heightsArray[i] >= 0 && heightsArray[i] < 350 / adjustHeight) {
+          addColors(j, 0x000000, 0x006900, 0x000094);
+
+        }
+        else if (heightsArray[i] >= 350 / adjustHeight && heightsArray[i] < 900 / adjustHeight) {
+          addColors(j, 0x6e0000, 0x00dc00, 0x00006e);
+        }
+        else if (heightsArray[i] >= 900 / adjustHeight && heightsArray[i] < 1300 / adjustHeight) {
+          addColors(j, 0xf00000, 0x00fa00, 0x0000a0);
+        }
+        else if (heightsArray[i] >= 1300 / adjustHeight && heightsArray[i] < 1900 / adjustHeight) {
+          addColors(j, 0xe00000, 0x0bd00, 0x000077);
+        }
+        else if (heightsArray[i] >= 1900 / adjustHeight && heightsArray[i] < 2500 / adjustHeight) {
+          addColors(j, 0xdd0000, 0x009800, 0x000056);
+
+        }
+        else if (heightsArray[i] >= 2500 / adjustHeight && heightsArray[i] < 3300 / adjustHeight) {
+          addColors(j, 0xa00000, 0x005200, 0x00002d);
+        }
+        else {
+          addColors(j, 0xd20000, 0x00d200, 0x0000d2);
+
+        }
+
+      }
+
+      // if(!this.state.mapLoaded){
+      //   for(let i = 0; i < 300; i++){
+      //     this.drawTrees(treesPositions, treeGroup);
+      //   }
+      // }
+
+      // treeGroup.rotateY(Math.PI / 2)
+      // this.state.scene.add(treeGroup)
+      terrainGeometry.deleteAttribute('color');
+      terrainGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3))
     }
 
-    var treesPositions = [];
-
-    function addTreesPositions(counter) {
-
-      treesPositions.push({
-        x: heightsArray[counter - 2],
-        y: heightsArray[counter],
-        z: heightsArray[counter-1]
-      })
-
-
-    }
-    var treecounter = 0;
-    //var treeGroup = new THREE.Group();
-    for (let i = 2, j = 0; i < heightsArray.length; i += 3, j += 3) {
-
-      if (heightsArray[i] >= 0 && heightsArray[i] < 350 / adjustHeight) {
-        addColors(j, 0x000000, 0x006900, 0x000094);
-        
-      }
-      else if (heightsArray[i] >= 350 / adjustHeight && heightsArray[i] < 900 / adjustHeight) {
-        addColors(j, 0x6e0000, 0x00dc00, 0x00006e);
-        addTreesPositions(j)
-      }
-      else if (heightsArray[i] >= 900 / adjustHeight && heightsArray[i] < 1300 / adjustHeight) {
-        addColors(j, 0xf00000, 0x00fa00, 0x0000a0);
-      }
-      else if (heightsArray[i] >= 1300 / adjustHeight && heightsArray[i] < 1900 / adjustHeight) {
-        addColors(j, 0xe00000, 0x0bd00, 0x000077);
-      }
-      else if (heightsArray[i] >= 1900 / adjustHeight && heightsArray[i] < 2500 / adjustHeight) {
-        addColors(j, 0xdd0000, 0x009800, 0x000056);
-        
-      }
-      else if (heightsArray[i] >= 2500 / adjustHeight && heightsArray[i] < 3300 / adjustHeight) {
-        addColors(j, 0xa00000, 0x005200, 0x00002d);
-      }
-      else {
-        addColors(j, 0xd20000, 0x00d200, 0x0000d2);
-        
-      }
-
-    }
-    // if(!this.state.mapLoaded){
-    //   for(let i = 0; i < 300; i++){
-    //     this.drawTrees(treesPositions, treeGroup);
-    //   }
-    // }
-    
-    
-    // treeGroup.rotateY(Math.PI / 2)
-    // this.state.scene.add(treeGroup)
-    terrainGeometry.deleteAttribute('color');
-    terrainGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3))
-    
-    
 
   }
 
   drawTrees(treesPositions, treeGroup) {
-    
+
     var deciduousGeometry = new THREE.DodecahedronBufferGeometry(1, 1);
     var stemGeometry = new THREE.DodecahedronBufferGeometry(0.75, 1);
 
@@ -345,9 +347,9 @@ class Map extends React.Component {
     tree.position.set(treesPositions[position].x, treesPositions[position].z, treesPositions[position].y);
 
     treeGroup.add(tree);
-    
-    
-    
+
+
+
   }
 
   createPoliticalMap(dataJSON) {
@@ -435,13 +437,23 @@ class Map extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.data != this.props.data) {
+      clearInterval(this.state.interval);
       this.setState({
         countries: this.props.data[this.props.data.length - 1][+Object.keys(this.props.data[0]) + this.props.data.length - 1]
-      })
+      });
+      this.state.yearIndex = 0;
+
+
+      if (+Object.keys(this.props.data[0]) == 2020) {
+        this.state.waterIndex = 0;
+      }
+
+      this.play();
     }
 
-    if (prevProps.currentWaterLevels != this.props.currentWaterLevels) {
-      this.state.yearIndex = 0;
+
+    if (prevProps.simulationSpeed != this.props.simulationSpeed) {
+      clearInterval(this.state.interval);
       this.play();
     }
 
@@ -450,23 +462,25 @@ class Map extends React.Component {
   play() {
     var self = this;
 
-    var interval = setInterval(function () {
+    this.state.interval = setInterval(function () {
       if (self.state.yearIndex < self.props.currentWaterLevels.length) {
         if (self.props.paused) {
-          clearInterval(interval)
+          clearInterval(self.state.interval)
         }
         else {
-          self.state.waterLevel = self.props.currentWaterLevels[self.state.yearIndex];
+
+          self.state.waterLevel = self.props.currentWaterLevels[self.state.waterIndex];
           self.drawTerrain(self.state.heightsArray, self.state.colorsArray, self.state.terrainGeometry);
+          self.state.waterIndex++;
           self.state.yearIndex++;
         }
 
 
       }
       else {
-        clearInterval(interval);
+        clearInterval(self.state.interval);
       }
-    }, 1300)
+    }, 1300 / this.props.simulationSpeed)
   }
 
   getValuesChosenCountry(data) {
@@ -477,11 +491,13 @@ class Map extends React.Component {
         countriesReceived[i] = data
       }
     }
+
     this.props.updateCurrentData(this.props.currentYearData == null ? this.props.data[0] : this.props.currentYearData)
   }
 
   render() {
     var container = document.getElementById("main_map");
+
     if (this.state.dataLoaded) {
 
 
@@ -526,7 +542,7 @@ class Map extends React.Component {
                     <Col md="8">
                       <Slider
                         step={1}
-                        min={0}
+                        min={0} 
                         max={100}
                         onChange={this.moveBordersHandler.bind(this)}
                       />
