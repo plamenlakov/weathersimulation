@@ -19,6 +19,7 @@ Done! The .env file setup is complete. Now you will need to create your laravel 
 ```
 php artisan key:generate
 ```
+Create your Database tables with:
 ```
 php artisan migrate
 ```
