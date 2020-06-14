@@ -28,8 +28,7 @@ At this point you are almost ready to execute the project. Run:
 composer install
 npm install
 ```
-In addition to the commands, please add this extension to your browser: "Moesif Orign & CORS Changer"
-and turn it on before starting the website.
+
 ### Run
 
 In order to start the project you will need to have these three commands running at the same time:
@@ -42,15 +41,17 @@ php artisan serve
 ## Starting a simulation
 
 In order to reach the website type: http://localhost:8000
-The simulation proof of concept is in the Simulation page.
+You will be greeted by the home page.
+The simulation testing is in the Simulation page.
 
-In the simulation page you will see the input fields on your left, map on the right 
-and the graphs are underneath.
+In the simulation page you will see the total PPM graph on the left, controls/inputs beneath the graph, map on the right 
+and the PPM barchart per country.
 Initially if you click on some countries you will see their current values.
 The input values are interfering the whole simulation (i.e. deforestation percentage will 
 be applied to all countries each year until the end of the simulation).
 
-After inputting desired values and year to stop the simulation press "Make a simulation".
-In order to check the result of the simulation click each involved country. 
-The values of the countries and the graphs will be the statistics from the stop year
-you have indicated.
+After inputting desired values and year to stop the simulation press "Create new simulation".
+During the runtime you can pause the simulation and change general values which are under the "Control" menu 
+or change values for individual country from the Political map
+The values of the countries and PPM in the Line graph and Bar Chart will be the statistics from the stopped/paused year 
+while the statistics for each country in the political map are from the last year of the simulation.
