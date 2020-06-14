@@ -24,9 +24,10 @@ class Inputs extends React.Component {
             hasPandemic: false,
             yearToStopPandemic: 2020,
             countryToStartPandemic: null,
-            infectionRate: 0
+            infectionRate: 0,
+            warningPandemic: ""
         }
-        
+
     }
 
     updateDeforestationInput(evt) {
@@ -68,29 +69,29 @@ class Inputs extends React.Component {
 
     updateYearInput(evt) {
         if (+evt.target.value >= 2021) {
-            if(this.props.currentData){
-                if(+Object.keys(this.props.currentData) > +evt.target.value){
+            if (this.props.currentData) {
+                if (+Object.keys(this.props.currentData) > +evt.target.value) {
                     this.setState({
                         warning: "Please provide an year that has not passed already",
                         inputError: true
                     })
                 }
-                else{
+                else {
                     this.setState({
                         yearToStop: +evt.target.value,
                         inputError: false
                     }, () => { this.setState({ warning: "Current chosen year: " + this.state.yearToStop }, () => this.props.changeYearToStop(this.state.yearToStop)) })
                 }
             }
-            else{
+            else {
                 this.setState({
                     yearToStop: +evt.target.value,
                     inputError: false
                 }, () => { this.setState({ warning: "Current chosen year: " + this.state.yearToStop }, () => this.props.changeYearToStop(this.state.yearToStop)) })
             }
-           
+
         }
-         else {
+        else {
             this.setState({
                 warning: "Please provide an year after 2021.",
                 inputError: true
@@ -108,9 +109,22 @@ class Inputs extends React.Component {
 
     changeYearPandemic(evt) {
         if (+evt.target.value >= 2020) {
-            this.setState({
-                yearToStopPandemic: +evt.target.value
-            })
+            if(this.props.currentData != null){
+                if(+Object.keys(this.props.currentData) > +evt.target.value){
+                    this.setState({
+                        warningPandemic: 'Choose a year bigger than the current one'
+                    })
+                }else{
+                    this.setState({
+                        yearToStopPandemic: +evt.target.value
+                    })
+                }
+            }else{
+                this.setState({
+                    yearToStopPandemic: +evt.target.value
+                })
+            }
+           
         } else {
             this.setState({
                 yearToStopPandemic: 2020
@@ -119,24 +133,30 @@ class Inputs extends React.Component {
 
     }
 
-    updateOriginCountryInput(evt){
+    updateOriginCountryInput(evt) {
         this.setState({
             countryToStartPandemic: evt.target.options[evt.target.selectedIndex].text
         })
+
+    }
+
+
+    createPandemic() {
+        if(this.state.countryToStartPandemic == null || this.state.countryToStartPandemic == 'Choose a country *'){
+            this.setState({
+                warningPandemic: 'Please choose an origin country'
+            })
+        }
+        else{
+            let yearToStartPandemic = this.props.currentData ? +Object.keys(this.props.currentData) : 2020;
+            let newPandemic = new Pandemic(this.state.countryToStartPandemic, yearToStartPandemic, this.state.yearToStopPandemic);
+    
+            this.props.createNewPandemic(newPandemic);
+            this.setState({
+                warningPandemic: 'Pandemic created'
+            })
+        }
         
-    }
-
-    updateRateOfInfectionInput(evt){
-        this.setState({
-            infectionRate: evt.target.value
-        })
-    }
-
-    createPandemic(){
-        let yearToStartPandemic = this.props.currentData ? +Object.keys(this.props.currentData) : 2020;
-        let newPandemic = new Pandemic(this.state.countryToStartPandemic, this.state.infectionRate, yearToStartPandemic,this.state.yearToStopPandemic);
-
-        this.props.createNewPandemic(newPandemic);
 
     }
 
@@ -166,7 +186,7 @@ class Inputs extends React.Component {
                     <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.props.inputs[6].toString()} label={"Agriculture: " + this.props.inputs[6] + "% increase"} variant="outlined" onChange={evt =>
                         this.updateAgricultureInput(evt)} fullWidth />
                     <br />
-                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={ this.props.inputs[7].toString()} label={"Year to stop simulation: " + this.props.inputs[7]} variant="outlined" onChange={evt =>
+                    <TextField className="mb-4" disabled={this.props.isRunning} placeholder={this.props.inputs[7].toString()} label={"Year to stop simulation: " + this.props.inputs[7]} variant="outlined" onChange={evt =>
                         this.updateYearInput(evt)} helperText={this.state.warning} error={this.state.inputError} fullWidth />
 
 
@@ -177,9 +197,9 @@ class Inputs extends React.Component {
                                 onChange={evt => this.togglePandemic(evt)}
                                 color="secondary"
                                 name="checkedB" />}
-                            label="🦠 Start Pandemic"
+                            label="🦠 Open pandemic controls"
                         />
-                       
+
                     </div>
 
                     <div className='text-left' style={{ display: this.props.hasPandemic && !this.props.isRunning ? 'initial' : 'none' }}>
@@ -188,25 +208,16 @@ class Inputs extends React.Component {
                             Country to start from:
                                                 </Form.Text>
                         <Form.Control as="select" custom onChange={evt => this.updateOriginCountryInput(evt)} required>
-
+                            <option>Choose a country *</option>
                             {
+
                                 this.props.countries.map((country, index) => {
                                     return (<option key={index} value={index}> {country.name} </option>)
                                 })
                             }
                         </Form.Control>
-                        <Form.Group controlId="pandemicForm.RateOfInfection">
-                            <Form.Text className="text-muted">
-                                The severity of the pandemic:
-                                                    </Form.Text>
-                            <Form.Control as="select" defaultValue={10} custom onChange={evt => this.updateRateOfInfectionInput(evt)} required>
-                                <option value={10}>Low</option>
-                                <option value={20}>Medium</option>
-                                <option value={30}>High</option>
-                            </Form.Control>
-
-                        </Form.Group>
                         <TextField
+                            className='mt-2'
                             label='Year to start pandemic'
                             onChange={evt => this.changeYearPandemic(evt)}
                             placeholder={this.state.yearToStopPandemic.toString()}
@@ -214,6 +225,10 @@ class Inputs extends React.Component {
                             fullWidth />
 
                         <Button className='m-2' variant='danger' onClick={this.createPandemic.bind(this)}>Create pandemic</Button>
+                        <div className='text-center'>
+                            {this.state.warningPandemic}
+                        </div>
+
                     </div>
 
                 </div>

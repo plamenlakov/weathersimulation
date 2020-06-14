@@ -293,26 +293,26 @@ class PPMLineGraph extends React.Component {
                             <div style={{ fontSize: this.state.end > 100 - 14.9 ? 15 : 20, color: this.state.end > 2 ? 'red' : 'green' }}>
                                 {this.state.end > 2 ? <FontAwesomeIcon icon={faTemperatureHigh} /> : <FontAwesomeIcon icon={faTemperatureLow} />}
                                 &nbsp;
-                                <CountUp start={this.state.start + 14.9} end={this.state.end + 14.9} delay={1.3} decimals={2} suffix=" °C" />
+                                <CountUp start={this.state.start + 14.9} end={this.state.end + 14.9} delay={1.3 / this.props.simulationSpeed} decimals={2} suffix=" °C" />
 
                             </div>
-                            (<CountUp start={this.state.start} end={this.state.end} delay={1.3} decimals={2} prefix={this.state.end > 0 ? '+' : ''} />)
+                            (<CountUp start={this.state.start} end={this.state.end} delay={1.3 / this.props.simulationSpeed} decimals={2} prefix={this.state.end > 0 ? '+' : ''} />)
                         </Col>
                         <Col md={6} className='align-self-center'>
                             <div style={{ fontSize: this.state.end > 100 - 14.9 ? 15 : 20, color: this.state.end > 2 ? 'red' : 'green' }}>
                                 {this.state.end > 2 ? <FontAwesomeIcon icon={faCloudSun} /> : <FontAwesomeIcon icon={faSun} />}
                                 &nbsp;
-                                <CountUp start={this.state.startPPM + 417.16} end={this.state.endPPM + 417.16} delay={1.3} decimals={2} suffix=" PPM" />
+                                <CountUp start={this.state.startPPM + 417.16} end={this.state.endPPM + 417.16} delay={1.3 / this.props.simulationSpeed} decimals={2} suffix=" PPM" />
                             </div>
-                            (<CountUp start={this.state.startPPM} end={this.state.endPPM} delay={1.3} decimals={2} prefix={this.state.end > 0 ? '+' : ''} />)
+                            (<CountUp start={this.state.startPPM} end={this.state.endPPM} delay={1.3 / this.props.simulationSpeed} decimals={2} prefix={this.state.end > 0 ? '+' : ''} />)
                         </Col>
                         <Col md={3} className='align-self-center'>
                             <div style={{ fontSize: this.state.end > 100 - 14.9 ? 15 : 20, color: this.state.end > 2 ? 'red' : 'green' }}>
                                 {this.state.end > 2 ? <FontAwesomeIcon icon={faSwimmer} /> : <FontAwesomeIcon icon={faWater} />}
                                 &nbsp;
-                                <CountUp start={this.state.startWater} end={this.state.endWater} delay={1.3} decimals={2} suffix=" m." />
+                                <CountUp start={this.state.startWater} end={this.state.endWater} delay={1.3 / this.props.simulationSpeed} decimals={2} suffix=" m." />
                             </div>
-                            (<CountUp start={this.state.startWater} end={this.state.endWater} delay={1.3} decimals={2} prefix={this.state.end > 0 ? '+' : ''} />)
+                            (<CountUp start={this.state.startWater} end={this.state.endWater} delay={1.3 / this.props.simulationSpeed} decimals={2} prefix={this.state.end > 0 ? '+' : ''} />)
                         </Col>
                     </Row>
                     <Row className='p-2 text-justify'>

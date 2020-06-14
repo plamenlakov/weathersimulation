@@ -85,7 +85,7 @@ class Simulation extends React.Component {
 
                 this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
                     inputIndustry, inputAgriculture);
-                this.updateCountriesWithPandemic(copyArray);
+                this.updateCountriesWithPandemic(copyArray, index);
 
             }
 
@@ -98,8 +98,9 @@ class Simulation extends React.Component {
         inputIndustry, inputAgriculture) {
         this.temperatureIncrease = [];
         let result = [];
-        let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
 
+        let copyArray = this.initialCountries.map((obj) => obj.cloneObject());
+        
         for (let index = 2020; index <= year; index++) {
             var countriesInThisYear = copyArray.map((obj) => obj.cloneObject())
             this.temperatureIncrease.push(Math.round(this.getTemperatureIncrease(countriesInThisYear) * 1000) / 1000);
@@ -109,14 +110,11 @@ class Simulation extends React.Component {
                 this.updateCountries(copyArray, inputPopulation, inputDeforestation, inputElectricity, inputTransportation, inputBuilding, inputManufacturing,
                     inputIndustry, inputAgriculture);
 
-                this.updateCountriesWithPandemic(copyArray);
-
-
-
+                this.updateCountriesWithPandemic(copyArray, index);
             }
 
         }
-        console.log(result);
+
         return result;
 
     }
@@ -169,7 +167,7 @@ class Simulation extends React.Component {
             usableSectors.push(new Industry(startCountries[c]._sectors[4]._name, startCountries[c]._sectors[4]._value, startCountries[c]._sectors[4]._percentage));
             usableSectors.push(new Agriculture(startCountries[c]._sectors[5]._name, startCountries[c]._sectors[5]._value, startCountries[c]._sectors[5]._percentage));
 
-            usableCountries.push(new Country(startCountries[c]._name, +startCountries[c]._size, +startCountries[c]._ppm, +startCountries[c]._population, +startCountries[c]._populationGrowth, +startCountries[c]._forests, +startCountries[c]._forestsGrowth, usableSectors));
+            usableCountries.push(new Country(startCountries[c]._name, +startCountries[c]._size, +startCountries[c]._ppm, +startCountries[c]._population, +startCountries[c]._populationGrowth, +startCountries[c]._forests, +startCountries[c]._forestsGrowth, usableSectors, 0, false, false));
             usableSectors = [];
 
         }
@@ -213,9 +211,9 @@ class Simulation extends React.Component {
         return temperatureIncrease * 0.01;
     }
 
-    updateCountriesWithPandemic(copyArray) {
+    updateCountriesWithPandemic(copyArray, index) {
         var self = this;
-        function isPandemicPassedInCountry(country) {
+        function hasPandemicPassedInCountry(country) {
             for (let i = 0; i < self.pandemic.countriesInfected; i++) {
                 if (self.pandemic.countriesInfected[i] == country.name) {
                     return true;
@@ -225,18 +223,21 @@ class Simulation extends React.Component {
         }
 
         if (this.hasPandemic) {
-            for (let i = 0; i < copyArray.length; i++) {
-                if (copyArray[i].name == this.pandemic.originCountry) {
-                    if (!isPandemicPassedInCountry(copyArray[i])) {
-
-                        copyArray[i].isInfected = true;
-                        this.pandemic.countriesInfected.push(copyArray[i].name);                      
-                        this.pandemic.originCountry = copyArray[Math.round(Math.random() * 27)].name;
-                        
+            if(this.pandemic.endYear <= index){
+                for (let i = 0; i < copyArray.length; i++) {
+                    if (copyArray[i].name == this.pandemic.originCountry) {
+                        if (!hasPandemicPassedInCountry(copyArray[i])) {
+    
+                            copyArray[i].isInfected = true;
+                            this.pandemic.countriesInfected.push(copyArray[i].name);
+                            this.pandemic.originCountry = copyArray[Math.round(Math.random() * 27)].name;
+    
+                        }
+    
                     }
-
                 }
             }
+            
         }
     }
 

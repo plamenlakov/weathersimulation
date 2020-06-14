@@ -1,9 +1,8 @@
 class Pandemic{
 
-    constructor(originCountry, rateOfInfection, startYear, endYear){
+    constructor(originCountry, startYear, endYear){
 
         this.originCountry = originCountry;
-        this.rateOfInfection = rateOfInfection;
         this.startYear = startYear;
         this.endYear = endYear;
         this.countriesInfected = [];
@@ -45,13 +44,13 @@ class Pandemic{
     }
 
     // //The year this pandemic ends
-    // set endYear(v) {
-    //     this._startYear = v;
-    // }
+    set endYear(v) {
+        this._startYear = v;
+    }
 
-    // get endYear() {
-    //     return this._startYear;
-    // }
+    get endYear() {
+        return this._startYear;
+    }
 }
 
 export default Pandemic;

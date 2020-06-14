@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AllGraphs from "./graphs/AllGraphs";
+import Main from "./graphs/Main";
 import Comparison from './Comparison';
 
 function App() {
     return (
         <div>
-            <AllGraphs/>
+            <Main/>
         </div>
     );
 }

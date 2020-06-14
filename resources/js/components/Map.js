@@ -11,7 +11,6 @@ import Col from 'react-bootstrap/Col';
 import Modal from './ModalCountry';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Tab from "react-bootstrap/Tab";
-import Tabs from 'react-bootstrap/Tabs';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Skeleton from '@material-ui/lab/Skeleton';
 
@@ -543,7 +542,7 @@ class Map extends React.Component {
                     <Col md="8">
                       <Slider
                         step={1}
-                        min={0}
+                        min={0} 
                         max={100}
                         onChange={this.moveBordersHandler.bind(this)}
                       />

@@ -34,24 +34,53 @@
     </div>
 
 </div>
-<div class="">
+<div>
 
-    <div class='m-4 text-justify'>
-        <h3>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptas similique quia esse quisquam non repudiandae quod distinctio molestias id atque, iusto modi perferendis iste voluptate corrupti perspiciatis iure dignissimos fuga excepturi quos quidem nobis nulla tempora? Iure repellat adipisci assumenda veritatis itaque modi totam hic, molestias architecto. Cupiditate, provident tenetur architecto corrupti perferendis expedita, praesentium minima facilis magnam est voluptatem officia error consequatur quas iusto illo exercitationem, tempore repellendus! Corporis natus labore laborum inventore rerum, facere reprehenderit voluptates repellat fugit nostrum consequatur, exercitationem dolorem? Officia esse eaque reiciendis sed nisi culpa qui aperiam voluptatem, iusto quas consequatur voluptatibus ipsum quam modi enim totam? Deserunt dolorum accusantium incidunt recusandae ipsa eum, corporis magni consequuntur corrupti nobis velit tempora consequatur aliquid! Voluptatum ratione magnam officiis molestiae ipsum sequi, explicabo minus quod nesciunt qui consequatur tenetur iste nemo mollitia adipisci laudantium ea vel ipsa perferendis in alias pariatur. Veritatis dolore dolores illum sit porro ad at labore saepe totam, possimus voluptate ex debitis nesciunt. Voluptatibus dolore dolorum vel, expedita nostrum eaque dolorem iste illum quasi labore praesentium eveniet dolores cupiditate porro veritatis laborum repellendus ullam delectus nobis eum! Dignissimos pariatur repudiandae omnis nostrum sapiente obcaecati delectus non aut sint ullam aliquam, impedit accusantium.</h3>
+    <div class='my-4 text-justify'>
+        <div class="row w-75 mx-auto">
+            <div class="col-md-4 p-3" data-aos="fade-right" data-aos-duration="1000" data-aos-offset="400">
+                <div class="text-center" style="font-size: 55px"><i class="fas fa-globe-europe" style="color: #2EA435;"></i><i class="fas fa-temperature-high" style="color: #E94646;"></i></div>
+
+                <h3 class="text-center">Global warming</h3>
+                <hr>
+                <p style='font-size: 20px'>Global warming is the ongoing rise of the average temperature of the Earth. It is a major aspect of climate change which,
+                    in addition to rising global surface temperatures, affects climate
+                    behavior such as bigger heatwaves and changes in precipitation.
+                    More heat means that more ice is melting from the ice caps. This leads to an increase in the global ocean levels. Coastline cities are in jeopardy if we do not take measures in limitting our carbon emissions.</p>
+                
+                </div>
+            <div class="col-md-4 p-3" data-aos="fade-down" data-aos-duration="1000" data-aos-offset="400">
+                <div class="text-center" style="font-size: 55px"><i class="fas fa-smog" style="color: #333333;"></i></div>
+                <h3 class="text-center">What is is PPM</h3>
+                <hr>
+                <p style='font-size: 20px'>PPM stands for <b>P</b>arts <b>P</b>er <b>M</b>illion and it is a measure of concentration. In our case this represents the amount of carbon dioxide (CO₂) molecules in a million parts of air.
+                The current global value of CO₂ PPM is ~418. The more the concentration in the atmosphere, the higher the average global temperature becomes. 
+                The increase will result in more frequent wildfires, expansion of deserts, extreme climate and more catastrophic consequences. 
+            </p>
+            </div>
+            <div class="col-md-4 p-3" data-aos="fade-left" data-aos-duration="1000" data-aos-offset="400">
+                <div class="text-center" style="font-size: 55px"><i class="fas fa-laptop-code" style="color: #10B5F3;"></i></div>
+                <h3 class="text-center">Our contribution</h3>
+                <hr>
+                <p style='font-size: 20px'>Through this app, we want to demonstrate the devastating effect of global warming and what could be the consequences if no measures are taken in time.
+                Our algorithm calculates how the PPM, produced by six of the most polluting sectors, affects the global temperature. You can see the results in a live simulation visualized by graphs and a terrain map.
+            </p>
+            </div>
+        </div>
     </div>
+    <div class="text-center m-5" style='font-size: 40px' data-aos="fade-up" data-aos-duration="1000" data-aos-offset="400">Want to try it out? We have made a quick tutorial for you! Just keep scrolling.</div>
 </div>
-<div class="m-4 alert alert-primary" role="alert">
-    <h2 class="alert-heading">Create your own</h2>
-    <hr>
+<div class="m-4 " role="alert" data-aos="fade-up" data-aos-duration="1000" data-aos-offset="500">
+
     <div class="w-75 mx-auto">
         <div class="m-2 p-2 row">
-            <div class="col-md-9 text-right" data-aos="fade-right" data-aos-duration="1000">
+            <div class="col-md-9 text-right" data-aos="fade-right" data-aos-duration="1000"  data-aos-offset="520">
                 <div class="border border-primary">
 
                     <img class="w-100" src="images/main/OpenControls.gif" alt="opening controls">
                 </div>
             </div>
-            <div class="col-md-3 text-justify" data-aos="fade-left" data-aos-duration="1000">
+            <div class="col-md-3 text-justify" data-aos="fade-left" data-aos-duration="1000" data-aos-offset="520">
                 <h1>1.</h1>
                 <h3>Changing main inputs</h3>
                 <p> Each value represents a percentage in the increase of a chosen sector. These percentages will take affect for each and every year for all the countries. This means that the same percentage will be added again and again each year. To avoid huge values consider inputting smaller numbers as shown in the example above.

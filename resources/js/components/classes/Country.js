@@ -16,9 +16,6 @@ class Country {
         this.forests = forests;
         this.forestsGrowth = forestsGrowth;
         this.sectors = sectors;
-        this.isInfected = false;
-        this.infectedPopulation = 0;
-        this.isOnLockDown = false;
 
         this.infectedPopulation = infectedPopulation;
         this.isInfected = isInfected;
@@ -184,7 +181,7 @@ class Country {
 
     //Calculate the produced CO2 emissions by the population per country
     CO2ProductionPopulation() {
-        var producedCO2 = this.population * 0.39;
+        var producedCO2 = (this.population - this.infectedPopulation) * 0.39;
         return producedCO2;
     }
 
@@ -203,13 +200,13 @@ class Country {
 
     updateInfectedPopulation() {
         if (this.isInfected ) {
-            if (this.infectedPopulation < this.population / 100 && !this.isOnLockDown) {
-                this.infectedPopulation += Math.round((Math.random() / (Math.random() * 100)) * this.population);
+            if (this.infectedPopulation < this.population / 1000 && !this.isOnLockDown) {
+                this.infectedPopulation += Math.round((Math.random() / (Math.random() * 1000)) * this.population);
             } else {
                 this.isOnLockDown = true;
 
-                this.infectedPopulation += Math.round((Math.random() / (Math.random() * 1000)) * this.population);
-                this.infectedPopulation -= Math.round((Math.random() / (Math.random() * 200)) * this.population);
+                this.infectedPopulation += Math.round(((Math.random() / (Math.random() * 10000)) / this.infectedPopulation) * this.population);
+                this.infectedPopulation -= Math.round((Math.random() / (Math.random() * 20)) * this.infectedPopulation);
 
                 if(this.infectedPopulation < 0){
                     this.infectedPopulation = 0;
@@ -232,7 +229,7 @@ class Country {
         var manufacturing = this.sectors.find(el => el instanceof Manufacturing);
         var industry = this.sectors.find(el => el instanceof Industry);
         var agriculture = this.sectors.find(el => el instanceof Agriculture);
-            console.log(this.name)
+    
         if (this.isInfected) {
             
             electricity.sectorChange(manufacturing, [(inputElectricity - 1) * 0.7, (inputManufacturing - 1) * 0.3]);
