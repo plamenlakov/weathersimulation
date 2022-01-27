@@ -42,7 +42,7 @@
         "react-countup": "^4.3.3",
         "react-google-charts": "^3.0.15",
         "react-number-counter": "^1.0.8",
-        "three": "^0.116.0",
+        "three": "^0.137.0",
         "three.interaction": "^0.2.2",
         "topojson": "^3.0.2",
         "topology": "^0.2.1"
